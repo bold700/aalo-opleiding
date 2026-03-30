@@ -1136,16 +1136,6 @@ function renderQuestion(){
   const all = [q.a, ...q.wrong].sort(()=>Math.random()-0.5);
   const pct = quizState.queue.length ? (quizState.idx/quizState.queue.length*100) : 0;
 
-  container.innerHTML = `
-    <div class="quiz-wrap">
-      <div class="quiz-meta">
-        <div class="quiz-score">✅ <span class="good">${quizState.correct}</span> &nbsp;❌ <span class="bad">${quizState.wrong}</span></div>
-        <div class="quiz-score" style="color:var(--muted)">Vraag ${quizState.idx+1}/${quizState.queue.length}</div>
-      </div>
-      <div class="pbar"><div class="pbar-fill" style="width:${pct}%"></div></div>
-      <div class="q-card">
-        <div class="q-text">${q.q}</div>
-      </div>
   const answersHtml = all.map((ans) => {
     const isCorrect = ans === q.a;
     return `<button class="ans-btn" data-correct="${isCorrect}">${ans}</button>`;

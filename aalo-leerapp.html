@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AALO FI — Leerapp</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f2f5;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --border: #dde1e7;
+  --accent: #1d4ed8;
+  --accent-light: #eff6ff;
+  --accent2: #16a34a;
+  --accent2-light: #f0fdf4;
+  --danger: #dc2626;
+  --danger-light: #fef2f2;
+  --gold: #d97706;
+  --text: #111827;
+  --text2: #374151;
+  --muted: #6b7280;
+  --correct: #16a34a;
+  --wrong: #dc2626;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ===== LAYOUT ===== */
+.app { display:flex; min-height:100vh; }
+
+/* Sidebar */
+.sidebar {
+  width: 280px; flex-shrink:0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction:column;
+  position: sticky; top:0; height:100vh; overflow-y:auto;
+}
+.sidebar-header {
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.sidebar-logo {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--muted); margin-bottom: 2px;
+}
+.sidebar-title { font-size: 15px; font-weight: 800; line-height: 1.2; color: var(--text); }
+
+.chapter-list { padding: 8px; flex:1; }
+.ch-btn {
+  width:100%; text-align:left;
+  padding: 8px 10px; margin-bottom:1px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; font-weight: 500;
+  border-radius: 7px; cursor:pointer;
+  transition: background 0.15s, color 0.15s;
+  display:flex; align-items:center; gap:8px;
+}
+.ch-btn:hover { background: var(--bg); color: var(--text); }
+.ch-btn.active { background: var(--accent-light); color: var(--accent); font-weight: 700; }
+.ch-btn .ch-num {
+  width: 22px; height: 22px; border-radius: 5px;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 11px; font-weight: 700;
+  background: var(--border); color: var(--muted); flex-shrink:0;
+}
+.ch-btn.active .ch-num { background: var(--accent); color: white; }
+.ch-btn .ch-label { font-size: 13px; line-height: 1.3; }
+
+.sidebar-footer { padding:14px; border-top:1px solid var(--border); background:#f9fafb; }
+.progress-overview { font-size: 12px; font-weight: 500; color: var(--muted); }
+.progress-bar-mini { height:4px; background:var(--border); border-radius:2px; margin-top:8px; overflow:hidden; }
+.progress-bar-mini-fill { height:100%; background: var(--accent); border-radius:2px; transition:width 0.4s; }
+
+/* Main */
+.main { flex:1; display:flex; flex-direction:column; min-width:0; background: var(--bg); }
+.main-header {
+  padding: 10px 16px 8px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  flex-wrap:wrap;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.chapter-title { font-size: 16px; font-weight: 800; color: var(--text); line-height: 1.2; }
+.chapter-subtitle { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 1px; }
+
+/* Mode tabs */
+.mode-tabs {
+  display:flex; gap:0;
+  border: 1px solid var(--border);
+  border-radius: 7px; overflow: hidden;
+  flex-shrink:0;
+}
+.mode-btn {
+  padding: 7px 14px; border:none; background: white;
+  color: var(--muted); font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor:pointer; transition: all 0.15s; white-space:nowrap;
+}
+.mode-btn:not(:last-child) { border-right: 1px solid var(--border); }
+.mode-btn.active { background: var(--accent); color: white; }
+.mode-btn:hover:not(.active) { background: var(--bg); color: var(--text); }
+
+.main-content { padding: 14px 20px 32px; flex:1; }
+
+/* ===== BEGRIPPEN ===== */
+.search-row { display:flex; gap:8px; margin-bottom:20px; }
+.search-box {
+  flex:1; min-width:200px;
+  background: white; border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 16px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 15px;
+  outline:none; transition: border-color 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.search-box:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(29,78,216,0.1); }
+.cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; }
+
+.term-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px; cursor:pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  min-height: 90px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.term-card:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(29,78,216,0.1); }
+.term-card.flipped .front { display:none; }
+.term-card .back { display:none; }
+.term-card.flipped .back { display:block; }
+.term-latin { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; }
+.term-nl { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom:2px; }
+.term-extra { font-size: 13px; color: var(--text2); line-height: 1.55; margin-top: 8px; }
+.tag { display:inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
+.flip-hint { font-size: 11px; color: var(--muted); text-align:right; margin-top: 10px; }
+
+/* ===== QUIZ ===== */
+.quiz-wrap { max-width: 600px; }
+.quiz-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.quiz-score { font-size: 13px; font-weight: 600; color: var(--muted); }
+.quiz-score .good { color: var(--correct); }
+.quiz-score .bad { color: var(--wrong); }
+.pbar { height:4px; background: var(--border); border-radius:3px; margin-bottom:10px; overflow:hidden; }
+.pbar-fill { height:100%; background: var(--accent); border-radius:3px; transition:width 0.4s; }
+
+.q-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.q-label { display:none; }
+.q-text { font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--text); }
+
+.answers { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+@media(max-width:500px){ .answers { grid-template-columns:1fr; } }
+.ans-btn {
+  background: white; border: 2px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+  cursor:pointer; transition: all 0.15s; text-align:left; line-height: 1.35;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.ans-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+.ans-btn.correct { border-color: var(--correct); background: var(--accent2-light); color: var(--correct); font-weight: 700; }
+.ans-btn.wrong { border-color: var(--wrong); background: var(--danger-light); color: var(--wrong); font-weight: 700; }
+.ans-btn:disabled { cursor:default; }
+
+.feedback {
+  background: #f9fafb; border-radius: 8px; padding: 9px 12px;
+  font-size: 13px; line-height: 1.5; margin-bottom: 8px;
+  display:none; color: var(--text2); border: 1px solid var(--border);
+}
+.feedback.show { display:block; }
+.feedback.fb-ok { border-color: var(--correct); background: var(--accent2-light); }
+.feedback.fb-err { border-color: var(--wrong); background: var(--danger-light); }
+
+.next-btn {
+  width:100%; padding: 11px; background: var(--accent); border:none; border-radius: 8px;
+  color: white; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
+  cursor:pointer; transition: background 0.15s; display:none;
+}
+.next-btn.show { display:block; }
+.next-btn:hover { background: #1e40af; }
+
+/* Quiz result */
+.result-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: 14px; padding: 32px 24px; text-align:center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.result-emoji { font-size: 44px; margin-bottom: 10px; }
+.result-pct { font-size: 48px; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+.result-sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; font-weight: 500; }
+.restart-btn {
+  padding: 11px 28px; background: var(--accent); border:none; border-radius: 8px;
+  color: white; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
+  cursor:pointer; transition: background 0.15s;
+}
+.restart-btn:hover { background: #1e40af; }
+
+.stats-row { display:flex; gap:8px; margin-bottom:10px; }
+.stat-box {
+  flex:1; background: white; border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 10px; text-align:center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.stat-num { font-size: 20px; font-weight: 800; color: var(--correct); }
+.stat-num.bad { color: var(--wrong); }
+.stat-label { font-size: 11px; color: var(--muted); margin-top: 1px; font-weight: 500; }
+
+/* Section headers */
+.section-hdr {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--muted);
+  margin: 20px 0 8px;
+  padding-bottom: 5px; border-bottom: 1px solid var(--border);
+}
+.empty-msg { color: var(--muted); font-size: 14px; padding: 20px 0; }
+
+/* Mobile */
+@media(max-width:700px){
+  .sidebar { width:100%; height:auto; position:relative; overflow-y:visible; }
+  .sidebar .chapter-list { display:flex; flex-wrap:wrap; padding:6px; gap:3px; }
+  .sidebar .ch-btn { width:auto; flex:0 0 auto; padding:6px 8px; margin:0; }
+  .sidebar .ch-btn .ch-label { display:none; }
+  .app { flex-direction:column; }
+  .main-header { padding:10px 12px 8px; }
+  .main-content { padding:10px 12px 24px; }
+  .q-text { font-size: 14px; }
+  .ans-btn { font-size: 13px; padding: 10px 10px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">AALO Opleidingen</div>
+    <div class="sidebar-title">Fitness Instructeur</div>
+  </div>
+  <div class="chapter-list" id="chapter-list"></div>
+  <div style="padding:8px;">
+    <button class="ch-btn" id="ch-btn-proef" onclick="selectProefexamen()" style="background:linear-gradient(135deg,rgba(255,200,50,0.15),rgba(255,77,109,0.1));border:1px solid rgba(255,200,50,0.4);color:#ffc832;margin-top:4px;">
+      <span class="ch-num" style="background:rgba(255,200,50,0.2);color:#ffc832;">🎓</span>
+      <span class="ch-label" style="color:#ffc832;font-weight:700;">Proefexamen AALO</span>
+    </button>
+  </div>
+  <div class="sidebar-footer">
+    <div class="progress-overview" id="progress-overview">0 / 0 vragen correct</div>
+    <div class="progress-bar-mini"><div class="progress-bar-mini-fill" id="global-progress" style="width:0%"></div></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="main-header">
+    <div>
+      <div class="chapter-title" id="chapter-title">Kies een hoofdstuk</div>
+      <div class="chapter-subtitle" id="chapter-subtitle">—</div>
+    </div>
+    <div class="mode-tabs" id="mode-tabs">
+      <button class="mode-btn active" id="mode-begrippen" onclick="setMode('begrippen', this)">📚 Begrippen</button>
+      <button class="mode-btn" id="mode-quiz" onclick="setMode('quiz', this)">🧠 Quiz</button>
+    </div>
+  </div>
+  <div class="main-content" id="main-content">
+    <p style="color:var(--muted);font-size:15px;margin-top:48px;text-align:center;">← Kies een hoofdstuk uit het menu</p>
+  </div>
+</main>
+
+</div>
+
+<script>
+// ============================================================
+// DATA — alle 9 hoofdstukken
+// ============================================================
+const chapters = [
+{
+  id:1, title:'AALO Fitness Instructeur', subtitle:'Beroep, Gedragscode & Visies',
+  color:'#ff4d6d',
+  terms:[
+    {latin:'Fitnessinstructeur',nl:'Allround medewerker',tag:'beroep',extra:'Verwelkomt, introduceert en begeleidt klanten bij het halen van hun doelstellingen.'},
+    {latin:'Gedragscode',nl:'4 principes voor professioneel gedrag',tag:'beroep',extra:'Respect, professionele relaties, gezonde levensstijl stimuleren, streven naar hoogste professionaliteit.'},
+    {latin:'Visie',nl:'Kijk op iets; weloverwogen mening',tag:'beroep',extra:'Antwoord op: Wie ben ik? Waar sta ik voor? Waar wil ik naar toe?'},
+    {latin:'Mensvisie',nl:'Kijk op bewegende mensen',tag:'visie',extra:'Biologisch vakconcept: de mens is van nature een beweger, maar heeft bewegingsarmoede door zittend bestaan.'},
+    {latin:'Bedrijfsvisie',nl:'Kijk op het fitnessbedrijf',tag:'visie',extra:'Commercieel bedrijf waarbij winst, klantbehoud (verloop 30-40%) en kwaliteit centraal staan.'},
+    {latin:'Managementvisie',nl:'Kijk op aansturen personeel',tag:'visie',extra:'3 serviceconcepten: 100% gestandaardiseerd / 50-50 / 100% op maat (personal training).'},
+    {latin:'Serviceconcept 1',nl:'100% gestandaardiseerde dienst',tag:'visie',extra:'Budget sportscholen. Laagste kosten, minste begeleiding.'},
+    {latin:'Serviceconcept 2',nl:'50% standaard + 50% op maat',tag:'visie',extra:'AALO Formule 7. Sfeer en beleving spelen een belangrijke rol.'},
+    {latin:'Serviceconcept 3',nl:'100% op maat',tag:'visie',extra:'Personal training. Intensieve 1-op-1 begeleiding.'},
+    {latin:'Personeelsvisie',nl:'Kijk op het personeel',tag:'visie',extra:'Hogere behoeften (ontplooiing) vs. lagere behoeften (erbij horen, veiligheid).'},
+    {latin:'Productvisie',nl:'Kijk op het te verkopen product',tag:'visie',extra:'AALO Formule 7: 7 profielschema\'s, oefeningen op apparatuur, variaties.'},
+    {latin:'Onderwijsvisie',nl:'Kijk op de wijze van lesgeven',tag:'visie',extra:'3 vakconcepten: idealistisch, gedragstheoretisch (GTV), handelingstheoretisch.'},
+    {latin:'Marketingvisie',nl:'Kijk op het in de markt zetten',tag:'visie',extra:'AIDA-methode: Attentie → Interesse → Desire → Aankoopgedrag.'},
+    {latin:'AIDA',nl:'Marketing-methode',tag:'visie',extra:'Attentie → Interesse → Desire (verlangen) → Aankoopgedrag. Stap voor stap aanzetten tot aankoop.'},
+    {latin:'Psychomotorische doelstelling',nl:'20% — Formule 7 (G, U, S)',tag:'beroep',extra:'7 routes: Gewichtscontrole, Uithoudingsvermogen, Spierversterking of combinatieroutes.'},
+    {latin:'Sociaal-affectieve doelstelling',nl:'60% — zelfbeeld, sociaal aspect',tag:'beroep',extra:'Grootste reden waarom klanten lid worden/blijven.'},
+    {latin:'Cognitieve doelstelling',nl:'20% — bewustzijn, kennis',tag:'beroep',extra:'Bewustwording voeding, lichaamshouding, hoeveelheid beweging.'},
+    {latin:'Biologisch vakconcept',nl:'Mens is van nature een beweger',tag:'visie',extra:'Door computerisering zijn we te veel gaan zitten → bewegingsarmoede → klachten.'},
+  ],
+  quiz:[
+    {q:'Welk percentage van de klantbinding bestaat uit de relatie met medewerkers?',a:'60%',wrong:['30%','40%','80%'],exp:'60% van de binding die de klant met het fitnesscentrum heeft bestaat uit de relatie met de medewerkers.'},
+    {q:'Hoeveel procent van de klanten in de fitness zegt hun abonnement op?',a:'Een derde (33%)',wrong:['10%','50%','20%'],exp:'Wist je dat een derde van de klanten in de fitness hun abonnement weer opzegt?'},
+    {q:'Wat betekent AIDA in de marketingvisie?',a:'Attentie, Interesse, Desire, Aankoopgedrag',wrong:['Analyse, Implementatie, Doelstelling, Actie','Aantrekken, Informeren, Doen, Aanpassen','Aanbod, Instructie, Doel, Actie'],exp:'AIDA = Attentie → Interesse → Desire (verlangen) → Aankoopgedrag.'},
+    {q:'Wat zijn de 3 doelstellingen van klanten in een fitnesscentrum?',a:'Psychomotorisch, Sociaal-affectief, Cognitief',wrong:['Kracht, Conditie, Flexibiliteit','Gewicht, Spiermassa, Conditie','Gezondheid, Plezier, Prestatie'],exp:'1. Psychomotorisch (20%), 2. Sociaal-affectief (60%), 3. Cognitief (20%).'},
+    {q:'Serviceconcept 2 van AALO heet ook wel...',a:'AALO Formule 7',wrong:['Personal training','Budget fitness','AALO PEP'],exp:'Serviceconcept 2 = AALO Formule 7: deels gestandaardiseerd, deels persoonlijk.'},
+    {q:'Welk vakconcept stelt de KLANT (role-maker) centraal?',a:'Handelingstheoretisch vakconcept',wrong:['Gedragstheoretisch vakconcept','Idealistisch vakconcept','Biologisch vakconcept'],exp:'Handelingstheoretisch: de mens staat centraal, is role-maker, denkt actief mee.'},
+    {q:'Hoeveel procent van klanten benoemt beweging ter bevordering van de gezondheid als motief?',a:'9 van de 10 (90%)',wrong:['50%','60%','75%'],exp:'Relatief veel (negen van de tien) fitnessers noemen beweging ter bevordering van de gezondheid als motief.'},
+    {q:'Wat is het gemiddelde verloop in Nederlandse fitnesscentra?',a:'30-40%',wrong:['10-20%','50-60%','5-10%'],exp:'Het gemiddelde verloop in Nederland is 30 tot 40 procent, klantbehoud heeft daardoor hoge prioriteit.'},
+    {q:'Welke doelstelling heeft het GROOTSTE aandeel (60%) bij klanten?',a:'Sociaal-affectieve doelstelling',wrong:['Psychomotorische doelstelling','Cognitieve doelstelling','Commerciële doelstelling'],exp:'60% sociaal-affectief (zelfbeeld, sociaal aspect), 20% psychomotorisch, 20% cognitief.'},
+    {q:'Hoeveel procent van fitnessers combineert kracht- én cardiotraining?',a:'Bijna 6 op de 10 (60%)',wrong:['Een kwart (25%)','9 op de 10 (90%)','Een derde (33%)'],exp:'Bijna zes op de tien fitnessers combineert kracht- en cardiotraining.'},
+    {q:'Wat is de definitie van een VISIE?',a:'Een weloverwogen, goed onderbouwde mening over hoe iets zich zou moeten ontwikkelen',wrong:['Een plan voor de komende 5 jaar','Een beschrijving van de huidige situatie','Een doelstelling met meetbare resultaten'],exp:'Een visie is een kijk op iets: antwoord op Wie ben ik? Waar sta ik voor? Waar wil ik naar toe?'},
+    {q:'Welk serviceconcept is het meest gebruikt in Nederlandse fitnesscentra?',a:'Serviceconcept 1 (100% gestandaardiseerd)',wrong:['Serviceconcept 2 (AALO Formule 7)','Serviceconcept 3 (personal training)','Serviceconcept 4 (online coaching)'],exp:'Serviceconcept 1 is op dit moment het meest gebruikte: lichte begeleiding, lage kosten (budget-sportscholen).'},
+    {q:'Wat zijn de 4 principes van de AALO Gedragscode?',a:'Respect, professionele relaties, gezonde levensstijl, hoogste professionaliteit',wrong:['Veiligheid, gezondheid, plezier, resultaat','Klantvriendelijkheid, kennis, conditie, discipline','Service, snelheid, kwaliteit, prijs'],exp:'1. Respect, 2. Professionele relaties opbouwen, 3. Gezonde levensstijl stimuleren, 4. Streven naar hoogste professionaliteit.'},
+    {q:'Welk vakconcept is gangbaar in de wedstrijdsport en het leger (role-taker)?',a:'Gedragstheoretisch vakconcept (GTV)',wrong:['Handelingstheoretisch vakconcept','Idealistisch vakconcept','Biologisch vakconcept'],exp:'GTV: kwaliteit van bewegen heeft hoogste prioriteit. Klant is role-taker. Stimulus-respons. Efficiënt en doelmatig.'},
+    {q:'Wat is het BIOLOGISCH vakconcept?',a:'De mens is van nature een beweger, maar is door zittend bestaan in bewegingsarmoede geraakt',wrong:['Sport heeft een positief effect op karakter','De beste techniek staat centraal','De klant bepaalt zijn eigen trainingspad'],exp:'Biologisch vakconcept: de mens ontwikkelde zich als beweger, maar door computerisering/auto zijn we te veel gaan zitten.'},
+    {q:'Wat betekent TRANSFER in het kader van de onderwijsvisie?',a:'Het toepassen van aangeleerde bewegingen in de dagelijkse levenssituatie',wrong:['Het overzetten van een trainingsschema naar een app','Het wisselen van trainer','Het verhogen van trainingsintensiteit'],exp:'Transfer: wat je in de ene situatie leert (sport) kun je in een andere situatie gebruiken (dagelijks leven).'},
+    {q:'Hoeveel procent van fitnessers sport UITSLUITEND in een groep?',a:'Een kwart (25%)',wrong:['Een derde (33%)','De helft (50%)','10%'],exp:'Ruim de helft sport alleen, een kwart combineert individueel met groep, een kwart sport uitsluitend in groep.'},
+    {q:'Welke sport geldt als voorbeeld van het IDEALISTISCHE vakconcept?',a:'Vechtsporten (moed, doorzettingsvermogen, discipline)',wrong:['Marathonlopen (uithoudingsvermogen)','Bodybuilding (hypertrofie)','Badminton (techniek)'],exp:'Idealistisch vakconcept: sport als middel om karaktereigenschappen te oefenen. Bijv. vechtsporten.'},
+    {q:'Hoe groot is de Nederlandse fitnessbranche gegroeid van 2015 tot 2020?',a:'15% (van 1829 naar 2021 centra)',wrong:['5%','30%','50%'],exp:'Het aantal fitnessbedrijven steeg van 2015 tot 2020 met 15% van 1829 naar 2021.'},
+    {q:'Waarvoor staat de "A" van AIDA-methode?',a:'Attentie',wrong:['Actie','Analyse','Aanbod'],exp:'AIDA: Attentie (via poster/pakkende oneliner) → Interesse → Desire → Aankoopgedrag.'},
+    {q:'Wat zijn de hogere behoeften van personeel volgens de personeelsvisie?',a:'Ontplooiing en doorgroeimogelijkheden',wrong:['Erbij horen en veiligheid voelen','Goed salaris en flexibele uren','Respect en vriendelijke collega&#39;s'],exp:'Hogere behoeften: ontplooiing, doorgroeimogelijkheden. Lagere behoeften: erbij horen, je thuis voelen, veiligheid.'},
+    {q:'Waarom is het afslankmotief DOMINANTER bij fitnessers dan bij andere sporters?',a:'50% van fitnessers vs 25% van andere sporters noemt afvallen als motief',wrong:['Fitnessers eten ongezonder','Fitnesscentra richten zich op gewichtsverlies','Andere sporters bewegen al genoeg'],exp:'Afslanken is een dominanter motief onder fitnessers (50%) dan onder andere sporters (25%).'},
+    {q:'Welke drie pijlers heeft de AALO Formule 7 als product?',a:'7 profielschema\'s, oefeningen op apparatuur, variaties op de 7 schema\'s',wrong:['Intake, training, evaluatie','Warming-up, training, cooling-down','Kracht, cardio, flexibiliteit'],exp:'De Formule 7 bestaat uit: de 7 profielschema\'s, oefeningen op apparatuur of losse oefeningen, variaties op de 7 schema\'s.'},
+    {q:'Wat is de taak van de fitnesstrainer in het COGNITIEVE bewustwordingsproces?',a:'Bewustwording sturen van voedingspatroon, lichaamshouding en bewegingshoeveelheid',wrong:['Alleen technische instructies geven','Diagnoses stellen bij klanten','Maaltijdplannen opstellen'],exp:'FI stuurt bewustwording op 3 thema\'s: voedingspatroon, lichaamshouding, hoeveelheid en kwaliteit beweging.'},
+    {q:'Wat is de rol van de FI als het gaat om klachten en doorverwijzing?',a:'Geen diagnose stellen, maar doorverwijzen naar fysiotherapeut of arts',wrong:['Zelf een behandelplan opstellen','Medicijnen adviseren','Alleen trainingsschemaaanpassingen maken zonder doorverwijzing'],exp:'Een fitnessinstructeur heeft niet de kwaliteiten of autoriteit om een diagnose te stellen. Bij twijfel: doorverwijzen.'},
+  ]
+},
+{
+  id:2, title:'Algemene Anatomie', subtitle:'Anatomie, Skelet & Spieren',
+  color:'#4d9fff',
+  terms:[
+    {latin:'Anatomie',nl:'Studie van opbouw menselijk lichaam',tag:'definitie',extra:'Twee vakgebieden: myologie (spierleer) en osteologie (skeletleer).'},
+    {latin:'Anatomische houding',nl:'Internationaal afgesproken vertrekpunt',tag:'richting',extra:'Rechtop staan, gezicht naar voren, handpalmen naar voren.'},
+    {latin:'Mediaan',nl:'Denkbeeldige middellijn van boven naar beneden',tag:'richting',extra:'Vertrekpunt voor alle richting-aanduidingen.'},
+    {latin:'Lateraal',nl:'Verder van de mediaan af',tag:'richting',extra:'Bijv. m. vastus lateralis.'},
+    {latin:'Mediaal',nl:'Dichter bij de mediaan',tag:'richting',extra:'Bijv. m. vastus medialis.'},
+    {latin:'Ventraal',nl:'Buikzijde',tag:'richting',extra:'= Anterior. Rugzijde = Dorsaal.'},
+    {latin:'Dorsaal',nl:'Rugzijde',tag:'richting',extra:'= Posterior. Buikzijde = Ventraal.'},
+    {latin:'Superficiaal',nl:'Oppervlakkig gelegen',tag:'richting',extra:'Tegengestelde van profundus.'},
+    {latin:'Profundus',nl:'Dieper gelegen',tag:'richting',extra:'Tegengestelde van superficiaal.'},
+    {latin:'Superior',nl:'Hoger',tag:'richting',extra:'Richting het hoofd.'},
+    {latin:'Inferior',nl:'Lager',tag:'richting',extra:'Richting de voeten.'},
+    {latin:'Craniaal',nl:'Richting de schedel',tag:'richting',extra:'= Superior richting hoofd.'},
+    {latin:'Caudaal',nl:'Richting het staartbeen',tag:'richting',extra:'= Inferior richting staartbeen.'},
+    {latin:'Anterior',nl:'Voor',tag:'richting',extra:'Voorkant van het lichaam.'},
+    {latin:'Posterior',nl:'Achter',tag:'richting',extra:'Achterkant van het lichaam.'},
+    {latin:'Proximaal',nl:'Dichtbij (tot de romp)',tag:'richting',extra:'In de ledematen: dichtbij de romp.'},
+    {latin:'Distaal',nl:'Verder af (van de romp)',tag:'richting',extra:'In de ledematen: weg van de romp.'},
+    {latin:'Palmair',nl:'Handpalm-zijde',tag:'richting',extra:'Rug van de hand = Dorsaal.'},
+    {latin:'Plantair',nl:'Voetzoolzijde',tag:'richting',extra:'Onderkant van de voet.'},
+    {latin:'Osteologie',nl:'Skeletleer',tag:'skelet',extra:'4 functies: vorm/stabiliteit, bescherming vitale organen, aanhechting spieren, gewrichten voor beweging.'},
+    {latin:'Cervicale wervels',nl:'7 nekwervels (C1-C7)',tag:'skelet',extra:'Bovenste deel wervelkolom.'},
+    {latin:'Thoracale wervels',nl:'12 borstwervels (T1-T12)',tag:'skelet',extra:'Middelste deel wervelkolom.'},
+    {latin:'Lumbale wervels',nl:'5 lendewervels (L1-L5)',tag:'skelet',extra:'Onderste deel wervelkolom boven sacrum.'},
+    {latin:'Os sacrum',nl:'Heiligbeen',tag:'skelet',extra:'Rust op heupbeenderen (ossa coxae).'},
+    {latin:'Os coccygis',nl:'Staartbeen',tag:'skelet',extra:'Onderste deel van het os sacrum.'},
+    {latin:'Os ilium',nl:'Darmbeen',tag:'skelet',extra:'Deel van os coxae (heupbeen).'},
+    {latin:'Os pubis',nl:'Schaambeen',tag:'skelet',extra:'Deel van os coxae.'},
+    {latin:'Os ischii',nl:'Zitbeen',tag:'skelet',extra:'Deel van os coxae. Zitvlak.'},
+    {latin:'Os femur',nl:'Dijbeen',tag:'skelet',extra:'Langste bot van het lichaam.'},
+    {latin:'Os patella',nl:'Knieschijf',tag:'skelet',extra:'Zit voor het kniegewricht.'},
+    {latin:'Os tibia',nl:'Scheenbeen',tag:'skelet',extra:'Binnenzijde onderbeen.'},
+    {latin:'Os fibula',nl:'Kuitbeen',tag:'skelet',extra:'Buitenzijde onderbeen.'},
+    {latin:'Os calcaneus',nl:'Hielbeen',tag:'skelet',extra:'Grootst bot van de voet.'},
+    {latin:'Os humerus',nl:'Opperarmbeen',tag:'skelet',extra:'Bovenarm.'},
+    {latin:'Os radius',nl:'Spaakbeen',tag:'skelet',extra:'Duimzijde onderarm.'},
+    {latin:'Os ulna',nl:'Ellepijp',tag:'skelet',extra:'Pinkzijde onderarm.'},
+    {latin:'Os scapula',nl:'Schouderblad',tag:'skelet',extra:'Achterkant schouder.'},
+    {latin:'Os clavicula',nl:'Sleutelbeen',tag:'skelet',extra:'Verbindt schouder met borstbeen.'},
+    {latin:'Os sternum',nl:'Borstbeen',tag:'skelet',extra:'Voorkant van de borstkas.'},
+    {latin:'Synoviaalvocht',nl:'Gewrichtsmeer',tag:'skelet',extra:'Smeermiddel in gewrichten.'},
+    {latin:'Ligamenten',nl:'Gewrichtsbanden',tag:'skelet',extra:'Verbinden bot aan bot voor stabiliteit.'},
+    {latin:'Frontaal vlak',nl:'Verdeelt voor/achter',tag:'beweging',extra:'As: sagittale as. Beweging: abductie en adductie.'},
+    {latin:'Sagittaal vlak',nl:'Verdeelt links/rechts',tag:'beweging',extra:'As: transversale as. Beweging: flexie en extensie.'},
+    {latin:'Transversaal vlak',nl:'Verdeelt boven/onder',tag:'beweging',extra:'As: longitudinale as. Beweging: rotatie.'},
+    {latin:'Flexie',nl:'Buigen',tag:'beweging',extra:'Hoek van het gewricht wordt kleiner.'},
+    {latin:'Extensie',nl:'Strekken',tag:'beweging',extra:'Hoek van het gewricht wordt groter.'},
+    {latin:'Abductie',nl:'Bewegen van het lichaam af',tag:'beweging',extra:'Bijv. arm naar zijkant heffen.'},
+    {latin:'Adductie',nl:'Bewegen naar het lichaam toe',tag:'beweging',extra:'Bijv. arm naar het lichaam brengen.'},
+    {latin:'Anteflexie',nl:'Arm voorwaarts heffen',tag:'beweging',extra:'Beweging in het glenohumerale gewricht.'},
+    {latin:'Retroflexie',nl:'Arm achterwaarts heffen',tag:'beweging',extra:'Beweging in het glenohumerale gewricht.'},
+    {latin:'Endorotatie',nl:'Naar binnen draaien',tag:'beweging',extra:'Kop van humerus/femur draait naar binnen.'},
+    {latin:'Exorotatie',nl:'Naar buiten draaien',tag:'beweging',extra:'Kop van humerus/femur draait naar buiten.'},
+    {latin:'Retractie',nl:'Schouderblad naar achteren',tag:'beweging',extra:'Scapulothoracale beweging.'},
+    {latin:'Protractie',nl:'Schouderblad naar voren',tag:'beweging',extra:'Scapulothoracale beweging.'},
+    {latin:'Elevatie',nl:'Schouderblad omhoog',tag:'beweging',extra:'Schouders ophalen.'},
+    {latin:'Depressie',nl:'Schouderblad naar beneden',tag:'beweging',extra:'Schouders laten hangen.'},
+    {latin:'Dorsaalflexie enkel',nl:'Tenen omhoogtrekken',tag:'beweging',extra:'Beweging in het enkelgewricht.'},
+    {latin:'Plantairflexie',nl:'Op de tenen staan',tag:'beweging',extra:'Beweging in het enkelgewricht.'},
+    {latin:'Torsie',nl:'Draaien van de wervelkolom',tag:'beweging',extra:'Rotatie in de wervelkolom.'},
+    {latin:'Lateroflexie',nl:'Zijwaarts buigen wervelkolom',tag:'beweging',extra:'In het frontale vlak.'},
+    {latin:'Myologie',nl:'Spierleer',tag:'spier',extra:'Studie die spieren bestudeert.'},
+    {latin:'Spierbuik',nl:'Contractiel deel van de spier',tag:'spier',extra:'Opgebouwd uit spierbundels → spiervezels → myofibrillen → sarcomeren.'},
+    {latin:'Sarcomeer',nl:'Kleinste contractiele eenheid',tag:'spier',extra:'Opgebouwd uit actine (dun) en myosine (dik) filamenten.'},
+    {latin:'Type 1 vezels',nl:'Slow-twitch — rode vezels',tag:'spier',extra:'Meer mitochondriën, aeroob, hoge vermoeidheidsresistentie, uren beschikbaar.'},
+    {latin:'Type 2a vezels',nl:'Fast-twitch — aeroob én anaeroob',tag:'spier',extra:'Redelijk veel mitochondriën, hoge contractiesnelheid, <30 min beschikbaar.'},
+    {latin:'Type 2x vezels',nl:'Fast-twitch — anaeroob kort',tag:'spier',extra:'Weinig mitochondriën, hoogste contractiesnelheid, <5 min beschikbaar.'},
+    {latin:'Isometrische contractie',nl:'Aanspannen zonder beweging',tag:'spier',extra:'Bijv. plank, wall sit. Minste spierschade.'},
+    {latin:'Concentrische contractie',nl:'Aanspannen + verkorten',tag:'spier',extra:'Actine en myosine schuiven naar elkaar toe. Meer schade dan isometrisch.'},
+    {latin:'Excentrische contractie',nl:'Aanspannen + verlengen',tag:'spier',extra:'Actine en myosine gaan uit elkaar. Meeste spierschade (negatief trainen).'},
+    {latin:'Agonist',nl:'Hoofdspier die de beweging uitvoert',tag:'spier',extra:'Bijv. bij chest press: m. pectoralis major.'},
+    {latin:'Antagonist',nl:'Spier met tegenovergestelde beweging',tag:'spier',extra:'Bijv. bij chest press: m. rhomboideus en m. trapezius.'},
+    {latin:'Synergist',nl:'Hulpspier die meehelpt',tag:'spier',extra:'Bijv. bij chest press: m. deltoideus en m. triceps brachii.'},
+    {latin:'Origo',nl:'Aanhechtingspunt op het ONbeweeglijke bot',tag:'spier',extra:'Meest centraal gelegen in het lichaam.'},
+    {latin:'Insertie',nl:'Aanhechtingspunt op het BEweeglijke bot',tag:'spier',extra:'Verder van het centrum af gelegen.'},
+    {latin:'Pees',nl:'Verbindt spier met bot',tag:'spier',extra:'Structuur die de spierbuik verbindt met het botweefsel.'},
+    {latin:'7 PBC\'s',nl:'7 Perfect Body Checkpoints',tag:'spier',extra:'Ideale lichaamshouding: nek lang, schouders naar achteren/beneden, bekken neutraal, buik licht aan, billen licht aan, knieën licht gebogen, voeten recht vooruit.'},
+    {latin:'mm. hamstrings',nl:'Achterste dijbeenspieren',tag:'spier',extra:'Origo: os ischii. Insertie: os tibia/fibula. Functie: retroflexie heup + flexie knie.'},
+    {latin:'mm. quadriceps femoris',nl:'Voorste dijbeenspieren (4 koppen)',tag:'spier',extra:'Origo: os ilium/femur. Insertie: os tibia via knieschijf. Functie: extensie knie + anteflexie heup.'},
+    {latin:'m. gluteus maximus',nl:'Grote bilspier',tag:'spier',extra:'Origo: os ilium/sacrum/coccyx. Insertie: os femur. Functie: retroflexie + exorotatie heup.'},
+    {latin:'mm. triceps surae',nl:'Kuitspieren',tag:'spier',extra:'Origo: os femur + tibia/fibula. Insertie: calcaneus (achillespees). Functie: plantairflexie enkel.'},
+    {latin:'m. rectus abdominus',nl:'Rechte buikspier',tag:'spier',extra:'Functie: ventraalflexie wervelkolom. Oefening: abdominal machine.'},
+    {latin:'m. erector spinae',nl:'Rugstrekker',tag:'spier',extra:'Functie: dorsaalflexie, lateroflexie en torsie wervelkolom. Oefening: lower back machine.'},
+    {latin:'m. pectoralis major',nl:'Grote borstspier',tag:'spier',extra:'Functie: anteflexie, endorotatie en adductie schouder. Oefening: chest press.'},
+    {latin:'m. latissimus dorsi',nl:'Brede rugspier',tag:'spier',extra:'Functie: adductie, endorotatie en retroflexie schouder. Oefening: lat pull-down.'},
+    {latin:'m. deltoideus',nl:'Deltaspier (schouder)',tag:'spier',extra:'Functie: anteflexie, abductie, retroflexie, endo/exorotatie. Oefening: shoulder press.'},
+    {latin:'m. trapezius',nl:'Monnikskapspier',tag:'spier',extra:'Functie: elevatie, retractie en depressie schouderblad. Oefening: lat pull-down.'},
+    {latin:'m. rhomboideus',nl:'Ruitspier',tag:'spier',extra:'Functie: retractie + mediorotatie schouderblad. Oefening: seated row.'},
+    {latin:'m. biceps brachii',nl:'Biceps (2 koppen)',tag:'spier',extra:'Functie: anteflexie schouder + flexie elleboog. Oefening: biceps curl.'},
+    {latin:'m. triceps brachii',nl:'Triceps (3 koppen)',tag:'spier',extra:'Functie: retroflexie schouder + extensie elleboog. Oefening: triceps press-down.'},
+  ],
+  quiz:[
+    {q:'Wat is de betekenis van LATERAAL?',a:'Verder van de mediaan af',wrong:['Dichter bij de mediaan','Aan de achterkant','Richting de voeten'],exp:'Lateraal = verder van de mediaanlijn af. Bijv. m. vastus lateralis.'},
+    {q:'Wat is de betekenis van MEDIAAL?',a:'Dichter bij de mediaan',wrong:['Verder van de mediaan af','Aan de voorkant','Richting het hoofd'],exp:'Mediaal = dichterbij de mediaanlijn. Bijv. m. vastus medialis.'},
+    {q:'Welke wervelkolom heeft 12 wervels?',a:'Thoracale (borstwervels)',wrong:['Cervicale (nekwervels)','Lumbale (lendewervels)','Sacrale wervels'],exp:'De wervelkolom bestaat uit 7 cervicale, 12 thoracale en 5 lumbale wervels.'},
+    {q:'Hoeveel CERVICALE wervels heeft de wervelkolom?',a:'7',wrong:['5','12','9'],exp:'7 cervicale wervels (nekwervels) = C1 tot en met C7.'},
+    {q:'Hoeveel LUMBALE wervels heeft de wervelkolom?',a:'5',wrong:['7','12','4'],exp:'5 lumbale wervels (lendewervels) = L1 tot en met L5.'},
+    {q:'In welk vlak vindt ABDUCTIE en ADDUCTIE plaats?',a:'Frontaal vlak',wrong:['Sagittaal vlak','Transversaal vlak','Longitudinaal vlak'],exp:'Frontaal vlak / sagittale as → abductie en adductie.'},
+    {q:'In welk vlak vindt FLEXIE en EXTENSIE plaats?',a:'Sagittaal vlak',wrong:['Frontaal vlak','Transversaal vlak','Coronaal vlak'],exp:'Sagittaal vlak / transversale as → flexie en extensie.'},
+    {q:'In welk vlak vindt ROTATIE plaats?',a:'Transversaal vlak',wrong:['Frontaal vlak','Sagittaal vlak','Coronaal vlak'],exp:'Transversaal vlak / longitudinale as → exo- en endorotatie.'},
+    {q:'Welk contractietype veroorzaakt de MEESTE spierschade?',a:'Excentrisch',wrong:['Isometrisch','Concentrisch','Statisch'],exp:'Excentrisch: actine en myosine gaan uit elkaar, pootjes worden losgetrokken → meeste schade.'},
+    {q:'Welk contractietype veroorzaakt de MINSTE spierschade?',a:'Isometrisch',wrong:['Excentrisch','Concentrisch','Dynamisch'],exp:'Isometrisch = aanspannen zonder beweging (bijv. plank, wall sit). Minste schade.'},
+    {q:'Wat is de ORIGO van een spier?',a:'Aanhechtingspunt op het onbeweeglijke bot',wrong:['Aanhechtingspunt op het beweeglijke bot','Het midden van de spier','De pees die de spier verbindt'],exp:'Origo = meest centraal gelegen, op het onbeweeglijke bot. Insertie = beweeglijk bot.'},
+    {q:'Welk spiervezeltype heeft het GROOTSTE duurvermogen?',a:'Type 1 (slow-twitch)',wrong:['Type 2a (fast-twitch)','Type 2x (fast-twitch)','Type 3 (ultra-twitch)'],exp:'Type 1 slow-twitch vezels hebben meer mitochondriën en kunnen uren actief zijn.'},
+    {q:'Hoelang zijn Type 2x vezels maximaal beschikbaar?',a:'Minder dan 5 minuten',wrong:['Minder dan 30 minuten','Uren','10-15 seconden'],exp:'Type 2x: anaeroob kort, <5 min beschikbaar, hoogste contractiesnelheid, weinig mitochondriën.'},
+    {q:'Wat is de AGONIST bij een chest press?',a:'M. pectoralis major',wrong:['M. triceps brachii','M. rhomboideus','M. deltoideus'],exp:'Bij de chest press is m. pectoralis major de agonist (hoofdspier).'},
+    {q:'Wat is de ANTAGONIST bij een chest press?',a:'M. rhomboideus en m. trapezius',wrong:['M. deltoideus','M. triceps brachii','M. biceps brachii'],exp:'Antagonist = tegenovergestelde beweging. Bij chest press: m. rhomboideus en m. trapezius.'},
+    {q:'Wat is de functie van de mm. hamstrings?',a:'Retroflexie heup + flexie knie',wrong:['Extensie knie + anteflexie heup','Abductie heup','Plantairflexie enkel'],exp:'Hamstrings: origo os ischii, insertie os tibia/fibula. Functie: retroflexie heup EN flexie knie.'},
+    {q:'Wat is de functie van de mm. quadriceps femoris?',a:'Extensie knie + anteflexie heup',wrong:['Flexie knie + retroflexie heup','Abductie heup','Plantairflexie enkel'],exp:'Quadriceps: extensie knie (strekken) en anteflexie heup. Oefening: leg extension.'},
+    {q:'PLANTAIRFLEXIE is...',a:'Op de tenen staan',wrong:['Tenen omhoogtrekken','Knie buigen','Heup strekken'],exp:'Plantairflexie = op de tenen staan. Dorsaalflexie = tenen omhoogtrekken.'},
+    {q:'Hoeveel wervels heeft de wervelkolom in totaal?',a:'33',wrong:['24','28','30'],exp:'7 cervicaal + 12 thoracaal + 5 lumbaal + sacrum + coccyx = 33 wervels totaal.'},
+    {q:'Wat is de insertie van mm. triceps surae?',a:'Via de achillespees op de os calcaneus',wrong:['Os tibia','Os femur','Os fibula'],exp:'Triceps surae hecht via de achillespees aan op het hielbeen (os calcaneus).'},
+    {q:'Welk bot is het scheenbeen?',a:'Os tibia',wrong:['Os fibula','Os femur','Os patella'],exp:'Os tibia = scheenbeen (binnenzijde onderbeen). Os fibula = kuitbeen (buitenzijde).'},
+    {q:'Wat is het SPAAKBEEN?',a:'Os radius',wrong:['Os ulna','Os humerus','Os fibula'],exp:'Os radius = spaakbeen (duimzijde onderarm). Os ulna = ellepijp (pinkzijde).'},
+    {q:'Waar hecht de m. gluteus maximus aan (origo)?',a:'Os ilium, os sacrum en os coccyx',wrong:['Os ischii alleen','Os pubis en os tibia','Os femur'],exp:'M. gluteus maximus: origo os ilium/sacrum/coccyx, insertie os femur. Functie: retroflexie + exorotatie heup.'},
+    {q:'Wat is de functie van m. latissimus dorsi?',a:'Adductie, endorotatie en retroflexie schouder',wrong:['Abductie en exorotatie schouder','Elevatie en retractie schouderblad','Extensie elleboog'],exp:'M. latissimus dorsi: adductie, endorotatie en retroflexie in de schouder. Oefening: lat pull-down.'},
+    {q:'Wat is RETRACTIE van het schouderblad?',a:'Schouderblad beweegt naar achteren',wrong:['Schouderblad beweegt naar voren','Schouderblad beweegt omhoog','Schouderblad beweegt naar beneden'],exp:'Retractie = naar achteren. Protractie = naar voren. Elevatie = omhoog. Depressie = omlaag.'},
+    {q:'Hoeveel functies heeft het SKELET?',a:'4 functies',wrong:['2 functies','6 functies','3 functies'],exp:'4 functies: 1. Vorm en stabiliteit, 2. Bescherming vitale organen, 3. Aanhechting spieren, 4. Gewrichten voor beweging.'},
+    {q:'Welke spier traint je met de Seated Row (hoofdspier)?',a:'M. rhomboideus',wrong:['M. pectoralis major','M. deltoideus','M. biceps brachii'],exp:'Seated Row: retractie schouderblad → m. rhomboideus is de hoofdspier. Ook m. latissimus dorsi, trapezius, biceps.'},
+    {q:'Wat is de origo van m. pectoralis major?',a:'Os clavicula, os sternum en rectusschede',wrong:['Os scapula en os humerus','Os ilium en os pubis','Os cranium en cervicale wervels'],exp:'M. pectoralis major: origo = clavicula + sternum + rectusschede. Insertie = os humerus.'},
+    {q:'Welke as staat LOODRECHT op het sagittale vlak?',a:'Transversale as',wrong:['Longitudinale as','Sagittale as','Frontale as'],exp:'Transversale as (van links naar rechts) staat loodrecht op het sagittale vlak. Beweging: flexie/extensie.'},
+    {q:'Wat is ANTEFLEXIE van de arm?',a:'Arm voorwaarts heffen',wrong:['Arm achterwaarts heffen','Arm zijwaarts heffen','Arm naar het lichaam brengen'],exp:'Anteflexie = arm voorwaarts heffen. Retroflexie = arm achterwaarts heffen.'},
+  ]
+},
+{
+  id:3, title:'Fysiologie', subtitle:'Energiesystemen & ATP',
+  color:'#ffc832',
+  terms:[
+    {latin:'ATP',nl:'Adenosinetrifosfaat — energievaluta',tag:'energie',extra:'Opgeslagen in alle cellen. Maar 4 seconden aanwezig in spiercellen. Splitsing: ATP → ADP + P + energie.'},
+    {latin:'ADP',nl:'Adenosinedifosfaat',tag:'energie',extra:'Restproduct na ATP-splitsing. Wordt direct omgezet naar ATP door energiesystemen.'},
+    {latin:'Fosfaatsysteem',nl:'Snelst beschikbaar energiesysteem',tag:'energie',extra:'CP + ADP → ATP + C. Anaeroob, alactisch. 10-15 seconden beschikbaar. Bijv. 100m sprint.'},
+    {latin:'Creatinefosfaat (CP)',nl:'Brandstof voor fosfaatsysteem',tag:'energie',extra:'Fosfaatgroep wordt overgedragen op ADP. Wordt in rust aangevuld.'},
+    {latin:'Zuurstofsysteem',nl:'Aeroob energiesysteem',tag:'energie',extra:'Gebruikt O2. Verbrandt koolhydraten en vetzuren volledig (CO2 + H2O). Langzaam maar langdurig (>120 min).'},
+    {latin:'Melkzuursysteem',nl:'Anaerobe glycolyse',tag:'energie',extra:'Zonder zuurstof. Alleen koolhydraten. Vormt lactaat als bijproduct. 10-120 seconden. Hoge intensiteit.'},
+    {latin:'Lactaat',nl:'Bijproduct melkzuursysteem',tag:'energie',extra:'NIET de oorzaak van vermoeidheid! Goede indicator voor activiteit melkzuursysteem.'},
+    {latin:'Anaeroob',nl:'Zonder zuurstof',tag:'energie',extra:'Fosfaatsysteem en melkzuursysteem zijn anaeroob.'},
+    {latin:'Aeroob',nl:'Met zuurstof',tag:'energie',extra:'Zuurstofsysteem is aeroob. Verbrandt vetzuren en koolhydraten volledig.'},
+    {latin:'Mitochondriën',nl:'Energiecentrales van de cel',tag:'energie',extra:'Vormen energie (ATP) voor spiercontractie. Type 1 vezels hebben er het meest.'},
+  ],
+  quiz:[
+    {q:'Voor hoeveel seconden ATP is er direct in de spier opgeslagen?',a:'4 seconden',wrong:['10 seconden','30 seconden','1 seconde'],exp:'De voorraad ATP in de spier is slechts voor circa vier seconden beschikbaar.'},
+    {q:'Welk energiesysteem is het SNELST beschikbaar?',a:'Fosfaatsysteem (creatinefosfaat)',wrong:['Zuurstofsysteem','Melkzuursysteem','Glycogeen systeem'],exp:'Het fosfaatsysteem (CP) is het snelst beschikbaar: 10-15 seconden bij maximale inspanning.'},
+    {q:'Welk energiesysteem werkt ALLEEN met koolhydraten?',a:'Melkzuursysteem (anaerobe glycolyse)',wrong:['Zuurstofsysteem','Fosfaatsysteem','Alle systemen'],exp:'Vetzuren kunnen NIET in het melkzuursysteem gebruikt worden. Alleen koolhydraten.'},
+    {q:'Wat is LACTAAT?',a:'Een bijproduct van het melkzuursysteem, niet de oorzaak van vermoeidheid',wrong:['De oorzaak van spierpijn','Een energie-eenheid','Een vorm van ATP'],exp:'Lactaat is een bijproduct van de anaerobe glycolyse en is NIET de directe oorzaak van vermoeidheid.'},
+    {q:'Bij een 100m sprint levert het fosfaatsysteem hoeveel % van de ATP?',a:'Circa 60%',wrong:['100%','40%','80%'],exp:'Bij de 100m sprint: ca. 60% fosfaatsysteem, ca. 40% melkzuursysteem.'},
+    {q:'Hoelang kan het melkzuursysteem de verhoogde ATP-behoefte volhouden?',a:'10-120 seconden',wrong:['4 seconden','5-10 minuten','Meer dan 2 uur'],exp:'Het melkzuursysteem kan voor circa twee minuten bijdragen, totdat de verzuring toeslaat.'},
+    {q:'Welk brandstof gebruikt het zuurstofsysteem bij LAGE intensiteit?',a:'Voornamelijk vetzuren',wrong:['Alleen koolhydraten','Alleen eiwitten','Creatinefosfaat'],exp:'Bij lage intensiteit gebruikt het zuurstofsysteem voornamelijk vetzuren. Bij hogere intensiteit meer koolhydraten.'},
+    {q:'Wat staat ATP voor?',a:'Adenosinetrifosfaat',wrong:['Adenosinedifosfaat','Anaeroob Trainings Principe','Adrenaline Trifosfaat'],exp:'ATP = Adenosinetrifosfaat. De energievaluta van het lichaam.'},
+    {q:'Wat is ADP?',a:'Het restproduct na ATP-splitsing (Adenosinedifosfaat)',wrong:['Een brandstofvorm van glucose','Een hormoon bij inspanning','Hetzelfde als ATP maar sneller'],exp:'ATP → ADP + P + energie. ADP wordt direct aangevuld via de drie energiesystemen.'},
+    {q:'Hoelang is de CP-voorraad beschikbaar bij MAXIMALE inspanning?',a:'10-15 seconden',wrong:['4 seconden','30 seconden','2 minuten'],exp:'Bij maximale inspanning is de CP-voorraad binnen 10-15 seconden verbruikt. In rust aangevuld.'},
+    {q:'Welke twee stoffen vormen een SARCOMEER?',a:'Actine (dun) en myosine (dik)',wrong:['Glucose en glycogeen','ATP en ADP','Lactaat en pyruvaat'],exp:'Een sarcomeer bestaat uit dunne (actine) en dikke (myosine) filamenten — basiscontractie-eenheid.'},
+    {q:'Welk systeem levert energie bij een MARATHON?',a:'Voornamelijk zuurstofsysteem (vetzuren + koolhydraten)',wrong:['Voornamelijk fosfaatsysteem','Voornamelijk melkzuursysteem','Gelijk verdeeld over alle drie'],exp:'Bij marathon (lange duur, lage tot middelhoge intensiteit): voornamelijk zuurstofsysteem met vetzuren en glycogeen.'},
+    {q:'Hoeveel minuten glycogeen is er beschikbaar voor sport?',a:'Circa 90 minuten',wrong:['30 minuten','4 uur','15 minuten'],exp:'Er is maar voor circa 90 minuten glycogeen aanwezig. Reden dat bij marathon/lange fietstochten tussentijds gegeten moet worden.'},
+    {q:'Welk energiesysteem is ANAEROOB en ALACTISCH?',a:'Fosfaatsysteem',wrong:['Melkzuursysteem','Zuurstofsysteem','Alle energiesystemen zijn lactisch'],exp:'Fosfaatsysteem = anaeroob (geen zuurstof) en alactisch (geen lactaat). Melkzuursysteem is anaeroob lactisch.'},
+    {q:'Wanneer schakelt het lichaam meer over op KOOLHYDRATEN als brandstof?',a:'Bij hogere intensiteit van de inspanning',wrong:['Bij lagere intensiteit','Bij langere duur','Bij rust'],exp:'Bij hogere intensiteit schakelt het lichaam meer over op koolhydraten omdat glucose sneller ATP levert dan vetzuren.'},
+    {q:'Wat is de reactievergelijking van ATP-splitsing?',a:'ATP → ADP + P + energie',wrong:['ADP + P → ATP','CP + ADP → ATP + C','Glucose + O2 → CO2 + H2O + ATP'],exp:'ATP splitst af: ATP → ADP + P + energie. De dubbele pijl geeft aan dat ATP ook weer aangevuld wordt.'},
+    {q:'Welk energiesysteem produceert eindproducten CO2 en H2O?',a:'Zuurstofsysteem',wrong:['Melkzuursysteem','Fosfaatsysteem','Alle systemen'],exp:'Het zuurstofsysteem verbrandt glucose/vetzuren volledig tot CO2 en H2O. Melkzuur geeft lactaat als bijproduct.'},
+    {q:'De reactie van het fosfaatsysteem is:',a:'CP + ADP → ATP + C',wrong:['ATP → ADP + P','Glucose + O2 → CO2 + H2O + ATP','ADP + P → ATP'],exp:'Creatinefosfaat geeft zijn fosfaatgroep af aan ADP om ATP te vormen: CP + ADP → ATP + C.'},
+    {q:'Welk energiesysteem heeft de LANGZAAMSTE energie-levering maar langste duur?',a:'Zuurstofsysteem met vetzuren (>120 min)',wrong:['Fosfaatsysteem (10-15 sec)','Melkzuursysteem (10-120 sec)','Zuurstofsysteem met koolhydraten'],exp:'Zuurstofsysteem met vetzuren heeft de laagste snelheid maar kan meer dan 120 minuten worden volgehouden.'},
+    {q:'Werken energiesystemen ALTIJD afzonderlijk van elkaar?',a:'Nee, meerdere systemen werken altijd tegelijk',wrong:['Ja, altijd maar één systeem tegelijk','Alleen fosfaat en melkzuur werken samen','Alleen bij lage intensiteit werken ze samen'],exp:'Energiesystemen werken altijd tegelijk. Eén systeem domineert, maar de anderen dragen altijd bij.'},
+  ]
+},
+{
+  id:4, title:'Voeding', subtitle:'Macronutriënten & Micronutriënten',
+  color:'#4dffb4',
+  terms:[
+    {latin:'Macronutriënten',nl:'Voedingsstoffen in grote hoeveelheid',tag:'voeding',extra:'Koolhydraten, vetten, eiwitten. Leveren energie (alcohol ook maar is geen macronutriënt).'},
+    {latin:'Micronutriënten',nl:'Voedingsstoffen in kleine hoeveelheid',tag:'voeding',extra:'Vitamines, mineralen en spoorelementen. Leveren GEEN energie. Wel essentieel.'},
+    {latin:'Koolhydraten',nl:'Suikers — primaire brandstof',tag:'voeding',extra:'Opgeslagen als glycogeen: spieren 400g + lever 100g. Teveel → omgezet in vet.'},
+    {latin:'Glycogeen',nl:'Suikeropslag in spieren en lever',tag:'voeding',extra:'Voorraad voor ca. 90 minuten sport. Reden voor voeding bij marathon/lange fietstochten.'},
+    {latin:'Vetten',nl:'Lipiden — brandstof in rust',tag:'voeding',extra:'In rust en lichte inspanning hoofdbrandstof. Bij hogere intensiteit meer koolhydraten. Isolatie en bescherming.'},
+    {latin:'Verzadigde vetzuren',nl:'Ongezonde vetten',tag:'voeding',extra:'In grote hoeveelheden schadelijk voor gezondheid.'},
+    {latin:'Onverzadigde vetzuren',nl:'Gezonde vetten',tag:'voeding',extra:'De gezonde vetten.'},
+    {latin:'Eiwitten',nl:'Bouwstof voor spieren en organen',tag:'voeding',extra:'Structurele bouwstof. Bij te weinig koolhydraten worden eiwitten (ook lichaamseigen spieren) als brandstof gebruikt.'},
+    {latin:'Energiebalans',nl:'Inname vs. verbruik',tag:'voeding',extra:'Positief = gewichtstoename. Negatief = gewichtsverlies. Neutraal = gewicht stabiel.'},
+    {latin:'Energetische waarde',nl:'Energie per macronutriënt',tag:'voeding',extra:'Uitgedrukt in kcal of kJ. 1 kcal = 4,2 kJ. Vrouw gemiddeld 2000 kcal/dag, man 2500 kcal/dag.'},
+    {latin:'Ruststofwisseling',nl:'Energie in rust',tag:'voeding',extra:'Energie voor organen (longen, hart, brein, lever) ook zonder beweging.'},
+    {latin:'Vitamines vet-oplosbaar',nl:'Vitamine A, D, E en K',tag:'voeding',extra:'Opgeslagen in vetweefsel. Voorzichtig met overdosering (supplement).'},
+    {latin:'Vitamines water-oplosbaar',nl:'Vitamine B-complex en C',tag:'voeding',extra:'Overtollig verloren via urine. Minder risico op overdosering.'},
+    {latin:'Mineralen',nl:'Natrium, kalium, calcium, magnesium',tag:'voeding',extra:'Te veel natrium (zout) → hoge bloeddruk → hart- en vaatziekten.'},
+    {latin:'Spoorelementen',nl:'Mineralen in microgram',tag:'voeding',extra:'Bijv. ijzer (Fe), zink (Zn), fluoride (Fl), iodine (I).'},
+  ],
+  quiz:[
+    {q:'Hoeveel gram glycogeen kan worden opgeslagen in de SPIEREN?',a:'400 gram',wrong:['100 gram','1000 gram','200 gram'],exp:'400g glycogeen in de spieren + 100g in de lever = 500g totaal.'},
+    {q:'Hoeveel gram glycogeen kan worden opgeslagen in de LEVER?',a:'100 gram',wrong:['400 gram','250 gram','50 gram'],exp:'Lever: 100g glycogeen. Spieren: 400g glycogeen.'},
+    {q:'Welke macronutriënten leveren energie als BRANDSTOF?',a:'Koolhydraten en vetten',wrong:['Koolhydraten en eiwitten','Vetten en eiwitten','Vitamines en mineralen'],exp:'Koolhydraten en vetten zijn de primaire brandstoffen. Eiwitten zijn bouwstoffen (maar kunnen ook als noodbrandstof dienen).'},
+    {q:'Hoeveel kcal verbruikt een gemiddelde sedentaire VROUW per dag?',a:'2000 kcal',wrong:['1500 kcal','2500 kcal','3000 kcal'],exp:'Gemiddelde vrouw 30-50 jaar, zittend beroep: ca. 2000 kcal/dag. Man: ca. 2500 kcal.'},
+    {q:'Hoeveel kcal verbruikt een gemiddelde sedentaire MAN per dag?',a:'2500 kcal',wrong:['2000 kcal','3000 kcal','1800 kcal'],exp:'Gemiddelde man 30-50 jaar, zittend beroep: ca. 2500 kcal/dag.'},
+    {q:'Wat is GEEN micronutriënt?',a:'Koolhydraten',wrong:['Vitamines','Mineralen','Spoorelementen'],exp:'Koolhydraten zijn macronutriënten (in grote hoeveelheden nodig). Micro = vitamines, mineralen, spoorelementen.'},
+    {q:'Welke vitamine is VET-oplosbaar?',a:'Vitamine A',wrong:['Vitamine C','Vitamine B12','Vitamine B6'],exp:'Vet-oplosbare vitamines: A, D, E en K. Water-oplosbare vitamines: B-complex en C.'},
+    {q:'Wat is een POSITIEVE energiebalans?',a:'Energie-inname > energieverbruik → gewichtstoename',wrong:['Energieverbruik > inname → gewichtsverlies','Inname = verbruik → stabiel gewicht','Hoge eiwitinname → spiermassa'],exp:'Positieve energiebalans = inname groter dan verbruik → gewichtstoename. Negatief = gewichtsverlies.'},
+    {q:'Waardoor wordt een teveel aan geconsumeerde KOOLHYDRATEN opgeslagen?',a:'Omgezet in vet',wrong:['Uitgescheiden via urine','Opgeslagen als extra glycogeen','Gebruikt als eiwit voor spieropbouw'],exp:'Teveel aan koolhydraten → omgezet in vet en opgeslagen als vetweefsel.'},
+    {q:'Welke vitamine is NIET opgeslagen in vetweefsel?',a:'Vitamine C (water-oplosbaar)',wrong:['Vitamine A','Vitamine D','Vitamine K'],exp:'Vitamine C is water-oplosbaar en wordt via de urine uitgescheiden. A, D, E, K zijn vetoplosbaar.'},
+    {q:'Wat is de primaire functie van EIWITTEN?',a:'Structurele bouwstof voor spieren en organen',wrong:['Primaire energiebron','Smeermiddel voor gewrichten','Regulator van bloeddruk'],exp:'Eiwitten zijn bouwstof voor spieren, organen, enzymen en antilichamen. Secundair als brandstof.'},
+    {q:'Wat gebeurt er als de koolhydraatreserves uitgeput zijn?',a:'Lichaam gebruikt eiwitten (ook lichaamseigen spieren) als brandstof',wrong:['Alleen vetverbranding neemt toe','Lichaam stopt met presteren','Alleen glycogeen in de lever wordt aangesproken'],exp:'Bij te weinig koolhydraten: lichaam breekt eiwitten af (gluconeogenese), ook eigen spierweefsel.'},
+    {q:'Hoeveel kJ is gelijk aan 1 kcal?',a:'4,2 kJ',wrong:['1 kJ','10 kJ','2 kJ'],exp:'1 kcal = 4,2 kJ. Energie in voeding wordt uitgedrukt in kcal of kJ.'},
+    {q:'Welk mineraal bij TEVEEL leidt tot hoge bloeddruk?',a:'Natrium (in keukenzout)',wrong:['Kalium','Calcium','Magnesium'],exp:'Te veel natrium (zout) → hoge bloeddruk → verhoogd risico op hart- en vaatziekten.'},
+    {q:'Welke functie heeft het BREIN als brandstofbron?',a:'Het brein is NIET toegankelijk voor vetzuren — gebruikt alleen glucose',wrong:['Het brein verbrandt alleen vetzuren','Het brein heeft geen brandstof nodig','Het brein gebruikt ketonen als enige brandstof'],exp:'Het brein is niet toegankelijk voor vetzuren. Het gebruikt uitsluitend glucose (in normale omstandigheden).'},
+    {q:'Wat zijn spoorelementen?',a:'Mineralen die in microgram-hoeveelheden nodig zijn',wrong:['Vitamines die snel afgebroken worden','Vetzuren die niet opgeslagen kunnen worden','Eiwitten in kleine hoeveelheden'],exp:'Spoorelementen = mineralen in heel kleine hoeveelheden (microgram). Bijv. ijzer, zink, fluoride, iodine.'},
+    {q:'Wanneer schakelt het lichaam over van vetten naar koolhydraten als brandstof?',a:'Bij toenemende inspanningsintensiteit',wrong:['Bij afnemende intensiteit','Bij langere duur van inspanning','Bij lage bloedsuikerspiegel'],exp:'Bij hogere intensiteit levert glucose sneller ATP dan vetzuren → lichaam schakelt over op koolhydraten.'},
+    {q:'Wat is de functie van VEZELS (onverteerbare koolhydraten)?',a:'Goede darmwerking',wrong:['Snelle energielevering','Opbouw van spierweefsel','Regulatie van bloeddruk'],exp:'Vezels zijn onverteerbare koolhydraten die belangrijk zijn voor een goede darmwerking.'},
+  ]
+},
+{
+  id:5, title:'Trainingsleer', subtitle:'Principes, Methodes & Plannen',
+  color:'#c84dff',
+  terms:[
+    {latin:'Non-mover',nl:'Geen sportverleden / >1 jaar inactief',tag:'belasting',extra:'Minimaal 1x/week 3 maanden trainen → low-mover.'},
+    {latin:'Low-mover',nl:'Matig sportverleden (1x/week)',tag:'belasting',extra:'Minimaal 2x/week 3 maanden trainen → high-mover.'},
+    {latin:'High-mover',nl:'Actief sportverleden (2x/week+)',tag:'belasting',extra:'Meest gevorderd movertype.'},
+    {latin:'CLUKS',nl:'Grondmotorische vaardigheden',tag:'belasting',extra:'Coördinatie, Lenigheid, Uithoudingsvermogen, Kracht, Snelheid.'},
+    {latin:'Overload',nl:'Trainingsprikkel > gewone prikkel',tag:'principe',extra:'Zonder overload → geen aanpassing. 7 manieren: frequentie, intensiteit, tijd, type, aantal oef., rust, trainingsvorm, tempo.'},
+    {latin:'Supercompensatie',nl:'Lichaam herstelt tot HOGER niveau',tag:'principe',extra:'Training → herstel → supercompensatie. Timing is essentieel. Te vroeg = overtraining.'},
+    {latin:'Reversibiliteit',nl:'Trainingsresultaat verdwijnt bij inactiviteit',tag:'principe',extra:'"Use it or lose it." Lichaam past zich aan aan de prikkel die gevraagd wordt.'},
+    {latin:'Wet van verminderde meeropbrengst',nl:'Groei vlakt af in de tijd',tag:'principe',extra:'Grootste winst in fase 1 (beginners). Daarna steeds minder effect van training.'},
+    {latin:'Specificiteit',nl:'Specifieke sport → specifieke training',tag:'principe',extra:'Transfer: bijdrage van aangeleerde oefenvormen naar de sportspecifieke situatie.'},
+    {latin:'1 RM',nl:'1 Repetition Maximum',tag:'NMT',extra:'Maximaal gewicht dat je 1x correct kunt verplaatsen. Basis voor trainingsintensiteit NMT.'},
+    {latin:'10 RM-piramide',nl:'Bereken 1RM via 10 herhalingen',tag:'NMT',extra:'10 reps = 75% 1RM. Formule: 1RM = (gewicht / percentage) × 100%.'},
+    {latin:'S1 — Spierkracht UHV',nl:'12-20 reps, 60-70% 1RM',tag:'NMT',extra:'Rust: 10-90 sec. Energiesysteem: fosfaat/glycolyse. Non-mover.'},
+    {latin:'S2 — Hypertrofie',nl:'8-12 reps, 70-80% 1RM',tag:'NMT',extra:'Rust: 90-120 sec. Vergroten spiervezelvolume. Low-mover.'},
+    {latin:'S3 — Spierkracht',nl:'6-8 reps, 80-85% 1RM',tag:'NMT',extra:'Rust: 120-180 sec. Meer myofibrillen + verbeterde aansturing. Low-mover.'},
+    {latin:'S4 — Maximaalkracht/Snelkracht',nl:'1-5 reps, 90-100% 1RM',tag:'NMT',extra:'Rust: 180-300 sec. Sterk verbeterde aansturing. High-mover.'},
+    {latin:'Single set',nl:'Eén set per oefening, dan verder',tag:'NMT',extra:'Geschikt voor uitleg nieuw schema.'},
+    {latin:'Multiset',nl:'Meerdere sets zelfde oefening, dan verder',tag:'NMT',extra:'Standaard trainingswijze.'},
+    {latin:'Superset',nl:'2 oefeningen direct achter elkaar',tag:'NMT',extra:'Rusttijd halveert. Vaak push-pull of agonist-antagonist.'},
+    {latin:'Piramide',nl:'Elke set zwaarder, minder reps',tag:'NMT',extra:'Begin licht, wordt zwaarder.'},
+    {latin:'Omgekeerde piramide',nl:'Elke set lichter, meer reps',tag:'NMT',extra:'Begin zwaar, wordt lichter.'},
+    {latin:'Major-minor',nl:'Grote spiergroep eerst, kleine daarna',tag:'NMT',extra:'Bijv. leg press → lat pulldown → chest press.'},
+    {latin:'Agonist-antagonist',nl:'Agonist, dan antagonist',tag:'NMT',extra:'Bijv. leg press → deadlift.'},
+    {latin:'Push-pull',nl:'Duwbeweging, dan trekbeweging',tag:'NMT',extra:'Geschikt voor bovenste extremiteiten.'},
+    {latin:'Total body schema',nl:'Heel lichaam op één trainingsdag',tag:'NMT',extra:'1-3x per week trainen.'},
+    {latin:'Splitschema',nl:'Programma gesplitst over meerdere dagen',tag:'NMT',extra:'4x+ per week. Voldoende herstel per spiergroep.'},
+    {latin:'HF-max formule',nl:'220 - leeftijd = maximale hartslag',tag:'CVT',extra:'Theoretische maximale hartfrequentie. Wordt elk jaar 1 slag lager.'},
+    {latin:'Methode van Karvonen',nl:'Nauwkeurigere hartslagberekening',tag:'CVT',extra:'Formule: (220-leeftijd - rustpols) × intensiteit% + rustpols.'},
+    {latin:'Aerobe-anaerobe drempel',nl:'Verzuringsgrens (80-85% HF-max)',tag:'CVT',extra:'Hoogste inspanning zonder lactaatophoping. Ook: omslagpunt.'},
+    {latin:'VO2-max',nl:'Maximale zuurstofopname',tag:'CVT',extra:'Vermogen hart-longsysteem om O2 op te nemen/vervoeren. Trainbaar voor 15-20%.'},
+    {latin:'Aeroob 1',nl:'50-60% HF-max',tag:'CVT',extra:'Brandstof: voornamelijk vetzuren. Alle movertypes. Duur- en intervaltraining.'},
+    {latin:'Aeroob 2',nl:'60-70% HF-max',tag:'CVT',extra:'Brandstof: vetzuren ≈ koolhydraten.'},
+    {latin:'Aeroob 3',nl:'70-80% HF-max',tag:'CVT',extra:'Brandstof: koolhydraten >> vetten. High-mover voor duurtraining.'},
+    {latin:'Anaeroob 1',nl:'80-90% HF-max',tag:'CVT',extra:'Koolhydraten 100%. Alleen intervaltraining. Alle movertypes.'},
+    {latin:'Anaeroob 2',nl:'90-100% HF-max',tag:'CVT',extra:'Koolhydraten 100%. Intervaltraining. Low en high-movers. Seriepauze nodig.'},
+    {latin:'Duurtraining',nl:'Laag niveau, lang volgehouden',tag:'CVT',extra:'Minimaal 20 minuten. In aeroob gebied. Verbetert vetverbranding.'},
+    {latin:'Intervaltraining',nl:'Pieken afgewisseld met herstel',tag:'CVT',extra:'Hogere intensiteit dan duurtraining. Verhoogt aerobe-anaerobe drempel.'},
+    {latin:'EPOC',nl:'Naverbrandingseffect',tag:'CVT',extra:'Excess Post-exercise Oxygen Consumption. Groter na NMT dan na CVT.'},
+    {latin:'Borg RPE-schaal',nl:'Subjectieve belastingsschaal 6-20',tag:'CVT',extra:'6 = geen belasting, 20 = maximale inspanning. Beoordeelt gevoelsmatige inspanning.'},
+    {latin:'Warming-up',nl:'Fysiek/mentaal voorbereiden op inspanning',tag:'training',extra:'8-10 min, 60-70% HF-max. Verhoogt hartslag, doorbloeding, spierspanning, mobiliteit, synoviaalvocht.'},
+    {latin:'Cooling-down',nl:'Fysiek/mentaal afsluiten van training',tag:'training',extra:'8-10 min, <60% HF-max. Hartslag en spierspanning verlagen, afvalstoffen afvoeren.'},
+    {latin:'Formule 7',nl:'7 trainingsroutes van AALO',tag:'training',extra:'G (gewicht), U (uithoudingsvermogen), S (spierversterking) en combinaties GU, GS, US, GUS.'},
+  ],
+  quiz:[
+    {q:'Wat is de formule voor de theoretische maximale hartfrequentie?',a:'220 - leeftijd',wrong:['200 - leeftijd','220 + leeftijd','230 - leeftijd × 0.9'],exp:'220 - leeftijd = theoretische maximale HF. Neemt elk jaar met 1 slag per minuut af.'},
+    {q:'Welk movertype mag methode S3 gebruiken?',a:'Low-mover en high-mover',wrong:['Alleen non-mover','Alle movertypes','Alleen high-mover'],exp:'Non-mover: S1. Low-mover: S1, S2, S3. High-mover: S1, S2, S3, S4.'},
+    {q:'Welk movertype mag methode S4 gebruiken?',a:'Alleen high-mover',wrong:['Alle movertypes','Non-mover en low-mover','Low-mover'],exp:'S4 (maximaalkracht/snelkracht) is alleen voor high-movers.'},
+    {q:'Bij 10 RM-test: 10 reps = welk % van 1RM?',a:'75%',wrong:['80%','90%','60%'],exp:'10 RM-piramide: 10 reps = 75% van 1RM. Formule: 1RM = gewicht/0.75 × 100%.'},
+    {q:'Bij 10 RM-test: 8 reps = welk % van 1RM?',a:'80%',wrong:['75%','85%','90%'],exp:'8 reps = 80% van 1RM. 6 reps = 85%, 5 reps = 90%, 3 reps = 95%, 1 rep = 100%.'},
+    {q:'Iemand die 8 reps kan met 100kg op leg press, wat is zijn 1RM?',a:'125 kg',wrong:['100 kg','133 kg','80 kg'],exp:'8 reps = 80% van 1RM. 1RM = 100/80 × 100 = 125 kg.'},
+    {q:'Wat is SUPERCOMPENSATIE?',a:'Lichaam herstelt na training tot een HOGER niveau',wrong:['Lichaam is overtraind','Lichaam herstelt tot hetzelfde niveau','Spieren groeien alleen door eiwitten'],exp:'Supercompensatie = het lichaam past zich aan en wordt sterker na herstelperiode.'},
+    {q:'Welke CVT-trainingszone is bij NON-movers NIET geschikt voor duurtraining?',a:'Aeroob 2 en 3',wrong:['Aeroob 1','Anaeroob 1','Alle zones zijn geschikt'],exp:'Non-mover: alleen aeroob 1 voor duurtraining. Aeroob 2 en 3 zijn voor low- en high-movers.'},
+    {q:'Methode van Karvonen: leeftijd 20, rustpols 60, intensiteit 70%. Wat is de trainingshartslag?',a:'158 slagen/min',wrong:['140 slagen/min','150 slagen/min','168 slagen/min'],exp:'220-20=200. 200-60=140. 140×70%=98. 98+60=158 slagen/min.'},
+    {q:'Wat is de aerobe-anaerobe drempel?',a:'Hoogste inspanning zonder lactaatophoping (80-85% HF-max)',wrong:['Maximale hartslag','Rustpols × 2','60% HF-max'],exp:'De aerobe-anaerobe drempel is de verzuringsgrens, ligt tussen 80-85% HF-max.'},
+    {q:'Hoeveel sets en reps bij S2 Hypertrofie?',a:'8-12 reps, 70-80% 1RM',wrong:['12-20 reps, 60-70%','6-8 reps, 80-85%','1-5 reps, 90-100%'],exp:'S2 = Hypertrofie: 8-12 reps bij 70-80% van 1RM, rust 90-120 sec.'},
+    {q:'Verbrand je op LAGE intensiteit meer vet dan op hoge intensiteit?',a:'Nee, in totaal verbrand je meer vet op hogere intensiteit',wrong:['Ja, lage intensiteit verbrandt meer vet','Ja, er is een vetverbrandingszone op 60% HF-max','Intensiteit maakt geen verschil'],exp:'De "vetverbrandingszone" is een mythe. Op hogere intensiteit verbrand je absoluut gezien meer vet.'},
+    {q:'Hoeveel sets en reps bij S1 Spierkrachtuithoudingsvermogen?',a:'12-20 reps, 60-70% 1RM',wrong:['8-12 reps, 70-80%','6-8 reps, 80-85%','1-5 reps, 90-100%'],exp:'S1 = Spierkrachtuithoudingsvermogen: 12-20 reps bij 60-70% van 1RM, rust 10-90 sec.'},
+    {q:'Wat is de rust bij S3 Spierkracht?',a:'120-180 seconden',wrong:['10-90 seconden','90-120 seconden','180-300 seconden'],exp:'S3 Spierkracht: 6-8 reps, 80-85% 1RM, rust 120-180 sec.'},
+    {q:'Wanneer gebruik je een TOTAL BODY schema?',a:'Als je 1-3x per week traint',wrong:['Als je 4x+ per week traint','Altijd, voor alle movertypes','Alleen voor non-movers'],exp:'Total body = 1-3x per week. Splitschema = 4x+ per week voor voldoende herstel.'},
+    {q:'Wat is het NAVERBRANDINGSEFFECT (EPOC)?',a:'Extra zuurstofverbruik na training voor herstel',wrong:['Verbranding tijdens de training','Extra eten na de training','Verhoogde hartslag tijdens training'],exp:'EPOC = Excess Post-exercise Oxygen Consumption. Na NMT groter dan na CVT.'},
+    {q:'Wat is de BORG RPE-schaal?',a:'Subjectieve belastingsschaal van 6 tot 20',wrong:['Objectieve hartslagmeting','Krachttestprotocol','Vetverbrandingszone'],exp:'Borg RPE: 6 = geen belasting, 20 = maximale inspanning. Subjectieve beleving van inspanning.'},
+    {q:'Wat is REVERSIBILITEIT?',a:'Trainingsresultaat verdwijnt bij inactiviteit',wrong:['Progressie door overload','Herstel na supercompensatie','Sportspecifiek trainen'],exp:'"Use it or lose it." Het lichaam past zich aan aan de prikkel — ook achteruit bij inactiviteit.'},
+    {q:'Hoeveel weken adviseert AALO een nieuw trainingsschema te maken?',a:'Elke 4 tot 8 weken',wrong:['Elke 2 weken','Elke 3 maanden','Na 1 jaar'],exp:'Elke 4-8 weken nieuw schema met ≥1 overload-aanpassing om progressie te blijven genereren.'},
+    {q:'Wat is de TRAININGSREGEL "Train eerst volume, dan intensiteit"?',a:'Eerst sets/reps verhogen, dan pas het gewicht (% 1RM)',wrong:['Eerst zwaar tillen, dan meer herhalingen','Eerst intensiteit, dan pas duur','Eerst cardio, dan krachttraining'],exp:'Trainingsregel: Train eerst volume (NMT: sets × reps; CVT: duur) en dan pas intensiteit (% 1RM of % HF-max).'},
+    {q:'Welke zone is ALLEEN voor intervaltraining, NIET voor duurtraining?',a:'Anaeroob 1 en 2',wrong:['Aeroob 1','Aeroob 2','Aeroob 3'],exp:'Anaeroob 1 (80-90% HF-max) en anaeroob 2 (90-100% HF-max) zijn niet geschikt voor duurmethode.'},
+    {q:'Wat is een SUPERSET?',a:'2 oefeningen direct achter elkaar, dan korte rust',wrong:['Meerdere sets van dezelfde oefening','Een oefening met maximaal gewicht','Een combinatie van cardio en kracht'],exp:'Superset = twee verschillende oefeningen direct achter elkaar. Rusttijd halveert. Vaak push-pull of agonist-antagonist.'},
+    {q:'Waarvoor staat VO2-max?',a:'Maximale zuurstofopname per minuut (ml O2/kg/min)',wrong:['Maximale hartfrequentie','Maximale kracht per kg lichaamsgewicht','Vetverbrandingscapaciteit'],exp:'VO2-max = maximale volume zuurstof dat het lichaam per minuut kan opnemen. Trainbaar voor 15-20%.'},
+    {q:'Wanneer wordt een NON-MOVER een LOW-MOVER?',a:'Na minimaal 1x/week trainen gedurende 3 maanden',wrong:['Na 1 week trainen','Na 6 maanden trainen','Na 2x/week trainen gedurende 1 maand'],exp:'Non-mover → low-mover: minimaal 1x/week, 3 maanden lang trainen.'},
+    {q:'Wat is INTERVALTRAINING?',a:'Pieken van hoge intensiteit afgewisseld met herstelperiodes',wrong:['Continu trainen op lage intensiteit','Afwisselen van verschillende oefeningen','Trainen op vaste weerstand'],exp:'Intervaltraining = hoge intensiteitspieken afgewisseld met herstelperiodes. Verhoogt aerobe-anaerobe drempel.'},
+    {q:'Wat is de COOLING-DOWN intensiteit?',a:'Minder dan 60% HF-max',wrong:['60-70% HF-max','70-80% HF-max','50% van de trainingsintensiteit'],exp:'Cooling-down: <60% HF-max, 4-10 minuten. Doel: hartslag verlagen, afvalstoffen afvoeren.'},
+  ]
+},
+{
+  id:6, title:'Intake, Meten & Weten', subtitle:'Tests, Metingen & Formulieren',
+  color:'#ff9f4d',
+  terms:[
+    {latin:'Intakegesprek',nl:'Beginsituatie in kaart brengen',tag:'intake',extra:'Fases: temperatuur aannemen → ontdooien → op temperatuur brengen → bevriezen.'},
+    {latin:'Psychomotorische beginsituatie',nl:'Belastbaarheid, CLUKS, movertype',tag:'intake',extra:'Leeftijd, geslacht, type mover, grondmotorische vaardigheden, aanleg, werk.'},
+    {latin:'Sociaal-affectieve beginsituatie',nl:'Werk, psyche, sociale vaardigheden',tag:'intake',extra:'Zittend werk of fysiek? Intrinsiek of extrinsiek gemotiveerd? Groep of individueel?'},
+    {latin:'Cognitieve beginsituatie',nl:'Kennis van training, voeding, technieken',tag:'intake',extra:'Hoe bewust is de klant van gezondheid en training?'},
+    {latin:'Gezondheidsformulier A',nl:'Voor direct sporten zonder intake',tag:'intake',extra:'3 vragen over blessures, medicijnen, andere beperkingen. JA = niet starten, naar arts.'},
+    {latin:'PAR-Q (Formulier B)',nl:'Standaard gezondheidscheck voor intake',tag:'intake',extra:'Vragen over hart, pijn, duizeligheid, bloeddruk, gewrichten. JA = eerst arts bezoeken.'},
+    {latin:'Gezondheidsformulier C',nl:'Doktersverklaring',tag:'intake',extra:'Moet ondertekend door arts worden voordat de klant start.'},
+    {latin:'BMI',nl:'Body Mass Index = gewicht / lengte²',tag:'meting',extra:'18.5-24.9 normaal. 25-29.9 overgewicht. >30 obesitas. Krachtsporters soms fout geclassificeerd!'},
+    {latin:'Vetpercentage',nl:'Vetmassa als % van lichaamsgewicht',tag:'meting',extra:'Man 20-39 jaar: 8-20% normaal. Vrouw 20-39 jaar: 21-33% normaal.'},
+    {latin:'Vetmassa formule',nl:'(vetpercentage × lichaamsgewicht) / 100',tag:'meting',extra:'Geeft exacte hoeveelheid vet in kg.'},
+    {latin:'Vetvrije massa',nl:'Lichaamsgewicht - vetmassa',tag:'meting',extra:'Spieren, botten en water. Neemt toe bij krachttraining.'},
+    {latin:'Visceraal vet',nl:'Vet in de buikholte rondom organen',tag:'meting',extra:'Groter risico dan onderhuids vet. Stijgt met leeftijd. Verhoogt risico diabetes, bloeddruk.'},
+    {latin:'Middelomtrek man',nl:'>102 cm = obesitas risico',tag:'meting',extra:'Gezond: 79-94 cm. Gevarenzone: 94-102 cm. Obesitas: >102 cm.'},
+    {latin:'Middelomtrek vrouw',nl:'>88 cm = obesitas risico',tag:'meting',extra:'Gezond: 68-80 cm. Gevarenzone: 80-88 cm. Obesitas: >88 cm.'},
+    {latin:'Bloeddruk normaal',nl:'120/80 mmHg',tag:'meting',extra:'Systolisch (bovendruk) / diastolisch (onderdruk). Hoog: ≥140/90 mmHg.'},
+    {latin:'Ästrand-test',nl:'Submaximale test voor VO2-max',tag:'test',extra:'6 minuten fietsen op bepaalde wattage. Hartslag 125-170. Score 2.4-3.6 is gemiddeld.'},
+    {latin:'10 RM-testprotocol',nl:'Test voor maximale kracht',tag:'test',extra:'Niet in eerste trainingsweek! Kies gewicht voor max 10 reps. Dan 1RM berekenen via piramide.'},
+    {latin:'Behoefteanalyse',nl:'Inventariseren klantbehoeften',tag:'intake',extra:'Formulier met doelstellingen, verwachtingen, sportverleden.'},
+    {latin:'NNGB',nl:'Nederlandse Norm voor Gezond Bewegen',tag:'norm',extra:'Volwassenen: minimaal 150 min/week matig intensief. 2x/week spier- en botversterkend.'},
+    {latin:'MET-waarde',nl:'Meeteenheid voor energieverbruik',tag:'norm',extra:'1 MET = ruststofwisseling. Hond uitlaten = 3 MET. Fietsen 16-19 km/u = 4 MET. Hardlopen = 8 MET.'},
+  ],
+  quiz:[
+    {q:'Welke BMI-waarde hoort bij OVERGEWICHT?',a:'25-29.9',wrong:['18.5-24.9','30-40','>40'],exp:'18.5-24.9 = normaal. 25-29.9 = overgewicht. 30-40 = obesitas. >40 = morbide obesitas.'},
+    {q:'Welke BMI-waarde hoort bij MORBIDE OBESITAS?',a:'≥ 40',wrong:['30-40','25-29.9','>35'],exp:'≥40 = morbide obesitas = verhoogde kans op vroegtijdig overlijden.'},
+    {q:'Wat is een normale bloeddruk?',a:'120/80 mmHg',wrong:['140/90 mmHg','100/60 mmHg','160/100 mmHg'],exp:'Normaal = 120/80. Hoog = ≥140/90 mmHg. Systolisch/diastolisch.'},
+    {q:'Vanaf welke bloeddruk spreek je van HOGE BLOEDDRUK?',a:'140/90 mmHg of hoger',wrong:['120/80 mmHg','130/85 mmHg','150/95 mmHg'],exp:'Hoge bloeddruk = ≥140/90 mmHg. Normaal = 120/80 mmHg.'},
+    {q:'Wat is de formule voor VETMASSA?',a:'(vetpercentage × lichaamsgewicht) / 100',wrong:['Lichaamsgewicht - vetvrije massa','BMI × hoogte','Vetpercentage / lichaamsgewicht'],exp:'Vetmassa in kg = (vetpercentage × lichaamsgewicht in kg) / 100.'},
+    {q:'Wanneer voer je de 10 RM-test NIET uit?',a:'In de eerste trainingsweek',wrong:['Na 3 maanden trainen','Voor elke training','Na de warming-up'],exp:'Een 10 RM-test voer je nooit uit in de eerste week. De oefening moet eerst technisch correct kunnen worden uitgevoerd.'},
+    {q:'Hoeveel minuten per week moeten volwassenen minimaal matig intensief bewegen?',a:'150 minuten',wrong:['60 minuten','300 minuten','90 minuten'],exp:'NNGB voor volwassenen: minimaal 150 minuten per week matig intensief, verspreid over diverse dagen.'},
+    {q:'Welk gezondheidsformulier heeft een handtekening van de ARTS nodig?',a:'Gezondheidsformulier C',wrong:['Gezondheidsformulier A','Gezondheidsformulier B (PAR-Q)','Behoefteanalyse'],exp:'Formulier C = doktersverklaring, moet ondertekend worden door een arts.'},
+    {q:'Wat is visceraal vet?',a:'Vet in de buikholte rondom organen',wrong:['Onderhuids vet','Vetmassa in de benen','Vetpercentage in het bloed'],exp:'Visceraal vet = vet rondom organen in de buikholte. Risicovoller dan onderhuids vet.'},
+    {q:'Wat is de BMI-formule?',a:'Gewicht (kg) / lengte² (m)',wrong:['Lengte / gewicht','Gewicht × lengte','Gewicht / lengte'],exp:'BMI = lichaamsgewicht in kg gedeeld door de lichaamslengte in meters in het kwadraat.'},
+    {q:'Wanneer gebruik je Gezondheidsformulier A?',a:'Wanneer iemand direct komt sporten zonder intake',wrong:['Standaard vóór elke intake','Wanneer de arts toestemming geeft','Na een blessure'],exp:'Formulier A: voor mensen die direct komen sporten zonder dat er een intakegesprek heeft plaatsgevonden.'},
+    {q:'Wat is de SYSTOLISCHE bloeddruk?',a:'De druk op het moment dat het hart SLAAT (bovendruk)',wrong:['De druk als het hart in rust is (onderdruk)','De gemiddelde bloeddruk','De bloeddruk bij maximale inspanning'],exp:'Systolisch = bovendruk (hart slaat). Diastolisch = onderdruk (hart in rust).'},
+    {q:'Wat meet de ÄSTRAND-TEST?',a:'Indirect de VO2-max (submaximale test)',wrong:['Maximale kracht (1RM)','Vetpercentage via huidplooi','Middelomtrek'],exp:'Ästrand-test = 6 min fietsen op bepaalde wattage → submaximale test om VO2-max te schatten. Score 2.4-3.6 is gemiddeld.'},
+    {q:'Wat is een normaal VETPERCENTAGE voor een man van 20-39 jaar?',a:'8-20%',wrong:['21-33%','5-10%','25-35%'],exp:'Man 20-39 jaar: normaal 8-20%. Vrouw 20-39 jaar: normaal 21-33%.'},
+    {q:'Wat is de BMI-berekening als lengte 1,80m en gewicht 78kg is?',a:'24,1 (normaal gewicht)',wrong:['30,2 (obesitas)','27,4 (overgewicht)','21,9 (ondergewicht)'],exp:'BMI = 78 / (1,80)² = 78 / 3,24 = 24,1 → normaal gewicht (18,5-24,9).'},
+    {q:'Hoe lang houd je een STRETCH vast?',a:'20-30 seconden per spiergroep',wrong:['5-10 seconden','1-2 minuten','60 seconden'],exp:'Stretch: minimaal 20-30 seconden, 1-2 keer per spiergroep, statisch uitvoeren.'},
+    {q:'Wat is de MET-waarde van HARDLOPEN (algemeen)?',a:'8 MET',wrong:['4 MET','3 MET','12 MET'],exp:'Hardlopen algemeen = 8 MET. Wandelen 3-5 km/u = 3,5 MET. Fietsen 16-19 km/u = 4 MET.'},
+    {q:'Hoeveel keer per week moeten volwassenen spier- en botversterkende oefeningen doen?',a:'Minimaal 2 keer per week',wrong:['Elke dag','1 keer per week','3 keer per week'],exp:'NNGB volwassenen: minimaal 2x per week spier- en botversterkende activiteiten. Kinderen: 3x per week.'},
+    {q:'Hoe bereken je VETVRIJE MASSA?',a:'Lichaamsgewicht - vetmassa',wrong:['(vetpercentage × gewicht) / 100','BMI × hoogte','Gewicht / vetpercentage'],exp:'Vetvrije massa = lichaamsgewicht - vetmassa. Bevat spieren, botten en water.'},
+    {q:'Wat is een GEZONDE middelomtrek voor MEN?',a:'Minder dan 94 cm',wrong:['Minder dan 102 cm','Minder dan 88 cm','Minder dan 80 cm'],exp:'Man: gezond 79-94 cm. Gevarenzone 94-102 cm. Obesitas >102 cm.'},
+    {q:'Wat is een GEZONDE middelomtrek voor VROUWEN?',a:'Minder dan 80 cm',wrong:['Minder dan 88 cm','Minder dan 68 cm','Minder dan 94 cm'],exp:'Vrouw: gezond 68-80 cm. Gevarenzone 80-88 cm. Obesitas >88 cm.'},
+    {q:'Welke test meet de RUSTPOLS voor de Karvonen-methode?',a:'5 ochtenden achter elkaar meten bij het wakker worden, gemiddelde nemen',wrong:['1 meting op een willekeurig moment','Meten direct na de training','Meting bij de Ästrand-test'],exp:'Rustpols = gemiddelde van 5 ochtendmetingen direct bij het wakker worden.'},
+  ]
+},
+{
+  id:7, title:'Coaching & Klantbegeleiding', subtitle:'PEP, EREN & Communicatie',
+  color:'#4dffb4',
+  terms:[
+    {latin:'AALO PEP',nl:'Peak Emotion Program (score 1-10)',tag:'coaching',extra:'Hoe hoger de score, hoe beter het contact. Score 8 = individu én groep reageren positief.'},
+    {latin:'EREN-systeem',nl:'Stappen voor corrigeren en stimuleren',tag:'coaching',extra:'Metapositie → Analyseren → Concluderen → Contacteren → Corrigeren → Controleren → Stimuleren → Afkeren → terug naar meta.'},
+    {latin:'Metapositie',nl:'Strategische plek om zaal te overzien',tag:'coaching',extra:'Van hieruit zie je alle klanten en ben je zichtbaar. Meerdere metaposities mogelijk.'},
+    {latin:'Basispositie',nl:'Plek bij het begeleiden van een klant',tag:'coaching',extra:'Contact, kunnen bewegen, 360° zicht, zicht op andere sporters.'},
+    {latin:'10 sec. gesprek',nl:'Korte begroeting bij binnenkomst',tag:'coaching',extra:'"Hé Marcel! Doe je goed!" Noem de naam, maak contact.'},
+    {latin:'1 minuutgesprek',nl:'Gerichte vraag aan de klant',tag:'coaching',extra:'Band versterken door te laten zien dat je de klant kent.'},
+    {latin:'5 minutengesprek',nl:'Dieper ingaan op trainingsdoel',tag:'coaching',extra:'Aansluiten op de behoefte van de klant.'},
+    {latin:'Klantvriendelijk',nl:'Reactief, gericht op korte termijn',tag:'coaching',extra:'Vriendelijk reageren op klant. Niet proactief.'},
+    {latin:'Klantgericht',nl:'Proactief, gericht op lange termijn',tag:'coaching',extra:'Vraag al zien aankomen en oplossing aandragen. Van toegevoegde waarde.'},
+    {latin:'OEN',nl:'Open, Eerlijk, Nieuwsgierig',tag:'coaching',extra:'Goede basishouding voor contact met klanten.'},
+    {latin:'Actief luisteren',nl:'Horen EN begrijpen wat iemand zegt',tag:'coaching',extra:'Non-verbaal (oogcontact, houding) en verbaal (korte reacties, papegaaien, vragen, samenvatten).'},
+    {latin:'Stijl 1: Leiden',nl:'Introductieles voor totale beginner',tag:'coaching',extra:'Leider door de ruimte, uitleggen schema en oefenvormen.'},
+    {latin:'Stijl 2: Begeleiden',nl:'Klant heeft nog veel ondersteuning nodig',tag:'coaching',extra:'Nieuw schema, nog begeleiding nodig bij uitvoering.'},
+    {latin:'Stijl 3: Steunen',nl:'Zelfstandig, focus op coaching',tag:'coaching',extra:'Kent oefeningen en juiste uitvoering. Focus verschuift naar coaching.'},
+    {latin:'Stijl 4: Delegeren',nl:'Klant traint volledig zelfstandig',tag:'coaching',extra:'Schema eenmalig doorgenomen, klant gaat zelf aan de slag.'},
+  ],
+  quiz:[
+    {q:'Welke klantcontactmomenten hebben bewezen dat klanten langer lid blijven?',a:'Minimaal 3 contactmomenten + groepslessen',wrong:['Alleen groepslessen','Alleen intake','Maandelijks evaluatiegesprek'],exp:'Klanten die ten minste drie contactmomenten hebben en groepslessen volgen, blijven langer lid.'},
+    {q:'Wat is het verschil tussen klantvriendelijk en klantgericht?',a:'Klantvriendelijk is reactief, klantgericht is proactief',wrong:['Klantvriendelijk is beter','Klantgericht is alleen voor personal trainers','Ze betekenen hetzelfde'],exp:'Klantvriendelijk = reactief (reageren op klant). Klantgericht = proactief (anticiperen op klant).'},
+    {q:'Wat zijn de stappen van het EREN-systeem in de juiste volgorde?',a:'Analyseren → Contacteren → Corrigeren → Controleren → Stimuleren → Afkeren',wrong:['Corrigeren → Analyseren → Stimuleren','Contacteren → Corrigeren → Afkeren → Analyseren','Stimuleren → Corrigeren → Controleren'],exp:'EREN: Metapositie → Analyseren → Concluderen → Contacteren → Corrigeren → Controleren → Stimuleren → Afkeren.'},
+    {q:'Welke instructiestijl gebruik je bij een totale beginner?',a:'Stijl 1: Leiden',wrong:['Stijl 4: Delegeren','Stijl 3: Steunen','Stijl 2: Begeleiden'],exp:'Stijl 1 (Leiden) = introductieles voor iemand die nog nooit heeft gefitnest.'},
+    {q:'Wat staat OEN voor?',a:'Open, Eerlijk, Nieuwsgierig',wrong:['Ondersteunen, Evalueren, Normeren','Observeren, Enthousiasmeren, Navigeren','Opbouwen, Erkennen, Nuanceren'],exp:'OEN = Open, Eerlijk, Nieuwsgierig. Goede basishouding voor klantcontact.'},
+    {q:'Wat is de retentie van groepslesdeelnemers vergeleken met individuele sporters?',a:'Circa 30% hoger',wrong:['Gelijk','10% hoger','50% hoger'],exp:'De retentie onder deelnemers van groepslessen is ongeveer 30% hoger dan van mensen die alleen in de fitnesszaal sporten.'},
+    {q:'Wat is de PEP-score van 8?',a:'Individu én groep reageren positief, instructeur is actief en positief aanwezig',wrong:['Instructeur maakt geen contact','Alleen positief contact met individu','Instructeur heeft geen actieve uitstraling'],exp:'PEP 8: instructeur is actief en positief. Houdt 10sec/1min/5min gesprekken. Genereert dialoog. Groep reageert positief.'},
+    {q:'Wat is de METAPOSITIE?',a:'Strategische plek om de gehele fitnesszaal te overzien',wrong:['De plek naast de klant tijdens het begeleiden','De positie achter de receptie','De positie bij de ingang van de zaal'],exp:'Metapositie = strategische plek vanwaaruit je alle klanten kunt zien en zelf zichtbaar bent.'},
+    {q:'Wat is de BASISPOSITIE?',a:'De plek die je inneemt bij het begeleiden van een klant bij een oefening',wrong:['De strategische plek om de zaal te overzien','De positie achter de balie','De standaardpositie in het midden van de zaal'],exp:'Basispositie = dicht bij de klant voor instructies, contact, 360° zicht, ruimte voor beweging.'},
+    {q:'Hoeveel procent van de klantbinding bestaat uit de relatie met medewerkers?',a:'60%',wrong:['30%','40%','80%'],exp:'60% van de binding die de klant met het fitnesscentrum heeft bestaat uit de relatie met de medewerkers.'},
+    {q:'Wat is PAPEGAAIEN als luistertechniek?',a:'Enkele woorden van de klant op vragende toon herhalen',wrong:['De klant nabootsen in beweging','Exact herhalen wat de klant zegt','De klant aanmoedigen met knikken'],exp:'Papegaaien = 1 of enkele woorden op vragende toon herhalen om de ander te laten verduidelijken.'},
+    {q:'Welke instructiestijl gebruik je als de klant ZELFSTANDIG kan trainen maar coaching nodig heeft?',a:'Stijl 3: Steunen',wrong:['Stijl 1: Leiden','Stijl 4: Delegeren','Stijl 2: Begeleiden'],exp:'Stijl 3 Steunen: klant kent oefeningen, juiste uitvoering, focus verschuift naar coaching.'},
+    {q:'Wat zegt een tevreden klant gemiddeld aan anderen?',a:'Vertelt het aan gemiddeld 8 andere potentiële klanten',wrong:['Vertelt het aan 22 anderen','Vertelt het aan niemand','Vertelt het aan 3 anderen'],exp:'Tevreden klanten: gemiddeld 8 anderen. Ontevreden klanten: gemiddeld 22 anderen. Ontevreden klant kan 30 klanten kosten.'},
+    {q:'Wat is het doel van het 5-minutengesprek?',a:'Dieper ingaan op het trainingsdoel van de klant',wrong:['Snel begroeten bij binnenkomst','Een nieuwe actie promoten','Technische uitleg geven van een oefening'],exp:'5-minutengesprek: dieper ingaan op het trainingsdoel, aansluiten op de behoefte van de klant.'},
+    {q:'Wat is de eerste stap van het EREN-systeem?',a:'Innemen van de metapositie',wrong:['Contacteren van de klant','Corrigeren van de uitvoering','Analyseren van het gedrag'],exp:'EREN begint altijd vanuit de metapositie: stap 1 = metapositie innemen, stap 2 = analyseren.'},
+    {q:'Wat is het verschil tussen een OPEN en GESLOTEN vraag?',a:'Open vraag geeft ruimte om te vertellen, gesloten vraag beantwoordbaar met ja/nee',wrong:['Open vragen zijn langer','Gesloten vragen zijn vriendelijker','Er is geen verschil in effect'],exp:'Open vraag: "Hoe was je training?" Gesloten vraag: "Was je training goed?" (ja/nee).'},
+    {q:'Welke PEP-score geeft aan dat de instructeur GEEN contact maakt met klanten?',a:'1 tot 3',wrong:['4 tot 5','6','7'],exp:'PEP 1-3: instructeur heeft geen aandacht voor klanten, begroet hen niet, maakt geen contact.'},
+    {q:'Wat houdt STIJL 4 (Delegeren) in?',a:'Klant traint volledig zelfstandig na eenmalige uitleg van het schema',wrong:['Klant heeft intensieve begeleiding nodig','Klant volgt een introductieles','Klant wordt actief gecoacht bij elke oefening'],exp:'Stijl 4 Delegeren: schema eenmalig doorgenomen, daarna traint klant zelfstandig.'},
+  ]
+},
+{
+  id:8, title:'Differentiatie & Blessures', subtitle:'Klachten, Aanpassingen & Veiligheid',
+  color:'#ff4d6d',
+  terms:[
+    {latin:'Differentiatie',nl:'Aanpassingen maken aan oefenvormen',tag:'blessure',extra:'A: geen klachten (preventief). B: klachten (preventief + normaliserend). Beide in dezelfde ruimte!'},
+    {latin:'Regressie',nl:'Eenvoudigere variant van een oefening',tag:'blessure',extra:'Bijv. machine chest press in plaats van barbell bench press bij schouderprobleem.'},
+    {latin:'Schouderklachten',nl:'Slijmbeurs of spierblessure schouder',tag:'blessure',extra:'Non-mover aanpak. Geen armen hoog boven schouders. Abductie/anteflexie max 60 graden bij slijmbeurs.'},
+    {latin:'Lage-rugklachten',nl:'Aandoeningen lumbale wervelkolom',tag:'blessure',extra:'Geen ronde rug bij oefeningen. Rug in neutrale holling houden. Nadruk op romp.'},
+    {latin:'Knieklachten',nl:'Ligamenten, kniepees, meniscus, slijmbeurs',tag:'blessure',extra:'Vermijd leg extension (tenzij advies fysiotherapeut). Press-bewegingen: ROM niet te klein.'},
+    {latin:'Nekklachten',nl:'Oorzaak: verkeerde houding of stress',tag:'blessure',extra:'Vermijd duw- en trekbewegingen boven het hoofd. Vermijd zware trekbewegingen.'},
+    {latin:'Zwangerschapsklachten',nl:'Richtlijnen per trimester',tag:'blessure',extra:'<3 mnd normaal, 3-5 mnd low-mover, >5 mnd non-mover. HF-max max 75%. Geen rechte buikoefeningen. Geen adductie.'},
+    {latin:'Cardiovasculaire aandoeningen',nl:'Bijv. angina pectoris / hartinfarct',tag:'blessure',extra:'Lange warming-up. Grote spiergroepen. Ademhalingstechniek aanleren. Huidskleur/hartslag checken.'},
+    {latin:'Koorts',nl:'Trainen is NOOIT toegestaan',tag:'blessure',extra:'Bij lichte verkoudheid is matige beweging acceptabel. Bij koorts: rust!'},
+    {latin:'Calamiteitenplan',nl:'Verplicht voor elke sportclub',tag:'veiligheid',extra:'Wie doet wat bij calamiteit. Verzamelplaats. Hulpdiensten vermeld. Goed zichtbaar opgehangen.'},
+    {latin:'EHBO',nl:'Bewustzijn controleren → 112 bellen',tag:'veiligheid',extra:'Veilige omgeving slachtoffer + jezelf. Start behandeling tot professionele hulp aanwezig.'},
+    {latin:'Kruisbanden',nl:'Blessure-aanpassing knie',tag:'blessure',extra:'Knie max 45 graden. Geen hyperextensie. Geen voor/achterwaartse beweging. Geen endo/exorotatie onderbeen.'},
+    {latin:'Risicofactoren blessures',nl:'Oorzaken van klachten',tag:'blessure',extra:'Zittende houding, statische belasting, zware belasting, repeterende bewegingen, bewegingsarmoede, overgewicht.'},
+  ],
+  quiz:[
+    {q:'Tot welk movertype benadert je een klant met een blessure?',a:'Non-mover (met dat specifieke lichaamsdeel)',wrong:['High-mover','Low-mover','Hetzelfde movertype als normaal'],exp:'Benader de doelgroepen bij aanvang van een training als non-movers met de daarbij behorende parameters voor het aangedane deel.'},
+    {q:'Wat doe je NIET bij knieklachten (slijmbeurs)?',a:'Leg Extension verder dan 90 graden',wrong:['Press-bewegingen met goede ROM','Oefeningen voor onderlichaam','Stretchen van quadriceps'],exp:'Bij slijmbeursprobleem: onbelast max 90 graden, belast max 45 graden buigen.'},
+    {q:'Wat is de maximale HF voor zwangere vrouwen tijdens sport?',a:'75% HF-max',wrong:['60% HF-max','85% HF-max','Geen maximum'],exp:'De hartfrequentie mag bij zwangere vrouwen niet boven 75% HF-max komen — anders wordt de baarmoedertemperatuur te hoog.'},
+    {q:'Wanneer is trainen met koorts ALTIJD verboden?',a:'Altijd — geen uitzonderingen',wrong:['Alleen bij hoge koorts (>39°C)','Alleen bij kinderen','Bij milde koorts is lichte training OK'],exp:'Trainen met koorts is NOOIT toegestaan. Bij lichte verkoudheid (zonder koorts) kan matige beweging nog.'},
+    {q:'Wat is een REGRESSIE?',a:'Een eenvoudigere variant van een oefening',wrong:['Een progressie naar een moeilijkere oefening','Een herhalingsschema','Een warming-up oefening'],exp:'Regressie = terugschakelen naar een eenvoudigere variant. Bijv. machine chest press ipv barbell bench press.'},
+    {q:'Wat mag je bij zwangerschapsklachten NIET doen?',a:'Rechte buikspieroefeningen en adductie-oefeningen',wrong:['Cardiotraining','Schuine buikoefeningen','Wandelen of fietsen'],exp:'Geen rechte buikspieroefeningen. Schuin kan wel. Geen adductie vanwege bekkeninstabiliteit. Geen lunges.'},
+    {q:'Hoe benader je een zwangere vrouw VANAF 5 MAANDEN?',a:'Als non-mover',wrong:['Als low-mover','Als high-mover','Geen aanpassingen nodig'],exp:'Richtlijn: <3 maanden normaal, 3-5 maanden low-mover, >5 maanden non-mover.'},
+    {q:'Welke kniehoek is de MAXIMALE belaste buiging bij kniepees-klachten?',a:'45 graden',wrong:['90 graden','60 graden','30 graden'],exp:'Kniepees-klachten: belast niet verder dan 45 graden. Onbelast niet verder dan 90 graden.'},
+    {q:'Wat is de aanbeveling bij SCHOUDERKLACHTEN voor de range of motion?',a:'Abductie/anteflexie maximaal 60 graden bij slijmbeursontsteking',wrong:['Volledige ROM altijd','Geen armbewegingen meer','Alleen retroflexie is toegestaan'],exp:'Bij slijmbeursontsteking: abductie/adductie en anteflexie/retroflexie max 60 graden.'},
+    {q:'Wat is de EERSTE stap bij een eerste hulp situatie in de sportschool?',a:'Veilige omgeving voor slachtoffer en jezelf creëren',wrong:['Direct 112 bellen','CPR starten','Slachtoffer bewegen naar veilige plek'],exp:'1. Veilige omgeving slachtoffer. 2. Veilige omgeving jezelf en omstanders. 3. Bewustzijn controleren. 4. Zo nodig 112 bellen.'},
+    {q:'Wanneer BEL je 112?',a:'Als het slachtoffer niet bij bewustzijn is of twijfel',wrong:['Altijd bij elk incident','Nooit, altijd zelf behandelen','Alleen bij hartaanval'],exp:'Niet bij bewustzijn → direct 112. Bij bewustzijn: beoordeel situatie, bel 112 bij twijfel.'},
+    {q:'Welke risicofactor is het GROOTSTE gevaar in combinatie met andere risicofactoren?',a:'Aanpassingen skelet/spierstelsel door verkeerde (zittende) houding',wrong:['Overgewicht','Genetische aanleg','Stress'],exp:'Verkeerde houding door zittend bestaan vormt het grootste risico als er ook een andere risicofactor aanwezig is.'},
+    {q:'Wat is ANGINA PECTORIS?',a:'Pijn op de borst / hartkramp door te weinig zuurstof naar hartspier',wrong:['Spierkramp in de borst','Hoge bloeddruk','Een type ademhalingsprobleem'],exp:'Angina pectoris = pijn op de borst als de hartspier te weinig zuurstof krijgt. Treedt op bij inspanning.'},
+    {q:'Wat is een CALAMITEITENPLAN?',a:'Verplicht document met taakverdeling bij noodsituaties in de sportschool',wrong:['Trainingsschema voor noodsituaties','Overzicht van EHBO-materialen','Lijst met klantgegevens'],exp:'Calamiteitenplan is verplicht voor elke sportclub. Bevat taken, verantwoordelijkheden, verzamelplaats en telefoonnummers.'},
+    {q:'Wat doe je bij lage-rugklachten als trainingsaanpassing?',a:'Geen oefeningen met bolle rug, neutrale holling aanhouden',wrong:['Alle rugspieren rust geven','Alleen buikoefeningen doen','Normale training voortzetten'],exp:'Lage rug: geen ronde rug, rug in neutrale holling, nadruk op rompoefeningen, geen overstrekking.'},
+    {q:'Hoe benader je een zwangere vrouw van 3 tot 5 maanden?',a:'Als low-mover',wrong:['Als non-mover','Als high-mover','Geen aanpassingen'],exp:'<3 maanden = normaal. 3-5 maanden = low-mover. >5 maanden = non-mover.'},
+    {q:'Wat vermijd je bij NEKKLACHTEN?',a:'Duw- en trekbewegingen boven het hoofd en zware trekbewegingen',wrong:['Alle bovenlichaamsbewegingen','Beenbewegingen','Cardio-training'],exp:'Bij nekklachten: vermijd duw/trekbewegingen boven hoofd, zware trekbewegingen. Stretch nekspieren rustig.'},
+  ]
+},
+{
+  id:9, title:'Oefenvormen', subtitle:'Apparatuur, Vrije Gewichten & Stretches',
+  color:'#4d9fff',
+  terms:[
+    {latin:'Chest Press',nl:'Horizontale adductie schouder + extensie elleboog',tag:'apparaat',extra:'Spieren: m. pectoralis major, m. deltoideus, m. triceps brachii. Handvatten op borsthoogte.'},
+    {latin:'Leg Press',nl:'Retroflexie heup + extensie knie + plantairflexie',tag:'apparaat',extra:'Spieren: m. gluteus maximus, mm. quadriceps, mm. hamstrings, mm. triceps surae. Knie niet overstrekken.'},
+    {latin:'Lat Pulldown',nl:'Adductie schouder + flexie elleboog',tag:'apparaat',extra:'Spieren: m. latissimus dorsi, m. trapezius, m. rhomboideus, m. biceps. Stang naar bovenkant borst.'},
+    {latin:'Abdominal machine',nl:'Ventraalflexie romp',tag:'apparaat',extra:'Spier: m. rectus abdominus. Borstbeen naar navel. Gewichten raken elkaar niet.'},
+    {latin:'Seated Row',nl:'Retroflexie schouder + retractie schouderblad + flexie elleboog',tag:'apparaat',extra:'Spieren: m. latissimus dorsi, m. trapezius, m. rhomboideus, m. biceps. Borststeun contact houden.'},
+    {latin:'Leg Extension',nl:'Extensie knie',tag:'apparaat',extra:'Spier: mm. quadriceps femoris. Non-mover: begin 90 graden. VERMIJD bij knieklachten!'},
+    {latin:'Leg Curl',nl:'Flexie knie',tag:'apparaat',extra:'Spier: mm. hamstrings. Non-mover: tot 90 graden. Voeten parallel.'},
+    {latin:'Shoulder Press',nl:'Abductie schouder + extensie elleboog',tag:'apparaat',extra:'Spieren: m. deltoideus, m. triceps brachii. Handvatten op ooghoogte (non-mover).'},
+    {latin:'Lower Back Extension',nl:'Dorsaalflexie romp',tag:'apparaat',extra:'Spier: m. erector spinae. Kussen tegen schouderbladen. Neutrale rug.'},
+    {latin:'Dumbbell Chest Press',nl:'Variatie op chest press met dumbbells',tag:'dumbbell',extra:'Grotere range of motion mogelijk. Grotere coördinatie vereist.'},
+    {latin:'Single Arm Dumbbell Row',nl:'Trekbeweging met dumbbell',tag:'dumbbell',extra:'Spieren: m. latissimus dorsi, trapezius, rhomboideus, deltoideus, biceps. Wervelkolom recht!'},
+    {latin:'Dumbbell Squat',nl:'Knie + heupbuiging met dumbbells',tag:'dumbbell',extra:'Spieren: m. gluteus maximus, mm. quadriceps, mm. hamstrings. Knieën in lijn met tenen!'},
+    {latin:'Dumbbell Lunge',nl:'Uitstapbeweging met dumbbells',tag:'dumbbell',extra:'Spieren: m. gluteus maximus, quadriceps, hamstrings, iliopsoas. Beide knieën 90 graden.'},
+    {latin:'Barbell Biceps Curl',nl:'Flexie elleboog met stang',tag:'dumbbell',extra:'Spier: m. biceps brachii. Bovenarmen langs het lichaam houden. Niet gooien met bovenlichaam.'},
+    {latin:'Vaste toestellen',nl:'Stabiele bewegingsbaan, meer kracht',tag:'materiaal',extra:'Voordeel: veilig, meer kracht. Nadeel: kleiner ROM, minder stabilisatie getraind.'},
+    {latin:'Pulley-toestellen',nl:'Vrije beweging, meer ROM',tag:'materiaal',extra:'Voordeel: ROM, egaliseren, unilateraal. Nadeel: meer coördinatie vereist. Vanaf low-mover.'},
+    {latin:'Dumbbells',nl:'Korte halters — meer coördinatie',tag:'materiaal',extra:'Voordeel: ROM, egalisatie, stabiliteitstraining, sportspecifiek. Nadeel: minder gewicht dan barbell.'},
+    {latin:'Barbells',nl:'Lange halters — meer gewicht',tag:'materiaal',extra:'Voordeel: meer gewicht, stabielere beweging. Nadeel: 1 vlak, kleiner ROM, polsblessurerisico.'},
+    {latin:'Crunch',nl:'Ventraalflexie romp op de mat',tag:'los',extra:'Spier: m. rectus abdominus. Schouderbladen van de grond. Onderrug blijft op vloer.'},
+    {latin:'Schuine Crunch',nl:'Rotatie + flexie romp',tag:'los',extra:'Spieren: m. rectus abdominus + m. obliquus internus/externus.'},
+    {latin:'Hyperextension',nl:'Dorsaalflexie romp op apparaat',tag:'los',extra:'Spier: mm. erector spinae. Neutrale wervelkolom. Niet overstrekken!'},
+    {latin:'Stretch mm. hamstrings',nl:'Hak voor, been gestrekt, door standbeen zakken',tag:'stretch',extra:'20-30 seconden. 1-2 keer per spiergroep.'},
+    {latin:'Stretch mm. quadriceps',nl:'Op één been, enkel vast, hak naar heup',tag:'stretch',extra:'Knie licht gebogen standbeen. Wervelkolom recht.'},
+    {latin:'Stretch m. pectoralis major',nl:'Armen opzij naar achter, duimen achter',tag:'stretch',extra:'Ellebogen licht onder schouders. Wervelkolom recht.'},
+    {latin:'Stretch mm. triceps surae',nl:'Stap naar achter, hak in vloer, knie gestrekt',tag:'stretch',extra:'Calf stretch. Wervelkolom recht.'},
+  ],
+  quiz:[
+    {q:'Welke spier is de HOOFDSPIER bij de Lat Pulldown?',a:'M. latissimus dorsi',wrong:['M. biceps brachii','M. trapezius','M. pectoralis major'],exp:'Lat Pulldown: adductie schouder + flexie elleboog. Hoofdspier: m. latissimus dorsi.'},
+    {q:'Welke oefening traint de mm. HAMSTRINGS?',a:'Leg Curl',wrong:['Leg Extension','Abdominal machine','Shoulder Press'],exp:'Leg Curl = flexie knie → mm. hamstrings. Leg Extension = extensie knie → mm. quadriceps.'},
+    {q:'Wat is een voordeel van DUMBBELLS ten opzichte van een barbell?',a:'Grotere range of motion en egalisatie',wrong:['Je kunt meer gewicht gebruiken','De beweging is stabieler','Minder coördinatie nodig'],exp:'Dumbbells: grotere ROM, egaliseren (beide armen afzonderlijk), meer coördinatie, sportspecifiek. Nadeel: minder gewicht.'},
+    {q:'De Leg Extension is GECONTRA-INDICEERD bij...',a:'Knieklachten (slijmbeurs/meniscus)',wrong:['Rugklachten','Zwangere vrouwen','Cardiovasculaire aandoeningen'],exp:'Vermijd Leg Extension bij knieklachten, tenzij op advies van een fysiotherapeut.'},
+    {q:'Welke beweging maakt de Chest Press?',a:'Horizontale adductie schouder + extensie elleboog',wrong:['Anteflexie schouder + flexie elleboog','Retroflexie heup + extensie knie','Abductie schouder + extensie elleboog'],exp:'Chest Press: horizontale adductie schouder (m. pectoralis major) + extensie elleboog (m. triceps brachii).'},
+    {q:'Hoe lang moet een stretch worden vastgehouden?',a:'20-30 seconden per spiergroep',wrong:['5-10 seconden','1-2 minuten','10-15 seconden'],exp:'Stretch: minimaal 20-30 seconden, 1-2 keer per spiergroep, statisch.'},
+    {q:'Welk apparaat is het MEEST geschikt voor beginners (non-movers)?',a:'Vaste toestellen',wrong:['Pulley-toestellen','Dumbbells','Barbells'],exp:'Vaste toestellen: stabiele bewegingsbaan, veilig, gemakkelijk. Ideaal voor non-movers.'},
+    {q:'Welke spieren traint de LEG PRESS?',a:'M. gluteus maximus, mm. quadriceps, mm. hamstrings, mm. triceps surae',wrong:['Alleen mm. quadriceps','M. pectoralis major en m. deltoideus','Mm. hamstrings en mm. adductoren'],exp:'Leg Press: retroflexie heup + extensie knie + plantairflexie. Traint gluteus maximus, quadriceps, hamstrings én triceps surae.'},
+    {q:'Welke spier traint de ABDOMINAL MACHINE?',a:'M. rectus abdominus',wrong:['Mm. erector spinae','M. obliquus externus','Mm. hamstrings'],exp:'Abdominal machine = ventraalflexie romp → m. rectus abdominus. Borstbeen naar navel.'},
+    {q:'Welke spier traint de LOWER BACK EXTENSION?',a:'Mm. erector spinae',wrong:['M. rectus abdominus','Mm. gluteus maximus','Mm. hamstrings'],exp:'Lower Back Extension = dorsaalflexie romp → mm. erector spinae (rugstrekker).'},
+    {q:'Wat is het voordeel van BARBELLS ten opzichte van dumbbells?',a:'Meer gewicht mogelijk, stabielere beweging',wrong:['Grotere range of motion','Egalisatie van zwakkere zijde','Meer coördinatie vereist'],exp:'Barbells: meer gewicht, stabielere beweging → meer progressie. Nadeel: 1 vlak, kleinere ROM.'},
+    {q:'Welke spieren traint de SHOULDER PRESS?',a:'M. deltoideus en m. triceps brachii',wrong:['M. pectoralis major en m. biceps brachii','M. trapezius en m. rhomboideus','M. latissimus dorsi en m. biceps'],exp:'Shoulder Press: abductie schouder + extensie elleboog → m. deltoideus + m. triceps brachii.'},
+    {q:'Wat is de startpositie voor de LEG PRESS (kniehoek non-mover)?',a:'Benen in een hoek van 90 graden',wrong:['Benen volledig gestrekt','Benen in een hoek van 45 graden','Benen zo ver mogelijk gebogen'],exp:'Non-mover: benen beginnen en eindigen in 90 graden kniebending bij leg press.'},
+    {q:'Welke oefening traint VOORNAMELIJK de mm. QUADRICEPS FEMORIS?',a:'Leg Extension',wrong:['Leg Curl','Leg Press','Abdominal machine'],exp:'Leg Extension = extensie knie → mm. quadriceps femoris. Dit is de geïsoleerde quadricepsoefening.'},
+    {q:'Wat is een voordeel van PULLEY-TOESTELLEN?',a:'Grotere ROM en mogelijkheid tot unilateraal trainen',wrong:['Veiliger voor beginners dan vaste toestellen','Meer gewicht mogelijk dan barbells','Minder coördinatie nodig'],exp:'Pulley: meer ROM, unilateraal (egaliseren), meer coördinatie vereist. Geschikt voor low-movers en hoger.'},
+    {q:'Bij de SEATED ROW: waar moet de borststeun contact mee houden?',a:'De borstkas (borstbeen)',wrong:['De kin','De schouders','De buik'],exp:'Bij seated row: borst constant tegen de borststeun houden en wervelkolom in rechte stand.'},
+    {q:'Welke spieren traint de SCHUINE CRUNCH?',a:'M. rectus abdominus + m. obliquus internus/externus',wrong:['Alleen m. rectus abdominus','M. erector spinae','Mm. hamstrings'],exp:'Schuine crunch voegt rotatie toe → ook m. obliquus internus en externus worden geactiveerd.'},
+    {q:'Wat is het AANDACHTSPUNT bij de LAT PULLDOWN?',a:'Schouder laag houden in de neerwaartse beweging',wrong:['Ellebogen gestrekt houden','Stang naar het achterhoofd trekken','Borststeun hoog instellen'],exp:'Bij lat pulldown: stang naar bovenkant borst/sleutelbeen. Schouder laag in neerwaartse beweging. Iets achteroverleunen.'},
+    {q:'Welk materiaal is NIET geschikt voor snelkrachttraining?',a:'Vaste toestellen en pulley-toestellen',wrong:['Barbells','Dumbbells','Lichaamsgewicht'],exp:'Vaste en pulley-toestellen zijn niet geschikt voor snelkracht. Barbells zijn wél geschikt voor snelkracht.'},
+    {q:'Wat is de juiste uitvoering van de CRUNCH?',a:'Schouderbladen van de grond totdat niet verder kan, onderrug op de vloer',wrong:['Volledig omhoog komen tot zitten','Hoofd met handen naar voren trekken','Benen optillen van de grond'],exp:'Crunch: schouderbladen lichten op tot max, onderrug blijft op de vloer. Handen achter oren, NIET aan hoofd trekken.'},
+  ]
+}
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentChapterId = null;
+let currentMode = 'begrippen';
+let quizState = { queue:[], idx:0, correct:0, wrong:0, answered:false };
+let globalStats = { total:0, correct:0 };
+
+// tag colors
+const tagColors = {
+  richting:'background:#dbeafe;color:#1d4ed8',
+  skelet:'background:#dcfce7;color:#15803d',
+  spier:'background:#fee2e2;color:#dc2626',
+  beweging:'background:#fef9c3;color:#a16207',
+  energie:'background:#ffedd5;color:#c2410c',
+  voeding:'background:#dcfce7;color:#15803d',
+  belasting:'background:#f3e8ff;color:#7e22ce',
+  principe:'background:#dbeafe;color:#1d4ed8',
+  NMT:'background:#fee2e2;color:#dc2626',
+  CVT:'background:#fef9c3;color:#a16207',
+  training:'background:#dcfce7;color:#15803d',
+  coaching:'background:#dbeafe;color:#1d4ed8',
+  beroep:'background:#f3e8ff;color:#7e22ce',
+  visie:'background:#ffedd5;color:#c2410c',
+  intake:'background:#dbeafe;color:#1d4ed8',
+  meting:'background:#fee2e2;color:#dc2626',
+  test:'background:#dcfce7;color:#15803d',
+  norm:'background:#fef9c3;color:#a16207',
+  blessure:'background:#fee2e2;color:#dc2626',
+  veiligheid:'background:#dcfce7;color:#15803d',
+  apparaat:'background:#dbeafe;color:#1d4ed8',
+  dumbbell:'background:#f3e8ff;color:#7e22ce',
+  materiaal:'background:#fef9c3;color:#a16207',
+  stretch:'background:#dcfce7;color:#15803d',
+  los:'background:#ffedd5;color:#c2410c',
+  definitie:'background:#dbeafe;color:#1d4ed8',
+};
+
+function tagStyle(tag){
+  return tagColors[tag] || 'background:#f3f4f6;color:#6b7280';
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init(){
+  buildSidebar();
+  updateGlobalProgress();
+}
+
+// ============================================================
+// PROEFEXAMEN DATA (echte AALO proefexamenvragen)
+// ============================================================
+const proefexamenVragen = [
+  {q:'Wat is differentiatie?', a:'Een oefenvorm aanpassen zodat de deelnemer deze kan uitvoeren op eigen niveau.', wrong:['Een oefenvorm niet aanpassen.','Een van de trainingsprincipes.'], exp:'Differentiatie = aanpassingen maken aan oefenvormen zodat de klant op een veilige en effectieve manier kan blijven sporten op zijn/haar niveau.'},
+  {q:'Trainingsleer: Wat is VO2max?', a:'VO2max staat voor het vermogen van het hart-longsysteem om zuurstof op te nemen en te vervoeren.', wrong:['VO2max staat voor het vermogen van de spieren om zuurstof op te nemen en te vervoeren.','VO2max staat voor het vermogen van de botten om zuurstof op te nemen en te vervoeren.'], exp:'VO2max = maximale zuurstofopname. Staat voor het vermogen van het hart-longsysteem (niet de spieren of botten).'},
+  {q:'Welke spieren train je met de Lat Pull Down?', a:'M. latissimus dorsi, m. trapezius (onderste deel), m. rhomboideus, m. deltoideus, m. biceps brachii.', wrong:['M. latissimus dorsi, m. trapezius (onderste deel).','M. latissimus dorsi, m. trapezius (onderste deel), m. rhomboideus, m. deltoideus, m. biceps surea.'], exp:'Lat Pull Down traint: m. latissimus dorsi, m. trapezius (onderste deel), m. rhomboideus, m. deltoideus én m. biceps brachii. Let op: biceps brachii, niet biceps surea!'},
+  {q:'Productvisie: Maak de zin af. Het product is?', a:'Psychomotorisch.', wrong:['Cognitief.','Psychische vaardigheden.'], exp:'De AALO Formule 7 is het product en is psychomotorisch van aard: 7 profielschema\'s gericht op beweging en training.'},
+  {q:'Meten: Wat is het doel van de Ästrand-test?', a:'Het meten van de VO2max.', wrong:['Het meten van het omslagpunt.','Het meten van de aerobe-anaerobedrempel.'], exp:'De Ästrand-test is een submaximale fietstest om indirect de VO2-max te bepalen. Niet het omslagpunt of de anaerobe drempel.'},
+  {q:'Fysiologie: Bij welke loopafstand gebruik je CP als energie?', a:'10-200 metersprint.', wrong:['10 metersprint.','50-800 meter.'], exp:'Het fosfaatsysteem (CP) levert energie bij maximale inspanning van 10-200 meter. Bij 50-800 meter domineert het melkzuursysteem.'},
+  {q:'Met welk percentage van de maximale hartfrequentie train je in de trainingsmethode intensieve duurtraining?', a:'70-80% van de maximale hartfrequentie.', wrong:['50-80% van de maximale hartfrequentie.','60-70% van de maximale hartfrequentie.'], exp:'Intensieve duurtraining = aeroob zone 3 = 70-80% HF-max. Extensieve duurtraining = aeroob zone 1/2 = 50-70%.'},
+  {q:'Micronutriënten: Wat is waar?', a:'Beide antwoorden zijn juist.', wrong:['Alle micronutriënten hebben hun eigen specifieke functies.','Voor de meeste vitamines en voor mineralen en spoorelementen geldt dat ze essentieel zijn.'], exp:'Beide stellingen zijn correct: 1) Alle micronutriënten hebben eigen specifieke functies. 2) Voor de meeste vitamines en alle mineralen/spoorelementen geldt dat ze essentieel zijn (niet door lichaam aangemaakt).'},
+  {q:'Instructie geven: Wat wordt hier beschreven? "De klant kan goed zelfstandig trainen, kent de oefeningen en juiste uitvoering. De focus verplaatst zich naar coaching."', a:'Steunen.', wrong:['Begeleiden.','Delegeren.'], exp:'Stijl 3 = Steunen: klant traint zelfstandig, kent de oefeningen, focus ligt op coaching. Niet delegeren (volledig zelfstandig zonder coaching).'},
+  {q:'Schouderklachten: Bij een slijmbeursontsteking zijn bijvoorbeeld de volgende aanpassingen in het trainingsprogramma op te nemen:', a:'Beide antwoorden zijn juist.', wrong:['Abductie/adductie tot zestig graden.','Anteflexie/retroflexie tot zestig graden.'], exp:'Bij slijmbeursontsteking: BEIDE beperkingen gelden — abductie/adductie TOT 60° én anteflexie/retroflexie TOT 60°.'},
+  {q:'Met welke trainingsregels moet je rekening houden?', a:'Beide antwoorden zijn juist.', wrong:['Train eerst omvang, dan intensiteit.','Train eerst eenvoudig en werk naar complexiteit.'], exp:'Beide trainingsregels gelden: 1) Train eerst volume, dan intensiteit. 2) Train eerst eenvoudig, werk naar complexiteit.'},
+  {q:'Onderwijsvisie: Een fitnesstrainer handelt volgens 3 vakconcepten. Onder welk vakconcept valt de stelling: "De (sport)leider weet precies wat er moet gebeuren, de klanten (leerlingen, role-takers) doen wat er wordt gezegd."', a:'Gedragstheoretisch vakconcept.', wrong:['Handelingstheoretisch vakconcept.','Idealistisch vakconcept.'], exp:'GTV = klant is role-taker, doet wat de leider zegt. Handelingstheoretisch = klant is role-maker (denkt mee). Idealistisch = sport als karaktervorming.'},
+  {q:'Anatomische bewegingen: Hoe noem je elleboogstrekking?', a:'Extensie.', wrong:['Retroflexie.','Retroextentie.'], exp:'Elleboogstrekking = extensie. Retroflexie is arm achterwaarts heffen. "Retroextentie" bestaat niet als anatomische term.'},
+  {q:'Skeletleer: De anatomische benaming van het scheenbeen is?', a:'Os tibia.', wrong:['Os fibula.','Os ulna.'], exp:'Os tibia = scheenbeen (binnenzijde onderbeen). Os fibula = kuitbeen (buitenzijde). Os ulna = ellepijp (arm).'},
+  {q:'Macronutriënten: Welke macronutriënten zijn brandstoffen?', a:'Koolhydraten, vetten en eiwitten (in het uiterste geval).', wrong:['Koolhydraten en vetten.','Koolhydraten, vetten, eiwitten en alcohol.'], exp:'Primaire brandstoffen = koolhydraten en vetten. Eiwitten kunnen in het uiterste geval ook als brandstof dienen (gluconeogenese). Alcohol levert ook energie maar is geen echte brandstof.'},
+  {q:'Nekklachten: Welke oefening moet je vermijden bij nekklachten?', a:'Shoulder Shrugs.', wrong:['Seated Row.','Cable Row.'], exp:'Shoulder Shrugs = schouders ophalen = elevatie schouderblad = trekt op de nekspieren. Vermijden bij nekklachten. Seated Row en Cable Row zijn trekbewegingen naar achteren, geen ophalen.'},
+  {q:'Trainingsmethoden: Welke fysiologische veranderingen vinden plaats bij een cooldown?', a:'De belangrijkste fysiologische veranderingen die als gevolg van een afnemende weerstand optreden, zijn verlaging van de spierspanning en de hartslag.', wrong:['Verhogen van de spierspanning en verlagen van de hartslag.','Verlagen van de spierspanning en verhogen van de hartslag.'], exp:'Cooling-down: verlaging hartslag + verlaging spierspanning. De doorbloeding blijft relatief hoog voor afvoer van afvalstoffen en lactaat.'},
+  {q:'Skeletleer: De anatomische benaming van het schouderblad is?', a:'Os scapula.', wrong:['Os sternum.','Os clavicula.'], exp:'Os scapula = schouderblad. Os sternum = borstbeen. Os clavicula = sleutelbeen.'},
+  {q:'Spierleer: De insertie is?', a:'De aanhechting op het beweeglijke botstuk.', wrong:['De aanhechting op een willekeurig botstuk.','De aanhechtingspunt op het onbeweeglijke botstuk.'], exp:'Insertie = aanhechting op het BEWEEGLIJKE botstuk (verder van het centrum). Origo = aanhechting op het ONBEWEEGLIJKE botstuk (centraal gelegen).'},
+  {q:'Wanneer ben je een non-mover?', a:'Iemand die zonder sportverleden het fitnessbedrijf binnenkomt. Iemand die langer dan 1 jaar niets aan sport heeft gedaan.', wrong:['Iemand die met een matig (fitness)sportverleden (1x per week) het fitnessbedrijf binnenkomt. Iemand die een niet-fitnessgerelateerd sportverleden heeft.','Iemand die met een actief (fitness)sportverleden (2x per week of meer) het fitnessbedrijf binnenkomt.'], exp:'Non-mover = geen sportverleden of >1 jaar inactief. Low-mover = 1x/week of niet-fitness sportverleden. High-mover = 2x/week of meer.'},
+  // Set 2 — nieuwe proefexamenvragen
+  {q:'Productvisie: Het product is datgene wat het fitnessbedrijf verkoopt aan de klant. Het product moet?', a:'In de ogen van de klant een meerwaarde hebben.', wrong:['In de ogen van de media een meerwaarde hebben.','In de ogen van de manager een meerwaarde zijn.'], exp:'Het product moet in de ogen van de KLANT een meerwaarde hebben (én in de ogen van de trainer een meerwaarde voor de klant hebben).'},
+  {q:'Welke spier train je met de Dumbbell Squat?', a:'M. gluteus maximus, mm. quadriceps, mm. hamstrings.', wrong:['M. gluteus maximus, mm. quadriceps, mm. hamstrings, m. iliopsoas.','M. gluteus medius, mm. quadriceps, mm. hamstrings, m. iliopsoas.'], exp:'Dumbbell Squat: m. gluteus maximus + mm. quadriceps + mm. hamstrings. Geen m. iliopsoas (dat is bij de Lunge het geval). Geen m. gluteus medius.'},
+  {q:'Wat zijn de aandachtspunten van de Dumbbell Front Raise?', a:'Beide antwoorden zijn juist.', wrong:['Armen heffen tot schouderhoogte.','Gewicht laten terugzakken tot er geen spanning meer is op de spieren.'], exp:'Beide aandachtspunten gelden: 1) Armen heffen tot schouderhoogte. 2) Gewicht laten terugzakken tot er spanning op de spieren BLIJFT (niet laten zakken tot geen spanning meer).'},
+  {q:'Energiewaarde: Energie wordt vaak uitgedrukt in kilojoules, afgekort?', a:'kJ.', wrong:['Kcal.','Cal.'], exp:'Kilojoules = kJ. Kilocalorieën = kcal. 1 kcal = 4,2 kJ. In de volksmond wordt kcal vaak "calorieën" genoemd.'},
+  {q:'Spierleer: Wat is de functie van mm. abductoren?', a:'Abductie in de heup.', wrong:['Abductie in de schouder.','Adductie in de heup.'], exp:'Mm. abductoren = abductie in de HEUP (been van het lichaam af). Niet in de schouder, niet adductie.'},
+  {q:'Welke spier train je met de Dumbbell Lunge?', a:'M. gluteus maximus, mm. quadriceps, mm. hamstrings, m. iliopsoas.', wrong:['M. gluteus maximus, mm. quadriceps, mm. hamstrings.','M. gluteus medius, mm. quadriceps, mm. hamstrings, m. iliopsoas.'], exp:'Dumbbell Lunge traint: m. gluteus maximus, mm. quadriceps, mm. hamstrings EN m. iliopsoas. Bij de squat is er geen m. iliopsoas.'},
+  {q:'Wat zijn de aandachtspunten bij de Abdominal-machine?', a:'Terugkomen tot de gewichten elkaar niet aanraken.', wrong:['Beide antwoorden zijn juist.','Hou de voeten NIET in contact met de grond.'], exp:'Aandachtspunt abdominal machine: terugkomen tot de gewichten ELKAAR NIET AANRAKEN (actief houden). Voeten MOETEN in contact blijven met de grond.'},
+  {q:'Spierleer: Wat is de functie van mm. erector spinae?', a:'Dorsaalflexie, lateraalflexie en torsie in de wervelkolom.', wrong:['Dorsaalflexie, laterorotatie en torsie in de wervelkolom.','Ventraalflexie, lateraalflexie en torsie in de wervelkolom.'], exp:'Mm. erector spinae = rugstrekker: DORSAALFLEXIE (achteroverbuigen), LATERAALFLEXIE (zijwaarts buigen) en TORSIE (draaien) in de wervelkolom.'},
+  {q:'Macronutriënten: Vetten bestaan uit?', a:'Beide antwoorden zijn juist.', wrong:['Glycerol.','Vetzuren.'], exp:'Vetten (lipiden) bestaan uit BEIDE: vetzuren EN glycerol. Beide antwoorden zijn dus juist.'},
+  {q:'Knieklachten: Wat moet je vermijden bij klachten aan de collaterale ligamenten van de knie?', a:'Zijwaartse bewegingen.', wrong:['Beide antwoorden zijn juist.','Belast niet verder dan een buiging van 45 graden.'], exp:'Collaterale ligamenten (kniebanden) = ZIJwaartse stabiliteit. Dus: zijwaartse bewegingen vermijden. De 45 graden-regel geldt voor kniepees- en slijmbeursklachten.'},
+  {q:'Fysiologie: Hoe noemen we het type verbranding bij glucoseomzet naar CO2 en H2O?', a:'Aeroob.', wrong:['Anaeroob alactisch.','Anaeroob lactisch.'], exp:'Glucoseomzet naar CO2 + H2O = VOLLEDIGE verbranding = aeroob (met zuurstof). Anaeroob lactisch geeft lactaat als bijproduct. Anaeroob alactisch gebruikt CP.'},
+  {q:'Welke PEP-score hangt hieraan? "De individuele klant en de groep reageren positief. De instructeur is op een actieve en positieve manier aanwezig: houdt 10 sec-, 1 minuut- en 5 minutengesprekjes. Genereert dialoog, creëert open sfeer, weet wat bij klanten speelt."', a:'8', wrong:['9','7'], exp:'PEP 8 = individu én groep reageren positief, instructeur is actief en positief aanwezig, houdt alle gesprekstypes, weet wat er speelt. PEP 9 = klanten worden "klantenmagneten" en benoemen het zelf.'},
+  {q:'Schouderklachten: Bij schouderklachten kun je de volgende trainingsaanpassingen doen:', a:'Begin met oefeningen waarbij de armen niet hoog boven de schouders komen.', wrong:['Beide antwoorden zijn juist.','Doe geen oefeningen voor het bovenlichaam.'], exp:'Schouderklachten: BEGIN met oefeningen waarbij armen NIET hoog boven de schouders komen (bijv. geen Lat Pulldown). Je kunt WEL bovenlichaamsoefeningen doen — het is geen totaalverbod.'},
+  {q:'Tijdens het maken van een neuromusculaire training voor jouw klant, een non-mover, moet je een keuze maken. Welke oefeningen kies jij?', a:'Chest Press, Lateral Pull Down, Abdominal Crunch, Leg Press.', wrong:['Chest Press, Lateral Pull Down, Abdominal Crunch, Leg Curl.','Chest Press, Seated Row, Lateral Pull Down, Shoulder Press, Abdominal Crunch, Leg Press.'], exp:'Non-mover = 4 basisoefeningen met *: Chest Press, Leg Press, Lateral Pull Down, Abdominal Crunch. Geen Leg Curl (dat is extra). Geen 6-9 oefeningen (dat is voor low- en high-movers).'},
+  {q:'Bij de Dumbbell Front Raise: tot welke hoogte hef je de armen?', a:'Schouderhoogte.', wrong:['Boven het hoofd.','Ter hoogte van de navel.'], exp:'Dumbbell Front Raise: armen heffen tot schouderhoogte (non-movers). Niet hoger — dat vergroot de belasting op het schoudergewricht onnodig.'},
+  {q:'Fysiologie: Welk energiesysteem gebruikt ALLEEN koolhydraten en geeft lactaat als bijproduct?', a:'Melkzuursysteem (anaeroob lactisch).', wrong:['Zuurstofsysteem (aeroob).','Fosfaatsysteem (anaeroob alactisch).'], exp:'Melkzuursysteem = anaeroob lactisch. Glucose wordt omgezet zonder zuurstof → lactaat als bijproduct. Fosfaatsysteem = anaeroob ALACTISCH (geen lactaat).'},
+  {q:'Welke stretch hoort bij de beweging op de foto: armen naar voren gestrekt, kin naar borst, rug rond?', a:'M. rhomboideus en m. trapezius.', wrong:['M. deltoideus.','M. latissimus dorsi.'], exp:'Armen naar voren strekken + kin naar borst = stretch voor m. rhomboideus en m. trapezius (retractie tegenwerken = protractie).'},
+  // Set 3 — nieuwe proefexamenvragen
+  {q:'Richtingen in het lichaam: Wat is craniaal?', a:'Richting het os cranium.', wrong:['Richting het os craan.','Richting het os coccygis.'], exp:'Craniaal = richting de schedel (os cranium). Caudaal = richting het staartbeen (os coccygis). "Os craan" bestaat niet.'},
+  {q:'Schouderklachten: Bij een slijmbeursontsteking zijn de volgende aanpassingen in het trainingsprogramma op te nemen:', a:'Beide antwoorden zijn juist.', wrong:['Anteflexie/retroflexie tot zestig graden.','Abductie/adductie tot zestig graden.'], exp:'Bij slijmbeursontsteking gelden BEIDE beperkingen: abductie/adductie TOT 60° EN anteflexie/retroflexie TOT 60°. Beide antwoorden zijn dus juist.'},
+  {q:'Lichaamssamenstelling: Wat valt onder vetvrije massa?', a:'Beide antwoorden zijn juist.', wrong:['Botten.','Spieren.'], exp:'Vetvrije massa = alles behalve vet: spieren, botten én water. Dus zowel botten als spieren vallen hieronder — beide antwoorden zijn juist.'},
+  {q:'Fysiologie: Voor hoeveel tijd heeft glucoseomzet naar lactaat energievoorraad?', a:'10-120 seconden.', wrong:['Tot 4 seconden, maar raakt nooit op.','10-15 seconden.'], exp:'Melkzuursysteem (glucoseomzet naar lactaat) = 10-120 seconden. ATP zelf = 4 seconden. Fosfaatsysteem (CP) = 10-15 seconden.'},
+  {q:'Managementvisie: Wat is de definitie van managementvisie?', a:'Managen is het aansturen en coördineren van mensen, met als doel arbeid binnen een bedrijf op een resultaatgerichte en efficiënte manier uit te voeren.', wrong:['Managen is zorgen dat de targets elke maand worden behaald.','Managen is het volgen en naleven van de regels van de eigenaar van het bedrijf en erop nazien dat al het personeel zich aan die regels houdt.'], exp:'Definitie managementvisie: aansturen en coördineren van mensen, arbeid resultaatgericht en efficiënt uitvoeren. Doel: kosten laag houden door optimale inzet van personeel.'},
+  {q:'Welke spier wordt gestretch op de foto: staand op één been, andere hak naar billen getrokken?', a:'Mm. quadriceps.', wrong:['Mm. triceps surae.','Mm. hamstrings.'], exp:'Hak naar billen trekken = knie buigen = stretch mm. quadriceps (de voorste dijbeenspieren die de knie strekken). Triceps surae = calf stretch. Hamstrings = been gestrekt voor je.'},
+  {q:'Lichaamssamenstelling: Wat is visceraal vet?', a:'Visceraal vet is vet in de buikholte en omliggende organen.', wrong:['Visceraal vet is vet in de borstholte en omliggende organen.','Visceraal vet is vet in de buikholte en omliggende botten.'], exp:'Visceraal vet = vet in de BUIKHOLTE rondom de ORGANEN. Niet in de borstholte, niet rondom botten. Meer risicovoller dan onderhuids vet.'},
+  {q:'Trainingsmethoden: Welke fysiologische veranderingen vinden plaats bij een warming-up?', a:'Beide antwoorden zijn juist.', wrong:['Verhoogde spierspanning, verhoogde hartslag en verwijding van bloedvaten.','Verhoogde doorbloeding van spieren en organen (longen en lever) en aanmaak van gewrichtssmeer (synoviaal vocht).'], exp:'Beide zijn juiste fysiologische veranderingen bij een warming-up: verhoogde hartslag/spierspanning/bloedvatverwijding ÉN verhoogde doorbloeding + aanmaak synoviaal vocht. Beide antwoorden zijn juist.'},
+];
+
+function buildSidebar(){
+  const list = document.getElementById('chapter-list');
+  list.innerHTML = chapters.map(ch => `
+    <button class="ch-btn" onclick="selectChapter(${ch.id})" id="ch-btn-${ch.id}">
+      <span class="ch-num" style="background:${ch.id===currentChapterId?ch.color+'33':'var(--border)'};color:${ch.id===currentChapterId?ch.color:'var(--muted)'}">${ch.id}</span>
+      <span class="ch-label">H${ch.id}: ${ch.title}</span>
+    </button>
+  `).join('');
+}
+
+function selectChapter(id){
+  currentChapterId = id;
+  currentMode = 'begrippen';
+  document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
+  const btn = document.getElementById('ch-btn-'+id);
+  if(btn) btn.classList.add('active');
+  const ch = chapters.find(c=>c.id===id);
+  document.getElementById('chapter-title').textContent = `H${ch.id}: ${ch.title}`;
+  document.getElementById('chapter-subtitle').textContent = ch.subtitle;
+  // Show mode tabs
+  document.getElementById('mode-tabs').style.display = 'flex';
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('mode-begrippen').classList.add('active');
+  renderCurrentMode();
+  buildSidebar();
+}
+
+function selectProefexamen(){
+  currentChapterId = null;
+  document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ch-btn-proef').classList.add('active');
+  document.getElementById('chapter-title').textContent = '🎓 Proefexamen AALO';
+  document.getElementById('chapter-subtitle').textContent = 'Echte oefenvragen uit het AALO proefexamen';
+  // Hide mode tabs - proefexamen has its own layout
+  document.getElementById('mode-tabs').style.display = 'none';
+  renderProefexamen();
+  buildSidebar();
+}
+
+function setMode(mode, btn){
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCurrentMode();
+}
+
+function renderCurrentMode(){
+  if(!currentChapterId){ document.getElementById('main-content').innerHTML='<p style="color:var(--muted);font-family:\'Space Mono\',monospace;font-size:13px;margin-top:40px;text-align:center;">← Kies een hoofdstuk</p>'; return; }
+  if(currentMode==='begrippen') renderBegrippen();
+  else renderQuiz();
+}
+
+// ============================================================
+// PROEFEXAMEN RENDER
+// ============================================================
+let proefState = { queue:[], idx:0, correct:0, wrong:0, answered:false };
+
+function renderProefexamen(){
+  proefState.queue = [...proefexamenVragen].sort(()=>Math.random()-0.5);
+  proefState.idx = 0;
+  proefState.correct = 0;
+  proefState.wrong = 0;
+  proefState.answered = false;
+  renderProefVraag();
+}
+
+function renderProefVraag(){
+  const container = document.getElementById('main-content');
+
+  if(proefState.idx >= proefState.queue.length){
+    const pct = Math.round(proefState.correct/proefState.queue.length*100);
+    const emoji = pct>=80?'🏆':pct>=60?'👍':'💪';
+    const msg = pct>=80?'Geslaagd! Je bent er klaar voor.':pct>=60?'Goed bezig! Nog wat bijschaven.':'Blijf oefenen, je komt er!';
+    container.innerHTML = `
+      <div class="quiz-wrap">
+        <div class="result-card" style="border-color:rgba(255,200,50,0.3);">
+          <div style="font-size:13px;font-family:'Space Mono',monospace;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">🎓 Proefexamen Resultaat</div>
+          <div class="result-emoji">${emoji}</div>
+          <div class="result-pct" style="color:var(--gold);">${pct}%</div>
+          <div class="result-sub">${proefState.correct} van ${proefState.queue.length} vragen correct<br><span style="color:var(--gold)">${msg}</span></div>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <button class="restart-btn" onclick="renderProefexamen()" style="background:var(--gold);color:#000;">Opnieuw proberen</button>
+            <button class="restart-btn" onclick="selectChapter(1)" style="background:var(--surface);color:var(--text);border:1px solid var(--border);">Naar hoofdstukken →</button>
+          </div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const q = proefState.queue[proefState.idx];
+  const all = [q.a, ...q.wrong].sort(()=>Math.random()-0.5);
+  const pct = proefState.queue.length ? (proefState.idx/proefState.queue.length*100) : 0;
+
+  container.innerHTML = `
+    <div class="quiz-wrap">
+      <div class="quiz-meta">
+        <div class="quiz-score" style="color:var(--gold);font-weight:700;">🎓 Proefexamen &nbsp;✅ <span class="good">${proefState.correct}</span> &nbsp;❌ <span class="bad">${proefState.wrong}</span></div>
+        <div class="quiz-score" style="color:var(--muted);">Vraag ${proefState.idx+1}/${proefState.queue.length}</div>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--gold),#ff9f4d);"></div></div>
+      <div class="q-card" style="border-color:rgba(217,119,6,0.25);">
+        <div class="q-text">${q.q}</div>
+      </div>
+      <div class="answers" id="proef-answers">
+        ${all.map(ans=>`<button class="ans-btn" onclick="checkProefAnswer(this,'${escQ(ans)}','${escQ(q.a)}','${escQ(q.exp)}')">${ans}</button>`).join('')}
+      </div>
+      <div class="feedback" id="proef-fb"></div>
+      <button class="next-btn" id="proef-next" onclick="nextProefVraag()" style="background:var(--gold);color:#000;">
+        ${proefState.idx+1 < proefState.queue.length ? 'Volgende vraag →' : 'Bekijk resultaat →'}
+      </button>
+    </div>`;
+}
+
+function checkProefAnswer(btn, chosen, correct, exp){
+  if(proefState.answered) return;
+  proefState.answered = true;
+  const allBtns = document.querySelectorAll('#proef-answers .ans-btn');
+  allBtns.forEach(b=>b.disabled=true);
+  const fb = document.getElementById('proef-fb');
+  const nextBtn = document.getElementById('proef-next');
+  if(chosen===correct){
+    btn.classList.add('correct');
+    fb.className='feedback show fb-ok';
+    fb.innerHTML=`✅ <strong>Correct!</strong> ${exp}`;
+    proefState.correct++;
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b=>{ if(b.textContent.trim()===correct) b.classList.add('correct'); });
+    fb.className='feedback show fb-err';
+    fb.innerHTML=`❌ <strong>Fout.</strong> Juiste antwoord: <strong>${correct}</strong><br><small>${exp}</small>`;
+    proefState.wrong++;
+  }
+  proefState.idx++;
+  nextBtn.classList.add('show');
+  nextBtn.textContent = proefState.idx >= proefState.queue.length ? 'Bekijk resultaat →' : 'Volgende vraag →';
+}
+
+function nextProefVraag(){
+  proefState.answered = false;
+  renderProefVraag();
+}
+
+// ============================================================
+// BEGRIPPEN
+// ============================================================
+function renderBegrippen(search=''){
+  const ch = chapters.find(c=>c.id===currentChapterId);
+  const terms = search ? ch.terms.filter(t=>t.latin.toLowerCase().includes(search.toLowerCase())||t.nl.toLowerCase().includes(search.toLowerCase())) : ch.terms;
+
+  // Group by tag
+  const groups = {};
+  terms.forEach(t=>{ if(!groups[t.tag]) groups[t.tag]=[]; groups[t.tag].push(t); });
+
+  let html = `<div class="search-row"><input class="search-box" placeholder="Zoek begrip..." oninput="renderBegrippen(this.value)" value="${search}"></div>`;
+
+  if(terms.length===0){ html+='<div class="empty-msg">Geen resultaten gevonden.</div>'; }
+
+  Object.entries(groups).forEach(([tag,items])=>{
+    html += `<div class="section-hdr">${tag} (${items.length})</div><div class="cards-grid">`;
+    items.forEach(t=>{
+      html += `<div class="term-card" onclick="this.classList.toggle('flipped')">
+        <div class="front">
+          <span class="tag" style="${tagStyle(t.tag)}">${t.tag}</span>
+          <div class="term-latin">${t.latin}</div>
+          <div class="term-nl">${t.nl}</div>
+          <div class="flip-hint">Tik voor uitleg ↓</div>
+        </div>
+        <div class="back">
+          <span class="tag" style="${tagStyle(t.tag)}">${t.tag}</span>
+          <div class="term-latin">${t.latin}</div>
+          <div class="term-extra">${t.extra}</div>
+          <div class="flip-hint">Tik terug ↑</div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  document.getElementById('main-content').innerHTML = html;
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function renderQuiz(){
+  const ch = chapters.find(c=>c.id===currentChapterId);
+  // Build queue from chapter quiz data
+  quizState.queue = [...ch.quiz].sort(()=>Math.random()-0.5);
+  quizState.idx = 0;
+  quizState.correct = 0;
+  quizState.wrong = 0;
+  quizState.answered = false;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const ch = chapters.find(c=>c.id===currentChapterId);
+  const container = document.getElementById('main-content');
+
+  if(quizState.idx >= quizState.queue.length){
+    const pct = Math.round(quizState.correct/quizState.queue.length*100);
+    const emoji = pct>=80?'🏆':pct>=60?'👍':'💪';
+    globalStats.total += quizState.queue.length;
+    globalStats.correct += quizState.correct;
+    updateGlobalProgress();
+    container.innerHTML = `
+      <div class="quiz-wrap">
+        <div class="result-card">
+          <div class="result-emoji">${emoji}</div>
+          <div class="result-pct">${pct}%</div>
+          <div class="result-sub">${quizState.correct} van ${quizState.queue.length} vragen correct — H${ch.id}: ${ch.title}</div>
+          <button class="restart-btn" onclick="renderQuiz()">Opnieuw proberen</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const q = quizState.queue[quizState.idx];
+  const all = [q.a, ...q.wrong].sort(()=>Math.random()-0.5);
+  const pct = quizState.queue.length ? (quizState.idx/quizState.queue.length*100) : 0;
+
+  container.innerHTML = `
+    <div class="quiz-wrap">
+      <div class="quiz-meta">
+        <div class="quiz-score">✅ <span class="good">${quizState.correct}</span> &nbsp;❌ <span class="bad">${quizState.wrong}</span></div>
+        <div class="quiz-score" style="color:var(--muted)">Vraag ${quizState.idx+1}/${quizState.queue.length}</div>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${pct}%"></div></div>
+      <div class="q-card">
+        <div class="q-text">${q.q}</div>
+      </div>
+      <div class="answers" id="answers">
+        ${all.map(ans=>`<button class="ans-btn" onclick="checkAnswer(this,'${escQ(ans)}','${escQ(q.a)}','${escQ(q.exp)}')">${ans}</button>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQ()">Volgende vraag →</button>
+    </div>`;
+}
+
+function escQ(s){ return (s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
+
+function checkAnswer(btn, chosen, correct, exp){
+  if(quizState.answered) return;
+  quizState.answered = true;
+  const allBtns = document.querySelectorAll('.ans-btn');
+  allBtns.forEach(b=>b.disabled=true);
+  const fb = document.getElementById('fb');
+  const nextBtn = document.getElementById('next-btn');
+  if(chosen===correct){
+    btn.classList.add('correct');
+    fb.className='feedback show fb-ok';
+    fb.innerHTML=`✅ <strong>Correct!</strong> ${exp}`;
+    quizState.correct++;
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b=>{ if(b.textContent.trim()===correct) b.classList.add('correct'); });
+    fb.className='feedback show fb-err';
+    fb.innerHTML=`❌ <strong>Fout.</strong> Juiste antwoord: <strong>${correct}</strong><br><small>${exp}</small>`;
+    quizState.wrong++;
+  }
+  quizState.idx++;
+  nextBtn.classList.add('show');
+  nextBtn.textContent = quizState.idx>=quizState.queue.length ? 'Bekijk resultaat →' : 'Volgende vraag →';
+}
+
+function nextQ(){
+  quizState.answered = false;
+  renderQuestion();
+}
+
+function updateGlobalProgress(){
+  const total = chapters.reduce((s,c)=>s+c.quiz.length,0);
+  const pct = total>0 ? Math.round(globalStats.correct/Math.max(globalStats.total,1)*100) : 0;
+  document.getElementById('progress-overview').textContent = `${globalStats.correct}/${globalStats.total} correct beantwoord`;
+  document.getElementById('global-progress').style.width = Math.min(pct,100)+'%';
+}
+
+// Start
+init();
+</script>
+</body>
+</html>

@@ -1000,6 +1000,11 @@ function renderProefVraag(){
   const all = [q.a, ...q.wrong].sort(()=>Math.random()-0.5);
   const pct = proefState.queue.length ? (proefState.idx/proefState.queue.length*100) : 0;
 
+  const answersHtml = all.map((ans, i) => {
+    const isCorrect = ans === q.a;
+    return `<button class="ans-btn" data-idx="${i}" data-correct="${isCorrect}">${ans}</button>`;
+  }).join('');
+
   container.innerHTML = `
     <div class="quiz-wrap">
       <div class="quiz-meta">
@@ -1010,38 +1015,41 @@ function renderProefVraag(){
       <div class="q-card" style="border-color:rgba(217,119,6,0.25);">
         <div class="q-text">${q.q}</div>
       </div>
-      <div class="answers" id="proef-answers">
-        ${all.map(ans=>`<button class="ans-btn" onclick="checkProefAnswer(this,'${escQ(ans)}','${escQ(q.a)}','${escQ(q.exp)}')">${ans}</button>`).join('')}
-      </div>
+      <div class="answers" id="proef-answers">${answersHtml}</div>
       <div class="feedback" id="proef-fb"></div>
       <button class="next-btn" id="proef-next" onclick="nextProefVraag()" style="background:var(--gold);color:#000;">
         ${proefState.idx+1 < proefState.queue.length ? 'Volgende vraag →' : 'Bekijk resultaat →'}
       </button>
     </div>`;
-}
 
-function checkProefAnswer(btn, chosen, correct, exp){
-  if(proefState.answered) return;
-  proefState.answered = true;
-  const allBtns = document.querySelectorAll('#proef-answers .ans-btn');
-  allBtns.forEach(b=>b.disabled=true);
-  const fb = document.getElementById('proef-fb');
-  const nextBtn = document.getElementById('proef-next');
-  if(chosen===correct){
-    btn.classList.add('correct');
-    fb.className='feedback show fb-ok';
-    fb.innerHTML=`✅ <strong>Correct!</strong> ${exp}`;
-    proefState.correct++;
-  } else {
-    btn.classList.add('wrong');
-    allBtns.forEach(b=>{ if(b.textContent.trim()===correct) b.classList.add('correct'); });
-    fb.className='feedback show fb-err';
-    fb.innerHTML=`❌ <strong>Fout.</strong> Juiste antwoord: <strong>${correct}</strong><br><small>${exp}</small>`;
-    proefState.wrong++;
-  }
-  proefState.idx++;
-  nextBtn.classList.add('show');
-  nextBtn.textContent = proefState.idx >= proefState.queue.length ? 'Bekijk resultaat →' : 'Volgende vraag →';
+  // Attach click handlers via JS (avoids escaping issues with long answer strings)
+  document.querySelectorAll('#proef-answers .ans-btn').forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      if(proefState.answered) return;
+      proefState.answered = true;
+      const isCorrect = btn.dataset.correct === 'true';
+      document.querySelectorAll('#proef-answers .ans-btn').forEach(b => {
+        b.disabled = true;
+        if(b.dataset.correct === 'true') b.classList.add('correct');
+      });
+      const fb = document.getElementById('proef-fb');
+      const nextBtn = document.getElementById('proef-next');
+      if(isCorrect){
+        btn.classList.add('correct');
+        fb.className = 'feedback show fb-ok';
+        fb.innerHTML = `✅ <strong>Correct!</strong> ${q.exp}`;
+        proefState.correct++;
+      } else {
+        btn.classList.add('wrong');
+        fb.className = 'feedback show fb-err';
+        fb.innerHTML = `❌ <strong>Fout.</strong> Juiste antwoord: <strong>${q.a}</strong><br><small>${q.exp}</small>`;
+        proefState.wrong++;
+      }
+      proefState.idx++;
+      nextBtn.classList.add('show');
+      nextBtn.textContent = proefState.idx >= proefState.queue.length ? 'Bekijk resultaat →' : 'Volgende vraag →';
+    });
+  });
 }
 
 function nextProefVraag(){
@@ -1138,39 +1146,56 @@ function renderQuestion(){
       <div class="q-card">
         <div class="q-text">${q.q}</div>
       </div>
-      <div class="answers" id="answers">
-        ${all.map(ans=>`<button class="ans-btn" onclick="checkAnswer(this,'${escQ(ans)}','${escQ(q.a)}','${escQ(q.exp)}')">${ans}</button>`).join('')}
+  const answersHtml = all.map((ans) => {
+    const isCorrect = ans === q.a;
+    return `<button class="ans-btn" data-correct="${isCorrect}">${ans}</button>`;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="quiz-wrap">
+      <div class="quiz-meta">
+        <div class="quiz-score">✅ <span class="good">${quizState.correct}</span> &nbsp;❌ <span class="bad">${quizState.wrong}</span></div>
+        <div class="quiz-score" style="color:var(--muted)">Vraag ${quizState.idx+1}/${quizState.queue.length}</div>
       </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${pct}%"></div></div>
+      <div class="q-card">
+        <div class="q-text">${q.q}</div>
+      </div>
+      <div class="answers" id="answers">${answersHtml}</div>
       <div class="feedback" id="fb"></div>
       <button class="next-btn" id="next-btn" onclick="nextQ()">Volgende vraag →</button>
     </div>`;
+
+  document.querySelectorAll('#answers .ans-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(quizState.answered) return;
+      quizState.answered = true;
+      const isCorrect = btn.dataset.correct === 'true';
+      document.querySelectorAll('#answers .ans-btn').forEach(b => {
+        b.disabled = true;
+        if(b.dataset.correct === 'true') b.classList.add('correct');
+      });
+      const fb = document.getElementById('fb');
+      const nextBtn = document.getElementById('next-btn');
+      if(isCorrect){
+        btn.classList.add('correct');
+        fb.className = 'feedback show fb-ok';
+        fb.innerHTML = `✅ <strong>Correct!</strong> ${q.exp}`;
+        quizState.correct++;
+      } else {
+        btn.classList.add('wrong');
+        fb.className = 'feedback show fb-err';
+        fb.innerHTML = `❌ <strong>Fout.</strong> Juiste antwoord: <strong>${q.a}</strong><br><small>${q.exp}</small>`;
+        quizState.wrong++;
+      }
+      quizState.idx++;
+      nextBtn.classList.add('show');
+      nextBtn.textContent = quizState.idx >= quizState.queue.length ? 'Bekijk resultaat →' : 'Volgende vraag →';
+    });
+  });
 }
 
 function escQ(s){ return (s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
-
-function checkAnswer(btn, chosen, correct, exp){
-  if(quizState.answered) return;
-  quizState.answered = true;
-  const allBtns = document.querySelectorAll('.ans-btn');
-  allBtns.forEach(b=>b.disabled=true);
-  const fb = document.getElementById('fb');
-  const nextBtn = document.getElementById('next-btn');
-  if(chosen===correct){
-    btn.classList.add('correct');
-    fb.className='feedback show fb-ok';
-    fb.innerHTML=`✅ <strong>Correct!</strong> ${exp}`;
-    quizState.correct++;
-  } else {
-    btn.classList.add('wrong');
-    allBtns.forEach(b=>{ if(b.textContent.trim()===correct) b.classList.add('correct'); });
-    fb.className='feedback show fb-err';
-    fb.innerHTML=`❌ <strong>Fout.</strong> Juiste antwoord: <strong>${correct}</strong><br><small>${exp}</small>`;
-    quizState.wrong++;
-  }
-  quizState.idx++;
-  nextBtn.classList.add('show');
-  nextBtn.textContent = quizState.idx>=quizState.queue.length ? 'Bekijk resultaat →' : 'Volgende vraag →';
-}
 
 function nextQ(){
   quizState.answered = false;

@@ -46,36 +46,36 @@ body {
   position: sticky; top:0; height:100vh; overflow-y:auto;
 }
 .sidebar-header {
-  padding: 20px 16px 16px;
+  padding: 12px 14px 10px;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
 }
 .sidebar-logo {
-  font-size: 11px; font-weight: 600;
+  font-size: 10px; font-weight: 600;
   text-transform: uppercase; letter-spacing: 1.5px;
-  color: var(--muted); margin-bottom: 4px;
+  color: var(--muted); margin-bottom: 2px;
 }
-.sidebar-title { font-size: 18px; font-weight: 800; line-height: 1.2; color: var(--text); }
+.sidebar-title { font-size: 15px; font-weight: 800; line-height: 1.2; color: var(--text); }
 
-.chapter-list { padding: 10px; flex:1; }
+.chapter-list { padding: 8px; flex:1; }
 .ch-btn {
   width:100%; text-align:left;
-  padding: 11px 12px; margin-bottom:2px;
+  padding: 8px 10px; margin-bottom:1px;
   border: none;
   background: transparent;
   color: var(--text2);
   font-family: 'Inter', sans-serif;
-  font-size: 13px; font-weight: 500;
-  border-radius: 8px; cursor:pointer;
+  font-size: 12px; font-weight: 500;
+  border-radius: 7px; cursor:pointer;
   transition: background 0.15s, color 0.15s;
-  display:flex; align-items:center; gap:10px;
+  display:flex; align-items:center; gap:8px;
 }
 .ch-btn:hover { background: var(--bg); color: var(--text); }
 .ch-btn.active { background: var(--accent-light); color: var(--accent); font-weight: 700; }
 .ch-btn .ch-num {
-  width: 26px; height: 26px; border-radius: 6px;
+  width: 22px; height: 22px; border-radius: 5px;
   display:flex; align-items:center; justify-content:center;
-  font-size: 12px; font-weight: 700;
+  font-size: 11px; font-weight: 700;
   background: var(--border); color: var(--muted); flex-shrink:0;
 }
 .ch-btn.active .ch-num { background: var(--accent); color: white; }
@@ -89,33 +89,33 @@ body {
 /* Main */
 .main { flex:1; display:flex; flex-direction:column; min-width:0; background: var(--bg); }
 .main-header {
-  padding: 24px 32px 16px;
-  display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+  padding: 10px 16px 8px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
   flex-wrap:wrap;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
-.chapter-title { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1.2; }
-.chapter-subtitle { font-size: 13px; color: var(--muted); font-weight: 500; margin-top: 3px; }
+.chapter-title { font-size: 16px; font-weight: 800; color: var(--text); line-height: 1.2; }
+.chapter-subtitle { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 1px; }
 
 /* Mode tabs */
 .mode-tabs {
   display:flex; gap:0;
   border: 1px solid var(--border);
-  border-radius: 8px; overflow: hidden;
+  border-radius: 7px; overflow: hidden;
   flex-shrink:0;
 }
 .mode-btn {
-  padding: 9px 18px; border:none; background: white;
+  padding: 7px 14px; border:none; background: white;
   color: var(--muted); font-family: 'Inter', sans-serif;
-  font-size: 14px; font-weight: 600;
+  font-size: 13px; font-weight: 600;
   cursor:pointer; transition: all 0.15s; white-space:nowrap;
 }
 .mode-btn:not(:last-child) { border-right: 1px solid var(--border); }
 .mode-btn.active { background: var(--accent); color: white; }
 .mode-btn:hover:not(.active) { background: var(--bg); color: var(--text); }
 
-.main-content { padding: 24px 32px 48px; flex:1; }
+.main-content { padding: 14px 20px 32px; flex:1; }
 
 /* ===== BEGRIPPEN ===== */
 .search-row { display:flex; gap:8px; margin-bottom:20px; }
@@ -146,30 +146,30 @@ body {
 .flip-hint { font-size: 11px; color: var(--muted); text-align:right; margin-top: 10px; }
 
 /* ===== QUIZ ===== */
-.quiz-wrap { max-width: 620px; }
-.quiz-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-.quiz-score { font-size: 14px; font-weight: 600; color: var(--muted); }
+.quiz-wrap { max-width: 600px; }
+.quiz-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.quiz-score { font-size: 13px; font-weight: 600; color: var(--muted); }
 .quiz-score .good { color: var(--correct); }
 .quiz-score .bad { color: var(--wrong); }
-.pbar { height:6px; background: var(--border); border-radius:3px; margin-bottom:20px; overflow:hidden; }
+.pbar { height:4px; background: var(--border); border-radius:3px; margin-bottom:10px; overflow:hidden; }
 .pbar-fill { height:100%; background: var(--accent); border-radius:3px; transition:width 0.4s; }
 
 .q-card {
   background: white; border: 1px solid var(--border);
-  border-radius: 12px; padding: 28px 24px; margin-bottom: 16px;
-  text-align:center; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
-.q-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform:uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
-.q-text { font-size: 18px; font-weight: 700; line-height: 1.5; color: var(--text); }
+.q-label { display:none; }
+.q-text { font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--text); }
 
-.answers { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.answers { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
 @media(max-width:500px){ .answers { grid-template-columns:1fr; } }
 .ans-btn {
-  background: white; border: 2px solid var(--border); border-radius: 10px;
-  padding: 15px 14px; color: var(--text);
-  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 500;
-  cursor:pointer; transition: all 0.15s; text-align:left; line-height: 1.45;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  background: white; border: 2px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+  cursor:pointer; transition: all 0.15s; text-align:left; line-height: 1.35;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 .ans-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
 .ans-btn.correct { border-color: var(--correct); background: var(--accent2-light); color: var(--correct); font-weight: 700; }
@@ -177,8 +177,8 @@ body {
 .ans-btn:disabled { cursor:default; }
 
 .feedback {
-  background: #f9fafb; border-radius: 10px; padding: 14px 18px;
-  font-size: 14px; line-height: 1.6; margin-bottom: 14px;
+  background: #f9fafb; border-radius: 8px; padding: 9px 12px;
+  font-size: 13px; line-height: 1.5; margin-bottom: 8px;
   display:none; color: var(--text2); border: 1px solid var(--border);
 }
 .feedback.show { display:block; }
@@ -186,8 +186,8 @@ body {
 .feedback.fb-err { border-color: var(--wrong); background: var(--danger-light); }
 
 .next-btn {
-  width:100%; padding: 15px; background: var(--accent); border:none; border-radius: 10px;
-  color: white; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700;
+  width:100%; padding: 11px; background: var(--accent); border:none; border-radius: 8px;
+  color: white; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
   cursor:pointer; transition: background 0.15s; display:none;
 }
 .next-btn.show { display:block; }
@@ -196,49 +196,49 @@ body {
 /* Quiz result */
 .result-card {
   background: white; border: 1px solid var(--border);
-  border-radius: 16px; padding: 48px 28px; text-align:center;
+  border-radius: 14px; padding: 32px 24px; text-align:center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
-.result-emoji { font-size: 56px; margin-bottom: 16px; }
-.result-pct { font-size: 56px; font-weight: 800; color: var(--accent); margin-bottom: 6px; }
-.result-sub { color: var(--muted); font-size: 15px; margin-bottom: 28px; font-weight: 500; }
+.result-emoji { font-size: 44px; margin-bottom: 10px; }
+.result-pct { font-size: 48px; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+.result-sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; font-weight: 500; }
 .restart-btn {
-  padding: 14px 32px; background: var(--accent); border:none; border-radius: 10px;
-  color: white; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+  padding: 11px 28px; background: var(--accent); border:none; border-radius: 8px;
+  color: white; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
   cursor:pointer; transition: background 0.15s;
 }
 .restart-btn:hover { background: #1e40af; }
 
-.stats-row { display:flex; gap:10px; margin-bottom:20px; }
+.stats-row { display:flex; gap:8px; margin-bottom:10px; }
 .stat-box {
   flex:1; background: white; border: 1px solid var(--border);
-  border-radius: 10px; padding: 14px; text-align:center;
+  border-radius: 8px; padding: 8px 10px; text-align:center;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
-.stat-num { font-size: 26px; font-weight: 800; color: var(--correct); }
+.stat-num { font-size: 20px; font-weight: 800; color: var(--correct); }
 .stat-num.bad { color: var(--wrong); }
-.stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+.stat-label { font-size: 11px; color: var(--muted); margin-top: 1px; font-weight: 500; }
 
 /* Section headers */
 .section-hdr {
   font-size: 11px; font-weight: 700; text-transform: uppercase;
   letter-spacing: 1.2px; color: var(--muted);
-  margin: 24px 0 10px;
-  padding-bottom: 6px; border-bottom: 1px solid var(--border);
+  margin: 20px 0 8px;
+  padding-bottom: 5px; border-bottom: 1px solid var(--border);
 }
-.empty-msg { color: var(--muted); font-size: 14px; padding: 24px 0; }
+.empty-msg { color: var(--muted); font-size: 14px; padding: 20px 0; }
 
 /* Mobile */
 @media(max-width:700px){
   .sidebar { width:100%; height:auto; position:relative; overflow-y:visible; }
-  .sidebar .chapter-list { display:flex; flex-wrap:wrap; padding:8px; gap:4px; }
-  .sidebar .ch-btn { width:auto; flex:0 0 auto; padding:8px 10px; margin:0; }
+  .sidebar .chapter-list { display:flex; flex-wrap:wrap; padding:6px; gap:3px; }
+  .sidebar .ch-btn { width:auto; flex:0 0 auto; padding:6px 8px; margin:0; }
   .sidebar .ch-btn .ch-label { display:none; }
   .app { flex-direction:column; }
-  .main-header { padding:16px 16px 12px; }
-  .main-content { padding:16px 16px 40px; }
-  .q-text { font-size: 16px; }
-  .ans-btn { font-size: 14px; padding: 13px 12px; }
+  .main-header { padding:10px 12px 8px; }
+  .main-content { padding:10px 12px 24px; }
+  .q-text { font-size: 14px; }
+  .ans-btn { font-size: 13px; padding: 10px 10px; }
 }
 </style>
 </head>
@@ -252,6 +252,12 @@ body {
     <div class="sidebar-title">Fitness Instructeur</div>
   </div>
   <div class="chapter-list" id="chapter-list"></div>
+  <div style="padding:8px;">
+    <button class="ch-btn" id="ch-btn-proef" onclick="selectProefexamen()" style="background:linear-gradient(135deg,rgba(255,200,50,0.15),rgba(255,77,109,0.1));border:1px solid rgba(255,200,50,0.4);color:#ffc832;margin-top:4px;">
+      <span class="ch-num" style="background:rgba(255,200,50,0.2);color:#ffc832;">🎓</span>
+      <span class="ch-label" style="color:#ffc832;font-weight:700;">Proefexamen AALO</span>
+    </button>
+  </div>
   <div class="sidebar-footer">
     <div class="progress-overview" id="progress-overview">0 / 0 vragen correct</div>
     <div class="progress-bar-mini"><div class="progress-bar-mini-fill" id="global-progress" style="width:0%"></div></div>
@@ -265,9 +271,9 @@ body {
       <div class="chapter-title" id="chapter-title">Kies een hoofdstuk</div>
       <div class="chapter-subtitle" id="chapter-subtitle">—</div>
     </div>
-    <div class="mode-tabs">
-      <button class="mode-btn active" onclick="setMode('begrippen', this)">📚 Begrippen</button>
-      <button class="mode-btn" onclick="setMode('quiz', this)">🧠 Quiz</button>
+    <div class="mode-tabs" id="mode-tabs">
+      <button class="mode-btn active" id="mode-begrippen" onclick="setMode('begrippen', this)">📚 Begrippen</button>
+      <button class="mode-btn" id="mode-quiz" onclick="setMode('quiz', this)">🧠 Quiz</button>
     </div>
   </div>
   <div class="main-content" id="main-content">
@@ -848,6 +854,59 @@ function init(){
   updateGlobalProgress();
 }
 
+// ============================================================
+// PROEFEXAMEN DATA (echte AALO proefexamenvragen)
+// ============================================================
+const proefexamenVragen = [
+  {q:'Wat is differentiatie?', a:'Een oefenvorm aanpassen zodat de deelnemer deze kan uitvoeren op eigen niveau.', wrong:['Een oefenvorm niet aanpassen.','Een van de trainingsprincipes.'], exp:'Differentiatie = aanpassingen maken aan oefenvormen zodat de klant op een veilige en effectieve manier kan blijven sporten op zijn/haar niveau.'},
+  {q:'Trainingsleer: Wat is VO2max?', a:'VO2max staat voor het vermogen van het hart-longsysteem om zuurstof op te nemen en te vervoeren.', wrong:['VO2max staat voor het vermogen van de spieren om zuurstof op te nemen en te vervoeren.','VO2max staat voor het vermogen van de botten om zuurstof op te nemen en te vervoeren.'], exp:'VO2max = maximale zuurstofopname. Staat voor het vermogen van het hart-longsysteem (niet de spieren of botten).'},
+  {q:'Welke spieren train je met de Lat Pull Down?', a:'M. latissimus dorsi, m. trapezius (onderste deel), m. rhomboideus, m. deltoideus, m. biceps brachii.', wrong:['M. latissimus dorsi, m. trapezius (onderste deel).','M. latissimus dorsi, m. trapezius (onderste deel), m. rhomboideus, m. deltoideus, m. biceps surea.'], exp:'Lat Pull Down traint: m. latissimus dorsi, m. trapezius (onderste deel), m. rhomboideus, m. deltoideus én m. biceps brachii. Let op: biceps brachii, niet biceps surea!'},
+  {q:'Productvisie: Maak de zin af. Het product is?', a:'Psychomotorisch.', wrong:['Cognitief.','Psychische vaardigheden.'], exp:'De AALO Formule 7 is het product en is psychomotorisch van aard: 7 profielschema\'s gericht op beweging en training.'},
+  {q:'Meten: Wat is het doel van de Ästrand-test?', a:'Het meten van de VO2max.', wrong:['Het meten van het omslagpunt.','Het meten van de aerobe-anaerobedrempel.'], exp:'De Ästrand-test is een submaximale fietstest om indirect de VO2-max te bepalen. Niet het omslagpunt of de anaerobe drempel.'},
+  {q:'Fysiologie: Bij welke loopafstand gebruik je CP als energie?', a:'10-200 metersprint.', wrong:['10 metersprint.','50-800 meter.'], exp:'Het fosfaatsysteem (CP) levert energie bij maximale inspanning van 10-200 meter. Bij 50-800 meter domineert het melkzuursysteem.'},
+  {q:'Met welk percentage van de maximale hartfrequentie train je in de trainingsmethode intensieve duurtraining?', a:'70-80% van de maximale hartfrequentie.', wrong:['50-80% van de maximale hartfrequentie.','60-70% van de maximale hartfrequentie.'], exp:'Intensieve duurtraining = aeroob zone 3 = 70-80% HF-max. Extensieve duurtraining = aeroob zone 1/2 = 50-70%.'},
+  {q:'Micronutriënten: Wat is waar?', a:'Beide antwoorden zijn juist.', wrong:['Alle micronutriënten hebben hun eigen specifieke functies.','Voor de meeste vitamines en voor mineralen en spoorelementen geldt dat ze essentieel zijn.'], exp:'Beide stellingen zijn correct: 1) Alle micronutriënten hebben eigen specifieke functies. 2) Voor de meeste vitamines en alle mineralen/spoorelementen geldt dat ze essentieel zijn (niet door lichaam aangemaakt).'},
+  {q:'Instructie geven: Wat wordt hier beschreven? "De klant kan goed zelfstandig trainen, kent de oefeningen en juiste uitvoering. De focus verplaatst zich naar coaching."', a:'Steunen.', wrong:['Begeleiden.','Delegeren.'], exp:'Stijl 3 = Steunen: klant traint zelfstandig, kent de oefeningen, focus ligt op coaching. Niet delegeren (volledig zelfstandig zonder coaching).'},
+  {q:'Schouderklachten: Bij een slijmbeursontsteking zijn bijvoorbeeld de volgende aanpassingen in het trainingsprogramma op te nemen:', a:'Beide antwoorden zijn juist.', wrong:['Abductie/adductie tot zestig graden.','Anteflexie/retroflexie tot zestig graden.'], exp:'Bij slijmbeursontsteking: BEIDE beperkingen gelden — abductie/adductie TOT 60° én anteflexie/retroflexie TOT 60°.'},
+  {q:'Met welke trainingsregels moet je rekening houden?', a:'Beide antwoorden zijn juist.', wrong:['Train eerst omvang, dan intensiteit.','Train eerst eenvoudig en werk naar complexiteit.'], exp:'Beide trainingsregels gelden: 1) Train eerst volume, dan intensiteit. 2) Train eerst eenvoudig, werk naar complexiteit.'},
+  {q:'Onderwijsvisie: Een fitnesstrainer handelt volgens 3 vakconcepten. Onder welk vakconcept valt de stelling: "De (sport)leider weet precies wat er moet gebeuren, de klanten (leerlingen, role-takers) doen wat er wordt gezegd."', a:'Gedragstheoretisch vakconcept.', wrong:['Handelingstheoretisch vakconcept.','Idealistisch vakconcept.'], exp:'GTV = klant is role-taker, doet wat de leider zegt. Handelingstheoretisch = klant is role-maker (denkt mee). Idealistisch = sport als karaktervorming.'},
+  {q:'Anatomische bewegingen: Hoe noem je elleboogstrekking?', a:'Extensie.', wrong:['Retroflexie.','Retroextentie.'], exp:'Elleboogstrekking = extensie. Retroflexie is arm achterwaarts heffen. "Retroextentie" bestaat niet als anatomische term.'},
+  {q:'Skeletleer: De anatomische benaming van het scheenbeen is?', a:'Os tibia.', wrong:['Os fibula.','Os ulna.'], exp:'Os tibia = scheenbeen (binnenzijde onderbeen). Os fibula = kuitbeen (buitenzijde). Os ulna = ellepijp (arm).'},
+  {q:'Macronutriënten: Welke macronutriënten zijn brandstoffen?', a:'Koolhydraten, vetten en eiwitten (in het uiterste geval).', wrong:['Koolhydraten en vetten.','Koolhydraten, vetten, eiwitten en alcohol.'], exp:'Primaire brandstoffen = koolhydraten en vetten. Eiwitten kunnen in het uiterste geval ook als brandstof dienen (gluconeogenese). Alcohol levert ook energie maar is geen echte brandstof.'},
+  {q:'Nekklachten: Welke oefening moet je vermijden bij nekklachten?', a:'Shoulder Shrugs.', wrong:['Seated Row.','Cable Row.'], exp:'Shoulder Shrugs = schouders ophalen = elevatie schouderblad = trekt op de nekspieren. Vermijden bij nekklachten. Seated Row en Cable Row zijn trekbewegingen naar achteren, geen ophalen.'},
+  {q:'Trainingsmethoden: Welke fysiologische veranderingen vinden plaats bij een cooldown?', a:'De belangrijkste fysiologische veranderingen die als gevolg van een afnemende weerstand optreden, zijn verlaging van de spierspanning en de hartslag.', wrong:['Verhogen van de spierspanning en verlagen van de hartslag.','Verlagen van de spierspanning en verhogen van de hartslag.'], exp:'Cooling-down: verlaging hartslag + verlaging spierspanning. De doorbloeding blijft relatief hoog voor afvoer van afvalstoffen en lactaat.'},
+  {q:'Skeletleer: De anatomische benaming van het schouderblad is?', a:'Os scapula.', wrong:['Os sternum.','Os clavicula.'], exp:'Os scapula = schouderblad. Os sternum = borstbeen. Os clavicula = sleutelbeen.'},
+  {q:'Spierleer: De insertie is?', a:'De aanhechting op het beweeglijke botstuk.', wrong:['De aanhechting op een willekeurig botstuk.','De aanhechtingspunt op het onbeweeglijke botstuk.'], exp:'Insertie = aanhechting op het BEWEEGLIJKE botstuk (verder van het centrum). Origo = aanhechting op het ONBEWEEGLIJKE botstuk (centraal gelegen).'},
+  {q:'Wanneer ben je een non-mover?', a:'Iemand die zonder sportverleden het fitnessbedrijf binnenkomt. Iemand die langer dan 1 jaar niets aan sport heeft gedaan.', wrong:['Iemand die met een matig (fitness)sportverleden (1x per week) het fitnessbedrijf binnenkomt. Iemand die een niet-fitnessgerelateerd sportverleden heeft.','Iemand die met een actief (fitness)sportverleden (2x per week of meer) het fitnessbedrijf binnenkomt.'], exp:'Non-mover = geen sportverleden of >1 jaar inactief. Low-mover = 1x/week of niet-fitness sportverleden. High-mover = 2x/week of meer.'},
+  // Set 2 — nieuwe proefexamenvragen
+  {q:'Productvisie: Het product is datgene wat het fitnessbedrijf verkoopt aan de klant. Het product moet?', a:'In de ogen van de klant een meerwaarde hebben.', wrong:['In de ogen van de media een meerwaarde hebben.','In de ogen van de manager een meerwaarde zijn.'], exp:'Het product moet in de ogen van de KLANT een meerwaarde hebben (én in de ogen van de trainer een meerwaarde voor de klant hebben).'},
+  {q:'Welke spier train je met de Dumbbell Squat?', a:'M. gluteus maximus, mm. quadriceps, mm. hamstrings.', wrong:['M. gluteus maximus, mm. quadriceps, mm. hamstrings, m. iliopsoas.','M. gluteus medius, mm. quadriceps, mm. hamstrings, m. iliopsoas.'], exp:'Dumbbell Squat: m. gluteus maximus + mm. quadriceps + mm. hamstrings. Geen m. iliopsoas (dat is bij de Lunge het geval). Geen m. gluteus medius.'},
+  {q:'Wat zijn de aandachtspunten van de Dumbbell Front Raise?', a:'Beide antwoorden zijn juist.', wrong:['Armen heffen tot schouderhoogte.','Gewicht laten terugzakken tot er geen spanning meer is op de spieren.'], exp:'Beide aandachtspunten gelden: 1) Armen heffen tot schouderhoogte. 2) Gewicht laten terugzakken tot er spanning op de spieren BLIJFT (niet laten zakken tot geen spanning meer).'},
+  {q:'Energiewaarde: Energie wordt vaak uitgedrukt in kilojoules, afgekort?', a:'kJ.', wrong:['Kcal.','Cal.'], exp:'Kilojoules = kJ. Kilocalorieën = kcal. 1 kcal = 4,2 kJ. In de volksmond wordt kcal vaak "calorieën" genoemd.'},
+  {q:'Spierleer: Wat is de functie van mm. abductoren?', a:'Abductie in de heup.', wrong:['Abductie in de schouder.','Adductie in de heup.'], exp:'Mm. abductoren = abductie in de HEUP (been van het lichaam af). Niet in de schouder, niet adductie.'},
+  {q:'Welke spier train je met de Dumbbell Lunge?', a:'M. gluteus maximus, mm. quadriceps, mm. hamstrings, m. iliopsoas.', wrong:['M. gluteus maximus, mm. quadriceps, mm. hamstrings.','M. gluteus medius, mm. quadriceps, mm. hamstrings, m. iliopsoas.'], exp:'Dumbbell Lunge traint: m. gluteus maximus, mm. quadriceps, mm. hamstrings EN m. iliopsoas. Bij de squat is er geen m. iliopsoas.'},
+  {q:'Wat zijn de aandachtspunten bij de Abdominal-machine?', a:'Terugkomen tot de gewichten elkaar niet aanraken.', wrong:['Beide antwoorden zijn juist.','Hou de voeten NIET in contact met de grond.'], exp:'Aandachtspunt abdominal machine: terugkomen tot de gewichten ELKAAR NIET AANRAKEN (actief houden). Voeten MOETEN in contact blijven met de grond.'},
+  {q:'Spierleer: Wat is de functie van mm. erector spinae?', a:'Dorsaalflexie, lateraalflexie en torsie in de wervelkolom.', wrong:['Dorsaalflexie, laterorotatie en torsie in de wervelkolom.','Ventraalflexie, lateraalflexie en torsie in de wervelkolom.'], exp:'Mm. erector spinae = rugstrekker: DORSAALFLEXIE (achteroverbuigen), LATERAALFLEXIE (zijwaarts buigen) en TORSIE (draaien) in de wervelkolom.'},
+  {q:'Macronutriënten: Vetten bestaan uit?', a:'Beide antwoorden zijn juist.', wrong:['Glycerol.','Vetzuren.'], exp:'Vetten (lipiden) bestaan uit BEIDE: vetzuren EN glycerol. Beide antwoorden zijn dus juist.'},
+  {q:'Knieklachten: Wat moet je vermijden bij klachten aan de collaterale ligamenten van de knie?', a:'Zijwaartse bewegingen.', wrong:['Beide antwoorden zijn juist.','Belast niet verder dan een buiging van 45 graden.'], exp:'Collaterale ligamenten (kniebanden) = ZIJwaartse stabiliteit. Dus: zijwaartse bewegingen vermijden. De 45 graden-regel geldt voor kniepees- en slijmbeursklachten.'},
+  {q:'Fysiologie: Hoe noemen we het type verbranding bij glucoseomzet naar CO2 en H2O?', a:'Aeroob.', wrong:['Anaeroob alactisch.','Anaeroob lactisch.'], exp:'Glucoseomzet naar CO2 + H2O = VOLLEDIGE verbranding = aeroob (met zuurstof). Anaeroob lactisch geeft lactaat als bijproduct. Anaeroob alactisch gebruikt CP.'},
+  {q:'Welke PEP-score hangt hieraan? "De individuele klant en de groep reageren positief. De instructeur is op een actieve en positieve manier aanwezig: houdt 10 sec-, 1 minuut- en 5 minutengesprekjes. Genereert dialoog, creëert open sfeer, weet wat bij klanten speelt."', a:'8', wrong:['9','7'], exp:'PEP 8 = individu én groep reageren positief, instructeur is actief en positief aanwezig, houdt alle gesprekstypes, weet wat er speelt. PEP 9 = klanten worden "klantenmagneten" en benoemen het zelf.'},
+  {q:'Schouderklachten: Bij schouderklachten kun je de volgende trainingsaanpassingen doen:', a:'Begin met oefeningen waarbij de armen niet hoog boven de schouders komen.', wrong:['Beide antwoorden zijn juist.','Doe geen oefeningen voor het bovenlichaam.'], exp:'Schouderklachten: BEGIN met oefeningen waarbij armen NIET hoog boven de schouders komen (bijv. geen Lat Pulldown). Je kunt WEL bovenlichaamsoefeningen doen — het is geen totaalverbod.'},
+  {q:'Tijdens het maken van een neuromusculaire training voor jouw klant, een non-mover, moet je een keuze maken. Welke oefeningen kies jij?', a:'Chest Press, Lateral Pull Down, Abdominal Crunch, Leg Press.', wrong:['Chest Press, Lateral Pull Down, Abdominal Crunch, Leg Curl.','Chest Press, Seated Row, Lateral Pull Down, Shoulder Press, Abdominal Crunch, Leg Press.'], exp:'Non-mover = 4 basisoefeningen met *: Chest Press, Leg Press, Lateral Pull Down, Abdominal Crunch. Geen Leg Curl (dat is extra). Geen 6-9 oefeningen (dat is voor low- en high-movers).'},
+  {q:'Bij de Dumbbell Front Raise: tot welke hoogte hef je de armen?', a:'Schouderhoogte.', wrong:['Boven het hoofd.','Ter hoogte van de navel.'], exp:'Dumbbell Front Raise: armen heffen tot schouderhoogte (non-movers). Niet hoger — dat vergroot de belasting op het schoudergewricht onnodig.'},
+  {q:'Fysiologie: Welk energiesysteem gebruikt ALLEEN koolhydraten en geeft lactaat als bijproduct?', a:'Melkzuursysteem (anaeroob lactisch).', wrong:['Zuurstofsysteem (aeroob).','Fosfaatsysteem (anaeroob alactisch).'], exp:'Melkzuursysteem = anaeroob lactisch. Glucose wordt omgezet zonder zuurstof → lactaat als bijproduct. Fosfaatsysteem = anaeroob ALACTISCH (geen lactaat).'},
+  {q:'Welke stretch hoort bij de beweging op de foto: armen naar voren gestrekt, kin naar borst, rug rond?', a:'M. rhomboideus en m. trapezius.', wrong:['M. deltoideus.','M. latissimus dorsi.'], exp:'Armen naar voren strekken + kin naar borst = stretch voor m. rhomboideus en m. trapezius (retractie tegenwerken = protractie).'},
+  // Set 3 — nieuwe proefexamenvragen
+  {q:'Richtingen in het lichaam: Wat is craniaal?', a:'Richting het os cranium.', wrong:['Richting het os craan.','Richting het os coccygis.'], exp:'Craniaal = richting de schedel (os cranium). Caudaal = richting het staartbeen (os coccygis). "Os craan" bestaat niet.'},
+  {q:'Schouderklachten: Bij een slijmbeursontsteking zijn de volgende aanpassingen in het trainingsprogramma op te nemen:', a:'Beide antwoorden zijn juist.', wrong:['Anteflexie/retroflexie tot zestig graden.','Abductie/adductie tot zestig graden.'], exp:'Bij slijmbeursontsteking gelden BEIDE beperkingen: abductie/adductie TOT 60° EN anteflexie/retroflexie TOT 60°. Beide antwoorden zijn dus juist.'},
+  {q:'Lichaamssamenstelling: Wat valt onder vetvrije massa?', a:'Beide antwoorden zijn juist.', wrong:['Botten.','Spieren.'], exp:'Vetvrije massa = alles behalve vet: spieren, botten én water. Dus zowel botten als spieren vallen hieronder — beide antwoorden zijn juist.'},
+  {q:'Fysiologie: Voor hoeveel tijd heeft glucoseomzet naar lactaat energievoorraad?', a:'10-120 seconden.', wrong:['Tot 4 seconden, maar raakt nooit op.','10-15 seconden.'], exp:'Melkzuursysteem (glucoseomzet naar lactaat) = 10-120 seconden. ATP zelf = 4 seconden. Fosfaatsysteem (CP) = 10-15 seconden.'},
+  {q:'Managementvisie: Wat is de definitie van managementvisie?', a:'Managen is het aansturen en coördineren van mensen, met als doel arbeid binnen een bedrijf op een resultaatgerichte en efficiënte manier uit te voeren.', wrong:['Managen is zorgen dat de targets elke maand worden behaald.','Managen is het volgen en naleven van de regels van de eigenaar van het bedrijf en erop nazien dat al het personeel zich aan die regels houdt.'], exp:'Definitie managementvisie: aansturen en coördineren van mensen, arbeid resultaatgericht en efficiënt uitvoeren. Doel: kosten laag houden door optimale inzet van personeel.'},
+  {q:'Welke spier wordt gestretch op de foto: staand op één been, andere hak naar billen getrokken?', a:'Mm. quadriceps.', wrong:['Mm. triceps surae.','Mm. hamstrings.'], exp:'Hak naar billen trekken = knie buigen = stretch mm. quadriceps (de voorste dijbeenspieren die de knie strekken). Triceps surae = calf stretch. Hamstrings = been gestrekt voor je.'},
+  {q:'Lichaamssamenstelling: Wat is visceraal vet?', a:'Visceraal vet is vet in de buikholte en omliggende organen.', wrong:['Visceraal vet is vet in de borstholte en omliggende organen.','Visceraal vet is vet in de buikholte en omliggende botten.'], exp:'Visceraal vet = vet in de BUIKHOLTE rondom de ORGANEN. Niet in de borstholte, niet rondom botten. Meer risicovoller dan onderhuids vet.'},
+  {q:'Trainingsmethoden: Welke fysiologische veranderingen vinden plaats bij een warming-up?', a:'Beide antwoorden zijn juist.', wrong:['Verhoogde spierspanning, verhoogde hartslag en verwijding van bloedvaten.','Verhoogde doorbloeding van spieren en organen (longen en lever) en aanmaak van gewrichtssmeer (synoviaal vocht).'], exp:'Beide zijn juiste fysiologische veranderingen bij een warming-up: verhoogde hartslag/spierspanning/bloedvatverwijding ÉN verhoogde doorbloeding + aanmaak synoviaal vocht. Beide antwoorden zijn juist.'},
+];
+
 function buildSidebar(){
   const list = document.getElementById('chapter-list');
   list.innerHTML = chapters.map(ch => `
@@ -860,13 +919,30 @@ function buildSidebar(){
 
 function selectChapter(id){
   currentChapterId = id;
+  currentMode = 'begrippen';
   document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
   const btn = document.getElementById('ch-btn-'+id);
   if(btn) btn.classList.add('active');
   const ch = chapters.find(c=>c.id===id);
   document.getElementById('chapter-title').textContent = `H${ch.id}: ${ch.title}`;
   document.getElementById('chapter-subtitle').textContent = ch.subtitle;
+  // Show mode tabs
+  document.getElementById('mode-tabs').style.display = 'flex';
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('mode-begrippen').classList.add('active');
   renderCurrentMode();
+  buildSidebar();
+}
+
+function selectProefexamen(){
+  currentChapterId = null;
+  document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ch-btn-proef').classList.add('active');
+  document.getElementById('chapter-title').textContent = '🎓 Proefexamen AALO';
+  document.getElementById('chapter-subtitle').textContent = 'Echte oefenvragen uit het AALO proefexamen';
+  // Hide mode tabs - proefexamen has its own layout
+  document.getElementById('mode-tabs').style.display = 'none';
+  renderProefexamen();
   buildSidebar();
 }
 
@@ -881,6 +957,96 @@ function renderCurrentMode(){
   if(!currentChapterId){ document.getElementById('main-content').innerHTML='<p style="color:var(--muted);font-family:\'Space Mono\',monospace;font-size:13px;margin-top:40px;text-align:center;">← Kies een hoofdstuk</p>'; return; }
   if(currentMode==='begrippen') renderBegrippen();
   else renderQuiz();
+}
+
+// ============================================================
+// PROEFEXAMEN RENDER
+// ============================================================
+let proefState = { queue:[], idx:0, correct:0, wrong:0, answered:false };
+
+function renderProefexamen(){
+  proefState.queue = [...proefexamenVragen].sort(()=>Math.random()-0.5);
+  proefState.idx = 0;
+  proefState.correct = 0;
+  proefState.wrong = 0;
+  proefState.answered = false;
+  renderProefVraag();
+}
+
+function renderProefVraag(){
+  const container = document.getElementById('main-content');
+
+  if(proefState.idx >= proefState.queue.length){
+    const pct = Math.round(proefState.correct/proefState.queue.length*100);
+    const emoji = pct>=80?'🏆':pct>=60?'👍':'💪';
+    const msg = pct>=80?'Geslaagd! Je bent er klaar voor.':pct>=60?'Goed bezig! Nog wat bijschaven.':'Blijf oefenen, je komt er!';
+    container.innerHTML = `
+      <div class="quiz-wrap">
+        <div class="result-card" style="border-color:rgba(255,200,50,0.3);">
+          <div style="font-size:13px;font-family:'Space Mono',monospace;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">🎓 Proefexamen Resultaat</div>
+          <div class="result-emoji">${emoji}</div>
+          <div class="result-pct" style="color:var(--gold);">${pct}%</div>
+          <div class="result-sub">${proefState.correct} van ${proefState.queue.length} vragen correct<br><span style="color:var(--gold)">${msg}</span></div>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <button class="restart-btn" onclick="renderProefexamen()" style="background:var(--gold);color:#000;">Opnieuw proberen</button>
+            <button class="restart-btn" onclick="selectChapter(1)" style="background:var(--surface);color:var(--text);border:1px solid var(--border);">Naar hoofdstukken →</button>
+          </div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const q = proefState.queue[proefState.idx];
+  const all = [q.a, ...q.wrong].sort(()=>Math.random()-0.5);
+  const pct = proefState.queue.length ? (proefState.idx/proefState.queue.length*100) : 0;
+
+  container.innerHTML = `
+    <div class="quiz-wrap">
+      <div class="quiz-meta">
+        <div class="quiz-score" style="color:var(--gold);font-weight:700;">🎓 Proefexamen &nbsp;✅ <span class="good">${proefState.correct}</span> &nbsp;❌ <span class="bad">${proefState.wrong}</span></div>
+        <div class="quiz-score" style="color:var(--muted);">Vraag ${proefState.idx+1}/${proefState.queue.length}</div>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--gold),#ff9f4d);"></div></div>
+      <div class="q-card" style="border-color:rgba(217,119,6,0.25);">
+        <div class="q-text">${q.q}</div>
+      </div>
+      <div class="answers" id="proef-answers">
+        ${all.map(ans=>`<button class="ans-btn" onclick="checkProefAnswer(this,'${escQ(ans)}','${escQ(q.a)}','${escQ(q.exp)}')">${ans}</button>`).join('')}
+      </div>
+      <div class="feedback" id="proef-fb"></div>
+      <button class="next-btn" id="proef-next" onclick="nextProefVraag()" style="background:var(--gold);color:#000;">
+        ${proefState.idx+1 < proefState.queue.length ? 'Volgende vraag →' : 'Bekijk resultaat →'}
+      </button>
+    </div>`;
+}
+
+function checkProefAnswer(btn, chosen, correct, exp){
+  if(proefState.answered) return;
+  proefState.answered = true;
+  const allBtns = document.querySelectorAll('#proef-answers .ans-btn');
+  allBtns.forEach(b=>b.disabled=true);
+  const fb = document.getElementById('proef-fb');
+  const nextBtn = document.getElementById('proef-next');
+  if(chosen===correct){
+    btn.classList.add('correct');
+    fb.className='feedback show fb-ok';
+    fb.innerHTML=`✅ <strong>Correct!</strong> ${exp}`;
+    proefState.correct++;
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b=>{ if(b.textContent.trim()===correct) b.classList.add('correct'); });
+    fb.className='feedback show fb-err';
+    fb.innerHTML=`❌ <strong>Fout.</strong> Juiste antwoord: <strong>${correct}</strong><br><small>${exp}</small>`;
+    proefState.wrong++;
+  }
+  proefState.idx++;
+  nextBtn.classList.add('show');
+  nextBtn.textContent = proefState.idx >= proefState.queue.length ? 'Bekijk resultaat →' : 'Volgende vraag →';
+}
+
+function nextProefVraag(){
+  proefState.answered = false;
+  renderProefVraag();
 }
 
 // ============================================================
@@ -960,8 +1126,6 @@ function renderQuestion(){
 
   const q = quizState.queue[quizState.idx];
   const all = [q.a, ...q.wrong].sort(()=>Math.random()-0.5);
-  window.__quizQ = q;
-  window.__quizAll = all;
   const pct = quizState.queue.length ? (quizState.idx/quizState.queue.length*100) : 0;
 
   container.innerHTML = `
@@ -971,29 +1135,22 @@ function renderQuestion(){
         <div class="quiz-score" style="color:var(--muted)">Vraag ${quizState.idx+1}/${quizState.queue.length}</div>
       </div>
       <div class="pbar"><div class="pbar-fill" style="width:${pct}%"></div></div>
-      <div class="stats-row">
-        <div class="stat-box"><div class="stat-num">${quizState.correct}</div><div class="stat-label">Correct</div></div>
-        <div class="stat-box"><div class="stat-num bad">${quizState.wrong}</div><div class="stat-label">Fout</div></div>
-        <div class="stat-box"><div class="stat-num">${quizState.queue.length-quizState.idx}</div><div class="stat-label">Resterend</div></div>
-      </div>
       <div class="q-card">
-        <div class="q-label">H${ch.id}: ${ch.title}</div>
         <div class="q-text">${q.q}</div>
       </div>
       <div class="answers" id="answers">
-        ${all.map((ans,i)=>`<button class="ans-btn" onclick="checkAnswer(this,${i})">${ans}</button>`).join('')}
+        ${all.map(ans=>`<button class="ans-btn" onclick="checkAnswer(this,'${escQ(ans)}','${escQ(q.a)}','${escQ(q.exp)}')">${ans}</button>`).join('')}
       </div>
       <div class="feedback" id="fb"></div>
       <button class="next-btn" id="next-btn" onclick="nextQ()">Volgende vraag →</button>
     </div>`;
 }
 
-function checkAnswer(btn, idx){
+function escQ(s){ return (s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
+
+function checkAnswer(btn, chosen, correct, exp){
   if(quizState.answered) return;
   quizState.answered = true;
-  const chosen = window.__quizAll[idx];
-  const correct = window.__quizQ.a;
-  const exp = window.__quizQ.exp;
   const allBtns = document.querySelectorAll('.ans-btn');
   allBtns.forEach(b=>b.disabled=true);
   const fb = document.getElementById('fb');

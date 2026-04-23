@@ -57,6 +57,23 @@ body {
 }
 .sidebar-title { font-size: 15px; font-weight: 800; line-height: 1.2; color: var(--text); }
 
+/* Level tabs */
+.level-tabs {
+  display:flex; gap:0;
+  border:1px solid var(--border); border-radius:7px;
+  overflow:hidden;
+  margin: 8px 0 6px;
+}
+.lvl-btn {
+  flex:1; padding:6px 10px; border:none; background: white;
+  color: var(--muted); font-family:'Inter',sans-serif;
+  font-size:11px; font-weight:700; letter-spacing:0.3px;
+  cursor:pointer; transition: all 0.15s;
+}
+.lvl-btn:not(:last-child) { border-right:1px solid var(--border); }
+.lvl-btn.active { background: var(--accent); color: white; }
+.lvl-btn:hover:not(.active) { background: var(--bg); color: var(--text); }
+
 .chapter-list { padding: 8px; flex:1; }
 .ch-btn {
   width:100%; text-align:left;
@@ -249,10 +266,14 @@ body {
 <nav class="sidebar">
   <div class="sidebar-header">
     <div class="sidebar-logo">AALO Opleidingen</div>
-    <div class="sidebar-title">Fitness Instructeur</div>
+    <div class="level-tabs">
+      <button class="lvl-btn active" id="lvl-btn-1" onclick="setLevel(1)">Level 1</button>
+      <button class="lvl-btn" id="lvl-btn-2" onclick="setLevel(2)">Level 2</button>
+    </div>
+    <div class="sidebar-title" id="sidebar-title">Fitness Instructeur</div>
   </div>
   <div class="chapter-list" id="chapter-list"></div>
-  <div style="padding:8px;">
+  <div id="proef-wrap" style="padding:8px;">
     <button class="ch-btn" id="ch-btn-proef" onclick="selectProefexamen()" style="background:linear-gradient(135deg,rgba(255,200,50,0.15),rgba(255,77,109,0.1));border:1px solid rgba(255,200,50,0.4);color:#ffc832;margin-top:4px;">
       <span class="ch-num" style="background:rgba(255,200,50,0.2);color:#ffc832;">🎓</span>
       <span class="ch-label" style="color:#ffc832;font-weight:700;">Proefexamen AALO</span>
@@ -801,6 +822,235 @@ const chapters = [
     {q:'Welk materiaal is NIET geschikt voor snelkrachttraining?',a:'Vaste toestellen en pulley-toestellen',wrong:['Barbells','Dumbbells','Lichaamsgewicht'],exp:'Vaste en pulley-toestellen zijn niet geschikt voor snelkracht. Barbells zijn wél geschikt voor snelkracht.'},
     {q:'Wat is de juiste uitvoering van de CRUNCH?',a:'Schouderbladen van de grond totdat niet verder kan, onderrug op de vloer',wrong:['Volledig omhoog komen tot zitten','Hoofd met handen naar voren trekken','Benen optillen van de grond'],exp:'Crunch: schouderbladen lichten op tot max, onderrug blijft op de vloer. Handen achter oren, NIET aan hoofd trekken.'},
   ]
+},
+
+// ============================================================
+// LEVEL 2 — Small Group Trainer (SGT)
+// ============================================================
+{
+  id:10, level:2, title:'SGT Beroep & Examens', subtitle:'Beroepsomschrijving, gedragscode, portfolio & examens',
+  color:'#0ea5e9',
+  terms:[
+    {latin:'Small Group Trainer',nl:'Verwelkomt, introduceert en begeleidt klanten in groepsverband',tag:'beroep',extra:'Helpt klanten met starten van een fitnessprogramma, begeleidt nieuwe én bestaande klanten.'},
+    {latin:'Gedragscode SGT',nl:'4 principes voor professioneel gedrag',tag:'beroep',extra:'Respect, professionele relaties, gezonde levensstijl, hoogste niveau van professionaliteit.'},
+    {latin:'DLO',nl:'Digitale Leer Omgeving',tag:'beroep',extra:'Via DLO: opleidingsmateriaal downloaden, (proef)theorie-examen, examen casus ontvangen, portfolio indienen, contact met AALO Master Trainer.'},
+    {latin:'Theorie-examen',nl:'50 meerkeuzevragen in 40 min op dag 5',tag:'exam',extra:'Gaat over de theorie uit het studieboek.'},
+    {latin:'Portfolio',nl:'Verslag met voorblad, inhoudsopgave, inleiding, 4 opdrachten, slot, evaluatieformulier',tag:'exam',extra:'Inleveren via DLO. Let op Nederlandse spelling, taalgebruik en lay-out.'},
+    {latin:'Opdracht 1',nl:'Fitness-gerelateerde test uitvoeren',tag:'exam',extra:'Portfolio-opdracht 1.'},
+    {latin:'Opdracht 2',nl:'Mesoplanning',tag:'exam',extra:'Portfolio-opdracht 2: trainingsplanning op meso-niveau.'},
+    {latin:'Opdracht 3',nl:'Bewegingsanalyse',tag:'exam',extra:'Portfolio-opdracht 3.'},
+    {latin:'Opdracht 4',nl:'Evaluatie',tag:'exam',extra:'Portfolio-opdracht 4.'},
+    {latin:'Praktijkexamen',nl:'30 minuten op dag 6/7 met zelf gekozen klanten',tag:'exam',extra:'Casus uitgewerkt op lesvoorbereidingsformulier (via DLO). Uitleg trainingsprogramma aan groep op examendag.'},
+    {latin:'Kennismakingsfase (examen)',nl:'2 minuten',tag:'exam',extra:'Eerste onderdeel van het praktijkexamen.'},
+    {latin:'Warming-up (examen)',nl:'6 minuten',tag:'exam',extra:'Tweede onderdeel van het praktijkexamen.'},
+    {latin:'SGT-kern (examen)',nl:'18 minuten — min. 4 oefenvormen, 2 ronden',tag:'exam',extra:'Hoofdonderdeel van het praktijkexamen.'},
+    {latin:'CD Stretches (examen)',nl:'3 minuten — agonisten van de gekozen oefenvormen',tag:'exam',extra:'Cooling-down met stretches van de getrainde agonisten.'},
+    {latin:'Slotfase (examen)',nl:'2 minuten',tag:'exam',extra:'Afsluiting van het praktijkexamen.'},
+    {latin:'Zelfreflectiegesprek',nl:'Gesprek na het praktijkexamen',tag:'exam',extra:'Conclusies uit evaluatie, verbeterpunten, terugkoppeling SMART-doelstelling en lesactiviteiten.'},
+    {latin:'Referentiekader',nl:'Beoordelingsmatrix met wegingsfactoren',tag:'exam',extra:'Lesvoorbereidingsformulier: SMART (6×), beginsituatie (3×), algemene factoren (3×), lesonderdeel (3×), MDH (3×).'},
+  ],
+  quiz:[
+    {q:'Hoeveel minuten duurt het totale praktijkexamen SGT?',a:'30 minuten',wrong:['20 minuten','45 minuten','60 minuten'],exp:'Het praktijkexamen duurt 30 min. Na 30 min wordt het examen stopgezet.'},
+    {q:'Uit hoeveel vragen bestaat het theorie-examen en hoeveel tijd heb je?',a:'50 meerkeuzevragen in 40 minuten',wrong:['40 meerkeuzevragen in 50 minuten','50 open vragen in 60 minuten','25 meerkeuzevragen in 30 minuten'],exp:'50 meerkeuzevragen in 40 minuten, afgenomen op de 5e opleidingsdag.'},
+    {q:'Wat is de duur van de SGT-kern in het praktijkexamen?',a:'18 minuten (minimaal 4 oefenvormen, 2 ronden)',wrong:['12 minuten (2 oefenvormen)','25 minuten (6 oefenvormen)','30 minuten (alle oefenvormen)'],exp:'De SGT-kern: 18 min, minimaal 4 oefenvormen in 2 ronden.'},
+    {q:'Welke 4 portfolio-opdrachten moet je indienen?',a:'Fitness-test, mesoplanning, bewegingsanalyse, evaluatie',wrong:['Intake, training, evaluatie, casus','SMART, FITT, CLUKS, PEP','Anatomie, fysiologie, voeding, coaching'],exp:'1. Fitness-gerelateerde test, 2. Mesoplanning, 3. Bewegingsanalyse, 4. Evaluatie.'},
+    {q:'Hoeveel minuten duurt de kennismakingsfase in het praktijkexamen?',a:'2 minuten',wrong:['5 minuten','6 minuten','10 minuten'],exp:'Kennismakingsfase = 2 min. Warming-up = 6 min. SGT = 18 min. CD Stretches = 3 min. Slotfase = 2 min.'},
+    {q:'Waar dien je je portfolio in?',a:'Via de DLO (Digitale Leer Omgeving)',wrong:['Per e-mail aan je AALO Master Trainer','Fysiek op dag 7','Via een apart online portaal'],exp:'Zowel portfolio als lesvoorbereidingsformulier upload je in de DLO.'},
+    {q:'Wat gebeurt er direct na het praktijkexamen?',a:'Een zelfreflectiegesprek',wrong:['Directe uitslag','Een theorie-examen','Een anatomietest'],exp:'Na het praktijkexamen volgt een zelfreflectiegesprek waarin je evaluatie, verbeterpunten en terugkoppeling bespreekt.'},
+    {q:'Welke weegfactor heeft de SMART-doelstelling in het referentiekader?',a:'6×',wrong:['3×','2×','4×'],exp:'SMART-doelstelling heeft de hoogste weegfactor (6×). Overige onderdelen: 2–4×.'},
+    {q:'Wat is de cooling-down stretch-regel in het examen?',a:'Stretch de agonisten van de gekozen oefenvormen',wrong:['Stretch alleen de benen','Stretch alle spieren van het lichaam','Geen stretches, alleen ademhaling'],exp:'CD Stretches = 3 min, stretch de agonisten van de oefenvormen die je hebt gedaan.'},
+    {q:'Hoeveel oefenvormen moeten minimaal in de SGT-kern aanwezig zijn?',a:'4 oefenvormen',wrong:['2 oefenvormen','6 oefenvormen','8 oefenvormen'],exp:'Minimaal 4 oefenvormen, uitgevoerd in 2 ronden gedurende 18 minuten.'},
+  ]
+},
+{
+  id:11, level:2, title:'Intake, Meten & Weten SGT', subtitle:'Beginsituaties, mover types & testen',
+  color:'#14b8a6',
+  terms:[
+    {latin:'Intakegesprek',nl:'Eerste gesprek met klant — kennismakingsfase',tag:'intake',extra:'Plaats in rustige ruimte. Klant moet zich mentaal en sociaal ontspannen voelen. Koffie of thee erbij.'},
+    {latin:'Temperatuur aannemen',nl:'Stap 1: gastvrije ontvangst',tag:'intake',extra:'Eerste indruk — ontvang de klant gastvrij.'},
+    {latin:'Ontdooien',nl:'Stap 2: kopje koffie of thee',tag:'intake',extra:'Zorg dat de klant zich op zijn gemak voelt.'},
+    {latin:'Op temperatuur brengen',nl:'Stap 3: uitleg over wat de klant kan verwachten',tag:'intake',extra:'Verwachtingen managen voor de daadwerkelijke start.'},
+    {latin:'Bevriezen',nl:'Stap 4: daadwerkelijk aan de slag gaan',tag:'intake',extra:'Na de kennismakingsroute begint het echte werk.'},
+    {latin:'Beginsituatie',nl:'4 typen: motorisch, sociaal-affectief, cognitief, mentaal',tag:'intake',extra:'Complete beeldvorming van de klant op 4 domeinen.'},
+    {latin:'Psychomotorische beginsituatie',nl:'Leeftijd, geslacht, mover type, CLUKS, aanleg, werk',tag:'intake',extra:'Kijk naar grondmotorische vaardigheden (CLUKS) en houding/activiteit in het dagelijks werk.'},
+    {latin:'Sociaal-affectieve beginsituatie',nl:'Werk, levenswijze, psychische eigenschappen, sociale vaardigheden',tag:'intake',extra:'Intrinsiek of extrinsiek gemotiveerd? Individueel of in groep sporten? Is sport een uitlaatklep?'},
+    {latin:'Cognitieve beginsituatie',nl:'Kennis van training, technieken en voeding',tag:'intake',extra:'Hoeveel weet de klant al?'},
+    {latin:'Mentale beginsituatie',nl:'Doorzettingsvermogen, motivatie, inzet, stressbestendigheid',tag:'intake',extra:'Hangt af van intrinsieke eigenschappen die per persoon sterk verschillen.'},
+    {latin:'Non-mover',nl:'Geen sportverleden of >1 jaar niet gesport',tag:'mover',extra:'Lage belastbaarheid. Start op 60% intensiteit.'},
+    {latin:'Low-mover',nl:'Matig sportverleden (1× p/w) of niet-fitness (bv voetballer)',tag:'mover',extra:'Gematigde belastbaarheid. 60-70% intensiteit.'},
+    {latin:'High-mover',nl:'Actief sportverleden: 2× per week of meer',tag:'mover',extra:'Hoge belastbaarheid. Alle cardio-oefeningen mogelijk op 70%.'},
+    {latin:'CLUKS-differentiatie',nl:'Movertype kan per CLUKS-factor verschillen',tag:'mover',extra:'Iemand kan high-mover zijn op U (uithoudingsvermogen) maar non-mover op K (kracht).'},
+    {latin:'Nulmeting',nl:'Meting op tijdstip 0 — beginsituatie bepalen',tag:'test',extra:'Voor aanvang trainingsprogramma.'},
+    {latin:'Tussentijdse test',nl:'Monitor progressie tijdens programma',tag:'test',extra:'Bepaal of subdoelen worden behaald.'},
+    {latin:'Eindtest',nl:'Evaluatie na afloop — is einddoel behaald?',tag:'test',extra:'Afsluitende meting van het trainingsprogramma.'},
+    {latin:'Shuttle Run-test',nl:'Cardiovasculaire test (nieuw in SGT)',tag:'test',extra:'Loopt tussen twee lijnen op oplopend tempo tot uitputting.'},
+    {latin:'Coopertest',nl:'Max afstand in 12 min (nieuw in SGT)',tag:'test',extra:'Cardiovasculaire uithoudingsvermogen test.'},
+    {latin:'Åstrand-test',nl:'Submaximale fietstest — indirect VO2max',tag:'test',extra:'Ook bekend uit Fitness Instructeur (Level 1).'},
+    {latin:'10 RM-test',nl:'Neuromusculaire test — herhalingsmaximum',tag:'test',extra:'Gewicht dat je precies 10 keer kunt tillen. Bekend uit Level 1.'},
+  ],
+  quiz:[
+    {q:'Wat zijn de 4 beginsituaties die je bij de SGT-intake opstelt?',a:'Psychomotorisch, sociaal-affectief, cognitief en mentaal',wrong:['Fysiek, mentaal, sociaal en emotioneel','Motorisch, technisch, tactisch en mentaal','Kracht, conditie, lenigheid en coördinatie'],exp:'Vier beginsituaties: psychomotorisch, sociaal-affectief, cognitief, mentaal.'},
+    {q:'Wanneer ben je een HIGH-mover?',a:'Actief sportverleden: 2× per week of meer',wrong:['1× per week sporten','Elke dag wandelen','Geen sportverleden'],exp:'High-mover = 2× per week of meer (fitness-) sportverleden.'},
+    {q:'Wat betekent CLUKS-differentiatie?',a:'Movertype kan per CLUKS-factor verschillen',wrong:['Per les een andere CLUKS-factor trainen','Alle CLUKS-factoren tegelijk trainen','CLUKS verdelen tussen groepsleden'],exp:'Een klant kan high-mover zijn op Uithouding maar non-mover op Kracht. Pas de belastbaarheid per CLUKS-factor aan.'},
+    {q:'Wat is de juiste volgorde van de intakegesprek-route?',a:'Temperatuur aannemen → ontdooien → op temperatuur brengen → bevriezen',wrong:['Bevriezen → ontdooien → opwarmen → afsluiten','Ontdooien → bevriezen → opwarmen → afsluiten','Opwarmen → ontdooien → bevriezen → temperatuur'],exp:'1. Temperatuur aannemen (gastvrije ontvangst), 2. Ontdooien (koffie/thee), 3. Op temperatuur brengen (uitleg), 4. Bevriezen (aan de slag).'},
+    {q:'Welke test is NIEUW in Level 2 t.o.v. Level 1?',a:'Shuttle Run-test en Coopertest',wrong:['Åstrand-test','10 RM-test','Vierpuntshuidplooimeting'],exp:'Shuttle Run en Cooper zijn nieuw in SGT. Åstrand en 10 RM waren er al in Level 1.'},
+    {q:'Waar kijk je naar bij een SOCIAAL-AFFECTIEVE beginsituatie?',a:'Werk/levenswijze, persoonlijke eigenschappen, sociale vaardigheden',wrong:['Leeftijd en geslacht','CLUKS-factoren','Kennis van voeding'],exp:'Onder meer: werk/gezin, intrinsieke/extrinsieke motivatie, individueel of in groep sporten.'},
+    {q:'Wat is het doel van een NULMETING?',a:'De beginsituatie bepalen voor aanvang van het trainingsprogramma',wrong:['Progressie monitoren tijdens het programma','Het einddoel evalueren','Vergelijken met andere klanten'],exp:'Nulmeting = meting op tijdstip 0, voor de start. Tussentijds = monitor, na afloop = evaluatie.'},
+    {q:'Welke kenmerken horen bij een NON-mover?',a:'Geen sportverleden of langer dan 1 jaar niet gesport',wrong:['1× per week sport','2× per week sport','Elke dag traint'],exp:'Non-mover = geen sportverleden OF langer dan 1 jaar geen sport.'},
+    {q:'Welke factoren bepalen de MENTALE beginsituatie?',a:'Doorzettingsvermogen, motivatie, inzet, ambitie, stressbestendigheid en angst',wrong:['Leeftijd en geslacht','Kracht en uithoudingsvermogen','Voedingspatroon'],exp:'Mentale status verschilt sterk per persoon — intrinsieke eigenschappen.'},
+    {q:'Welke beginsituatie gaat over kennis van training, technieken en voeding?',a:'Cognitieve beginsituatie',wrong:['Psychomotorische beginsituatie','Sociaal-affectieve beginsituatie','Mentale beginsituatie'],exp:'Cognitief = wat weet de klant al? Kennis van training, technieken, voeding.'},
+  ]
+},
+{
+  id:12, level:2, title:'Doelstellingen & SMART', subtitle:'3 doelstellingstypen, SMART & FITT',
+  color:'#6366f1',
+  terms:[
+    {latin:'Doelstelling',nl:'Het doel dat je wilt realiseren',tag:'doel',extra:'Kan psychomotorisch, sociaal-affectief of cognitief zijn.'},
+    {latin:'Psychomotorische doelstelling',nl:'Gericht op CLUKS-grondmotorische vaardigheden',tag:'doel',extra:'Coördinatie, Lenigheid, Uithoudingsvermogen, Kracht, Snelheid — één of meer tegelijk.'},
+    {latin:'Sociaal-affectieve doelstelling',nl:'Veilig voelen, uiten, meedoen aan groepsactiviteiten',tag:'doel',extra:'Klant veilig laten voelen tijdens én buiten het trainen. Meedoen aan gezellige groepsactiviteiten.'},
+    {latin:'Cognitieve doelstelling',nl:'Bewustwording op 4 thema\'s',tag:'doel',extra:'Voedingspatroon, lichaamshouding, hoeveelheid/kwaliteit beweging, lichamelijke/mentale gezondheid.'},
+    {latin:'SMART',nl:'Specifiek, Meetbaar, Acceptabel, Realistisch, Tijdgebonden',tag:'smart',extra:'Methode om doelstellingen goed te formuleren.'},
+    {latin:'Specifiek',nl:'Concrete, ondubbelzinnige omschrijving',tag:'smart',extra:'Zelfstandig naamwoord + werkwoord. Bv: Kees wil zijn vetpercentage verlagen.'},
+    {latin:'Meetbaar',nl:'Resultaat is zichtbaar en meetbaar',tag:'smart',extra:'Bv: vetpercentage van 20% naar 15% via vierpuntshuidplooimeting.'},
+    {latin:'Acceptabel',nl:'Plan is haalbaar voor de klant — gebaseerd op FITT',tag:'smart',extra:'Of het trainingsprogramma past bij de klant hangt af van FITT-factoren.'},
+    {latin:'Realistisch',nl:'Doel moet haalbaar zijn in het tijdsbestek',tag:'smart',extra:'Bv: 5% vet verliezen in 3 maanden = 0,4% per week.'},
+    {latin:'Tijdgebonden',nl:'Wanneer is het doel klaar?',tag:'smart',extra:'Eeuwige doelen helpen niet. Zet een deadline. Bv: Drie maanden.'},
+    {latin:'FITT-factoren',nl:'Frequentie, Intensiteit, Type, Tijdsduur',tag:'smart',extra:'Trainingsvariabelen — bepalen of een programma acceptabel is.'},
+    {latin:'Frequentie (F)',nl:'Hoe vaak per week',tag:'smart',extra:'Bv: 2× per week.'},
+    {latin:'Intensiteit (I)',nl:'Hoe zwaar — % 1 RM (NMT) of % HFmax (CVT)',tag:'smart',extra:'NMT: 60-70% 1 RM = spierkrachtuithoudingsvermogen. CVT: 60-70% HFmax = extensieve duurtraining (aerobe zone 2).'},
+    {latin:'Type (T)',nl:'Soort training',tag:'smart',extra:'Neuromusculair, cardiovasculair, lichaamsgewicht, compound- en totaalbewegingen.'},
+    {latin:'Tijdsduur (T)',nl:'Sets, reps, rust, duur',tag:'smart',extra:'NMT: 1-4 sets, 12-20 reps, 10-90 sec rust. CVT: 30-90 minuten. Trainingstijd: 60 min.'},
+    {latin:'Meso-doelstelling',nl:'Doelstelling op meso-niveau (weken tot maanden)',tag:'doel',extra:'Middellange termijn trainingsprogramma. Bv: vetpercentage in 3 maanden omlaag.'},
+    {latin:'Micro-doelstelling',nl:'Specifieke lesdoelstelling (1 les)',tag:'doel',extra:'Concreet doel voor 1 lesvoorbereiding.'},
+  ],
+  quiz:[
+    {q:'Waar staat SMART voor?',a:'Specifiek, Meetbaar, Acceptabel, Realistisch, Tijdgebonden',wrong:['Slim, Meetbaar, Acceptabel, Realistisch, Timing','Sociaal, Mentaal, Actief, Reëel, Termijn','Sport, Meten, Actie, Resultaat, Techniek'],exp:'SMART = Specifiek, Meetbaar, Acceptabel, Realistisch, Tijdgebonden.'},
+    {q:'Welke 4 factoren zijn de FITT-factoren?',a:'Frequentie, Intensiteit, Type, Tijdsduur',wrong:['Fitness, Intensiteit, Type, Techniek','Frequentie, Impact, Training, Tijd','Flexibiliteit, Intensiteit, Tempo, Tijd'],exp:'FITT = Frequentie (hoe vaak), Intensiteit (hoe zwaar), Type (welke training), Tijdsduur (hoelang).'},
+    {q:'Welke 3 doelstellingstypen onderscheidt AALO SGT?',a:'Psychomotorisch, sociaal-affectief en cognitief',wrong:['Fysiek, mentaal, emotioneel','Kracht, conditie, flexibiliteit','Motorisch, technisch, tactisch'],exp:'3 types: psychomotorisch (CLUKS), sociaal-affectief (veiligheid/uiten), cognitief (bewustwording).'},
+    {q:'Wat is een COGNITIEVE doelstelling bij SGT?',a:'Bewustwording op voeding, houding, beweging en gezondheid',wrong:['Kracht trainen op CLUKS-factoren','Veiligheid voelen in de groep','Spiermassa verhogen'],exp:'Cognitief = bewustwording van voedingspatroon, lichaamshouding, hoeveelheid/kwaliteit beweging, lichamelijke/mentale gezondheid.'},
+    {q:'Welke FITT-factor zegt iets over "hoe zwaar" je traint?',a:'Intensiteit (I)',wrong:['Frequentie (F)','Type (T)','Tijdsduur (T)'],exp:'Intensiteit = % van 1 RM (NMT) of % van HFmax (CVT).'},
+    {q:'Bij NMT-training op 60-70% van 1 RM train je vooral...',a:'Spierkrachtuithoudingsvermogen',wrong:['Maximale kracht','Hypertrofie','Explosieve kracht'],exp:'60-70% van 1 RM = spierkrachtuithoudingsvermogen (typisch 12-20 reps).'},
+    {q:'Welke SMART-letter betekent "haalbaar voor de klant"?',a:'Acceptabel (A)',wrong:['Realistisch (R)','Specifiek (S)','Meetbaar (M)'],exp:'Acceptabel = past het bij de klant? Dit hangt af van de FITT-factoren.'},
+    {q:'Wat is het verschil tussen MESO- en MICRO-doelstelling?',a:'Meso = weken/maanden, Micro = 1 specifieke les',wrong:['Meso = 1 les, Micro = meerdere lessen','Meso = groepsdoel, Micro = individueel','Meso = makkelijk, Micro = moeilijk'],exp:'Meso-doel = middellange termijn (weken/maanden). Micro-doel = specifiek voor 1 lesvoorbereiding.'},
+    {q:'Welke reikwijdte heeft de letter "S" in SMART?',a:'Concrete, ondubbelzinnige omschrijving — zelfstandig naamwoord + werkwoord',wrong:['Simpel en kort','Snel te bereiken','Sportief'],exp:'Specifiek: bv "Kees wil zijn vetpercentage verlagen" (zelfstandig naamwoord + werkwoord).'},
+    {q:'Een SGT-doelstelling voor "veilig voelen tijdens het trainen" is welk type?',a:'Sociaal-affectief',wrong:['Psychomotorisch','Cognitief','Mentaal'],exp:'Veilig voelen, kunnen uiten en meedoen aan groepsactiviteiten zijn sociaal-affectieve doelstellingen.'},
+  ]
+},
+{
+  id:13, level:2, title:'Mentale Gezondheid & Stress', subtitle:'Effecten van beweging, stressrespons & relaxatie',
+  color:'#a855f7',
+  terms:[
+    {latin:'Mentale gezondheid',nl:'Stemming, humeur en welbevinden',tag:'mentaal',extra:'Lichaamsbeweging heeft positieve effecten op mentale status.'},
+    {latin:'Stemmingsverhogend effect',nl:'Beweging verhoogt de stemming',tag:'mentaal',extra:'Eén van de 3 mentale effecten van bewegen.'},
+    {latin:'Antidepressief effect',nl:'Beweging werkt tegen depressie',tag:'mentaal',extra:'Lichamelijke activiteit vermindert depressieve klachten.'},
+    {latin:'Stressbeschermend effect',nl:'Beweging beschermt tegen stress',tag:'mentaal',extra:'Regelmatig bewegen maakt mentaal veerkrachtiger.'},
+    {latin:'Stress',nl:'Spanning/druk als reactie op externe prikkels',tag:'stress',extra:'Fysiologische reactie van het lichaam.'},
+    {latin:'Korte termijn-stressrespons',nl:'Fight-or-flight — adrenaline en noradrenaline',tag:'stress',extra:'Stresshormonen uit de nieren. Bereidt lichaam voor op actie.'},
+    {latin:'Adrenaline',nl:'Korte termijn stresshormoon (nieren)',tag:'stress',extra:'Verhoogt hartslag, bloeddruk en ademhaling voor directe actie.'},
+    {latin:'Noradrenaline',nl:'Korte termijn stresshormoon (nieren)',tag:'stress',extra:'Samen met adrenaline in fight-or-flight respons.'},
+    {latin:'Lange termijn-stressrespons',nl:'Cortisol-productie door de nieren',tag:'stress',extra:'Houdt lichaam in verhoogde alertheid nadat het directe gevaar geweken is.'},
+    {latin:'Cortisol',nl:'Lange termijn stresshormoon',tag:'stress',extra:'Functionele fysiologische effecten lijken op adrenaline/noradrenaline, maar langduriger.'},
+    {latin:'Chronische stress — lichamelijk',nl:'Pijnlijke spieren, vermoeidheid, slapeloosheid, hoofdpijn',tag:'stress',extra:'Ook: verminderde weerstand, nek-/schouderpijn, buikpijn, hartkloppingen, hoge bloeddruk.'},
+    {latin:'Chronische stress — mentaal',nl:'Concentratiestoornissen, angst, piekeren',tag:'stress',extra:'Ook: geheugenverlies, opgejaagd gevoel, nergens zin in, neiging tot verslaving, prikkelgevoeligheid.'},
+    {latin:'Relaxatietechniek',nl:'Techniek om te ontspannen',tag:'stress',extra:'Ademhalingsoefeningen, visualisatie, yoga, meditatie.'},
+    {latin:'Ademhalingsoefening',nl:'Relaxatietechniek',tag:'stress',extra:'Bewust en rustig ademen om te ontspannen.'},
+    {latin:'Visualisatie',nl:'Relaxatietechniek',tag:'stress',extra:'Rustgevende beelden oproepen in je hoofd.'},
+    {latin:'Yoga',nl:'Relaxatietechniek',tag:'stress',extra:'Combinatie van houding, ademhaling en meditatie.'},
+    {latin:'Meditatie',nl:'Relaxatietechniek',tag:'stress',extra:'Bewuste aandacht richten op één ding of op de stilte.'},
+  ],
+  quiz:[
+    {q:'Welke 3 mentale effecten heeft lichaamsbeweging?',a:'Stemmingsverhogend, antidepressief en stressbeschermend',wrong:['Spierversterkend, conditieverhogend, gewichtsverliezend','Sociaal, cognitief, emotioneel','Activerend, kalmerend, versterkend'],exp:'Bewegen heeft stemmingsverhogend, antidepressief én stressbeschermend effect.'},
+    {q:'Welke hormonen komen vrij bij de KORTE termijn-stressrespons?',a:'Adrenaline en noradrenaline',wrong:['Cortisol en insuline','Serotonine en dopamine','Testosteron en oestrogeen'],exp:'Adrenaline + noradrenaline uit de nieren — fight-or-flight respons.'},
+    {q:'Welk hormoon is verantwoordelijk voor de LANGE termijn-stressrespons?',a:'Cortisol',wrong:['Adrenaline','Insuline','Serotonine'],exp:'Cortisol wordt door de nieren geproduceerd en houdt het lichaam in verhoogde alertheid.'},
+    {q:'Waar worden stresshormonen geproduceerd?',a:'In de nieren',wrong:['In de lever','In de hypofyse','In de schildklier'],exp:'Volgens de SGT-handout worden adrenaline, noradrenaline én cortisol door de nieren gevormd.'},
+    {q:'Welke 4 relaxatietechnieken noemt de SGT-leerstof?',a:'Ademhalingsoefeningen, visualisatie, yoga, meditatie',wrong:['Yoga, stretchen, lopen, fietsen','Muziek, massage, stretchen, slapen','Ademen, lopen, lachen, mediteren'],exp:'Ademhalingsoefeningen, visualisatie, yoga en meditatie.'},
+    {q:'Welke klacht hoort bij CHRONISCHE stress (lichamelijk)?',a:'Pijnlijke spieren, hoofdpijn, hoge bloeddruk',wrong:['Spiergroei','Verbeterde coördinatie','Hogere VO2max'],exp:'Lichamelijk: pijnlijke spieren, vermoeidheid, slapeloosheid, hoofdpijn, hartkloppingen, hoge bloeddruk.'},
+    {q:'Welke mentale klacht hoort bij chronische stress?',a:'Concentratiestoornissen en piekeren',wrong:['Verhoogde focus','Meer creativiteit','Beter slapen'],exp:'Mentaal: concentratieproblemen, angst, stemmingswisselingen, piekeren, geheugenverlies, opgejaagd gevoel.'},
+    {q:'Wat is de functie van de korte termijn-stressrespons?',a:'Het lichaam voorbereiden op actie (fight-or-flight)',wrong:['Zorgen voor langdurige alertheid','Slaap bevorderen','Spiergroei stimuleren'],exp:'De korte termijn-respons bereidt het lichaam fysiologisch voor op directe actie.'},
+    {q:'Wat is STRESS volgens de SGT-definitie?',a:'Een vorm van spanning/druk in het lichaam als reactie op externe prikkels',wrong:['Een gebrek aan motivatie','Een teken van zwakte','Een hormonale stoornis'],exp:'Stress = spanning/druk als reactie op externe prikkels.'},
+    {q:'Welke relaxatietechniek combineert houding, ademhaling én meditatie?',a:'Yoga',wrong:['Ademhalingsoefening','Visualisatie','Meditatie alleen'],exp:'Yoga combineert alle drie: houding, ademhaling en aandacht/meditatie.'},
+  ]
+},
+{
+  id:14, level:2, title:'Anatomie SGT', subtitle:'Skelet, botindeling & beenverbindingen',
+  color:'#f59e0b',
+  terms:[
+    {latin:'Anatomie',nl:'Studie van de opbouw van het menselijk lichaam',tag:'definitie',extra:'SGT gaat dieper dan Level 1: meerdere vakgebieden.'},
+    {latin:'Osteologie',nl:'Skeletleer',tag:'anatomie',extra:'Bestudeert de botten en het skelet.'},
+    {latin:'Artrologie',nl:'Gewrichtsleer',tag:'anatomie',extra:'Bestudeert de gewrichten.'},
+    {latin:'Myologie',nl:'Spierleer',tag:'anatomie',extra:'Bestudeert de spieren.'},
+    {latin:'Neurologie',nl:'Leer van het zenuwstelsel',tag:'anatomie',extra:'Centraal en perifeer zenuwstelsel.'},
+    {latin:'Cardiologie',nl:'Leer van hart en vaten',tag:'anatomie',extra:'Cardiovasculair systeem.'},
+    {latin:'Pulmonologie',nl:'Leer van de longen',tag:'anatomie',extra:'Ademhalingssysteem.'},
+    {latin:'Anatomische houding',nl:'Rechtopstaand, kijkt voor zich uit, handpalmen naar voren',tag:'richting',extra:'Armen langs lichaam, voeten parallel naar beneden afhangend.'},
+    {latin:'Axiaal skelet',nl:'Centraal deel — schedel, wervelkolom, borstkas',tag:'skelet',extra:'Het centrale deel van het skelet.'},
+    {latin:'Appendiculair skelet',nl:'Aanhangend deel — ledematen + gordels',tag:'skelet',extra:'Armen, benen, schoudergordel, bekkengordel.'},
+    {latin:'206 botstukken',nl:'Totaal aantal botten in het menselijk skelet',tag:'skelet',extra:'Axiaal + appendiculair samen.'},
+    {latin:'Functies skelet',nl:'7 functies',tag:'skelet',extra:'1. Bescherming, 2. Passief bewegingsapparaat, 3. Ondersteuning, 4. Mineraalopslag, 5. Geel beenmerg (vet), 6. Rood beenmerg (bloedcellen), 7. Bewaken zuurgraad.'},
+    {latin:'Pijpbeenderen',nl:'Lange botten: os humerus, femur, tibia',tag:'skelet',extra:'Eén van de vier soorten beenderen.'},
+    {latin:'Platte beenderen',nl:'os cranium, os coxae, os scapula',tag:'skelet',extra:'Eén van de vier soorten beenderen.'},
+    {latin:'Onregelmatige beenderen',nl:'Voetwortelbeenderen, rugwervels, hielbeen',tag:'skelet',extra:'Eén van de vier soorten beenderen.'},
+    {latin:'Sesamoidbeenderen',nl:'Knieschijf (patella)',tag:'skelet',extra:'Kleine botjes ingebed in pezen. Eén van de vier soorten.'},
+    {latin:'Epifysaire schijf',nl:'Plek van lengtegroei',tag:'skelet',extra:'Groeihormonen → vermeerdering kraakbeencellen distaal + verbening proximaal.'},
+    {latin:'Osteoblasten',nl:'Botbouwers',tag:'skelet',extra:'Maken botweefsel aan onder het periost (breedtegroei).'},
+    {latin:'Osteoclasten',nl:'Botslopers',tag:'skelet',extra:'Breken bot af in het endost (centrum van beenderen).'},
+    {latin:'Ossificatie',nl:'Proces van beenvorming',tag:'skelet',extra:'Ontstaan van de beenderen. Dynamisch proces gedurende hele leven.'},
+    {latin:'Synartrosen',nl:'Onbeweeglijke beenverbindingen',tag:'skelet',extra:'3 soorten: bindweefsel-, kraakbeen-, beenweefselverbinding.'},
+    {latin:'Diatrosen',nl:'Beweeglijke beenverbindingen (gewrichten)',tag:'skelet',extra:'Alle echte gewrichten van het lichaam.'},
+    {latin:'Pelvis',nl:'Bekken',tag:'skelet',extra:'Bestaat uit de ossa coxae en het sacrum.'},
+  ],
+  quiz:[
+    {q:'Hoeveel botstukken heeft het menselijk skelet?',a:'Ongeveer 206',wrong:['Ongeveer 150','Ongeveer 300','Ongeveer 500'],exp:'Het skelet bestaat uit ongeveer 206 botstukken, verdeeld over axiaal en appendiculair.'},
+    {q:'Welke 4 soorten beenderen onderscheiden we op basis van vorm?',a:'Pijpbeenderen, platte beenderen, onregelmatige beenderen, sesamoidbeenderen',wrong:['Lange, korte, platte, ronde beenderen','Harde, zachte, platte, lange beenderen','Axiale, appendiculaire, vaste, losse beenderen'],exp:'De 4 soorten: pijpbeenderen, platte beenderen, onregelmatige beenderen, sesamoidbeenderen.'},
+    {q:'Wat is een voorbeeld van een SESAMOIDBEEN?',a:'De knieschijf (patella)',wrong:['De schedel','Het dijbeen (femur)','Het schouderblad (scapula)'],exp:'De patella is het bekendste sesamoidbeen — ingebed in de patellapees.'},
+    {q:'Wat is het verschil tussen OSTEOBLASTEN en OSTEOCLASTEN?',a:'Osteoblasten bouwen bot op, osteoclasten breken bot af',wrong:['Osteoblasten breken bot af, osteoclasten bouwen bot op','Beide breken bot af','Beide bouwen bot op'],exp:'Osteoblasten = botbouwers (onder periost). Osteoclasten = botslopers (endost, binnenkant).'},
+    {q:'Waar vindt LENGTEGROEI van beenderen plaats?',a:'In de epifysaire schijf',wrong:['In het periost','In het endost','In de mergholte'],exp:'Lengtegroei vindt plaats in de epifysaire schijf, dankzij groeihormonen.'},
+    {q:'Wat zijn SYNARTROSEN?',a:'Onbeweeglijke beenverbindingen',wrong:['Beweeglijke gewrichten','Spierverbindingen','Zenuwknopen'],exp:'Synartrosen = onbeweeglijk (bindweefsel-, kraakbeen-, beenweefselverbinding). Diatrosen = beweeglijk (gewrichten).'},
+    {q:'Welke botten horen tot het AXIALE skelet?',a:'Schedel, wervelkolom en borstkas',wrong:['Armen en benen','Schoudergordel en bekkengordel','Handen en voeten'],exp:'Axiaal = centraal (schedel, wervelkolom, borstkas). Appendiculair = ledematen + gordels.'},
+    {q:'Welk proces wordt OSSIFICATIE genoemd?',a:'Het ontstaan/de vorming van beenderen',wrong:['Het afbreken van bot','Het rekken van een spier','Het trainen van kracht'],exp:'Ossificatie = proces van beenvorming. Dynamisch, gedurende het hele leven.'},
+    {q:'Wat is de FUNCTIE van het rode beenmerg?',a:'Productie van bloedcellen',wrong:['Opslag van vetcellen','Opslag van mineralen','Bescherming van het hart'],exp:'Rood beenmerg = productie bloedcellen. Geel beenmerg = opslag van vetcellen.'},
+    {q:'Welk vakgebied bestudeert de GEWRICHTEN?',a:'Artrologie',wrong:['Osteologie','Myologie','Neurologie'],exp:'Artrologie = gewrichtsleer. Osteologie = skelet, myologie = spieren, neurologie = zenuwstelsel.'},
+  ]
+},
+{
+  id:15, level:2, title:'Trainingsonderdelen & Lesvoorbereiding', subtitle:'Opbouw SGT-les, warming-up per mover & lesvoorbereidingsformulier',
+  color:'#ef4444',
+  terms:[
+    {latin:'Small Group Training',nl:'3-delige lesopbouw: WU, kern (NMT+CVT), CD',tag:'training',extra:'Warming-up → kern met neuromusculaire én cardiovasculaire prikkel → cooling-down.'},
+    {latin:'Warming-up',nl:'8-10 min cardio — intensiteit afhankelijk van mover',tag:'training',extra:'Subjectief gevoel: gesprek moet nog te voeren zijn.'},
+    {latin:'WU Non-mover',nl:'Fietsen of wandelen op 60% — 8-10 min',tag:'mover',extra:'Lichtste intensiteit voor beginners.'},
+    {latin:'WU Low-mover',nl:'Fietsen, joggen, roeien op 60-70% — 8-10 min',tag:'mover',extra:'Matige intensiteit.'},
+    {latin:'WU High-mover',nl:'Alle cardio-oefeningen op 70% — 8-10 min',tag:'mover',extra:'Hoogste intensiteit.'},
+    {latin:'Loopvormen WU',nl:'Voorwaarts, achterwaarts, zijwaarts',tag:'training',extra:'3-5 rondjes per loopvorm. Alternatief voor cardio-apparatuur.'},
+    {latin:'NMT prikkel',nl:'Neuromusculaire prikkel in de kern',tag:'NMT',extra:'Kracht-component van de training.'},
+    {latin:'CVT prikkel',nl:'Cardiovasculaire prikkel in de kern',tag:'CVT',extra:'Uithoudings-/conditie-component van de training.'},
+    {latin:'Cooling-down',nl:'Cardio en/of stretches — afsluitend deel',tag:'training',extra:'Stretches op agonisten van de getrainde oefenvormen.'},
+    {latin:'Circuittraining B1',nl:'Neuromusculair — lichaamsgewicht',tag:'training',extra:'Blok 1: NMT op lichaamsgewicht.'},
+    {latin:'Circuittraining B2',nl:'Push – Pull',tag:'training',extra:'Blok 2: duwen en trekken afwisselen.'},
+    {latin:'Circuittraining B3',nl:'45 sec werk / 15 sec wissel — tempo 1010',tag:'training',extra:'Blok 3: tempo 1 sec concentrisch, 0 sec pauze, 1 sec excentrisch, 0 sec pauze.'},
+    {latin:'Lesvoorbereidingsformulier',nl:'Verplichte structuur voor praktijkexamen',tag:'exam',extra:'Bevat: meso+micro doelstelling, beginsituatie groep+trainer, algemene factoren, lesonderdelen per fase.'},
+    {latin:'Kennismakingsfase (les)',nl:'Ontvangst en introductie — start van de les',tag:'training',extra:'Eerste onderdeel van de lesopbouw.'},
+    {latin:'Kern (les)',nl:'Hoofddeel — NMT en CVT prikkel',tag:'training',extra:'Met intensiteit, type en tijd vastgelegd.'},
+    {latin:'Slotfase (les)',nl:'Afsluiting van de training',tag:'training',extra:'Laatste fase van het lesvoorbereidingsformulier.'},
+    {latin:'Methodisch didactisch handelen',nl:'MDH — hoe je instructie geeft en differentieert',tag:'coaching',extra:'Instructie, EREN-systeem, passende werkvormen, progressie/regressie.'},
+    {latin:'Safe Squat',nl:'Squat-variant voor beginners',tag:'oefening',extra:'Geleide beweging met steun — Hoofdstuk 8 studieboek.'},
+    {latin:'Air Squat',nl:'Squat zonder gewicht',tag:'oefening',extra:'Basis-squat met alleen lichaamsgewicht.'},
+    {latin:'Back Squat',nl:'Squat met barbell op de rug',tag:'oefening',extra:'Barbell rust op de m. trapezius (high-bar) of achterste deltoideus (low-bar).'},
+    {latin:'Front Squat',nl:'Squat met barbell voor op de schouders',tag:'oefening',extra:'Barbell voor, rechte romp, vooral quadriceps-dominant.'},
+    {latin:'Lunge',nl:'Uitvalspas — unilaterale squat-variant',tag:'oefening',extra:'Been naar voren of achteren. Ook Hoofdstuk 8.'},
+  ],
+  quiz:[
+    {q:'Uit welke 3 onderdelen bestaat een Small Group Training?',a:'Warming-up, kern (NMT+CVT), cooling-down',wrong:['Intake, training, evaluatie','Kennismaking, kern, afsluiting','Kracht, cardio, stretch'],exp:'3-delige opbouw: WU → kern (neuromusculair + cardiovasculair) → CD.'},
+    {q:'Welke intensiteit hoort bij de warming-up voor een NON-mover?',a:'60%',wrong:['70%','80%','50%'],exp:'Non-mover: 60% op fietsen/wandelen, 8-10 min.'},
+    {q:'Hoe lang duurt de warming-up in een SGT-les?',a:'8-10 minuten',wrong:['3-5 minuten','15-20 minuten','25-30 minuten'],exp:'Warming-up is 8-10 min, ongeacht mover-type.'},
+    {q:'Wat is de regel van circuittraining B3?',a:'45 sec werk / 15 sec wissel, tempo 1010',wrong:['30 sec werk / 30 sec rust, tempo 2020','60 sec werk / 10 sec wissel, tempo 0101','15 sec werk / 45 sec rust, tempo 3030'],exp:'B3: 45 sec werk / 15 sec wissel. Tempo 1010 = 1 sec concentrisch / 0 rust / 1 sec excentrisch / 0 rust.'},
+    {q:'Welke loopvormen worden gebruikt als alternatief voor cardio-apparatuur in de WU?',a:'Voorwaarts, achterwaarts, zijwaarts',wrong:['Joggen, sprinten, huppelen','Springen, hinkelen, rennen','Rondje rennen, intervallen, piramide'],exp:'Voorwaarts, achterwaarts, zijwaarts — 3-5 rondjes per loopvorm.'},
+    {q:'Wat staat er in het lesvoorbereidingsformulier onder "Kern"?',a:'Intensiteit, type en tijd van de kernoefeningen',wrong:['Alleen de naam van de oefeningen','Alleen de rustperiodes','Alleen de MDH'],exp:'Per fase (WU/kern/CD): intensiteit, type, tijd + lesonderdelen, lesactiviteit, organisatie, MDH.'},
+    {q:'Welke squat-variant is bedoeld voor absolute beginners?',a:'Safe Squat',wrong:['Back Squat','Front Squat','Lunge'],exp:'Safe Squat is de geleide variant voor beginners. Daarna: air squat, back/front squat, lunge.'},
+    {q:'Wat is het subjectieve gevoel waaraan een WU moet voldoen?',a:'Een gesprek moet nog te voeren zijn',wrong:['Je moet flink buiten adem zijn','Spierpijn is normaal','Zweten is verplicht'],exp:'Subjectief gevoel: gesprek kunnen voeren — geldt voor alle mover-types.'},
+    {q:'Wat is de juiste volgorde in het lesvoorbereidingsformulier?',a:'Kennismaking → Warming-up → Kern → Cooldown → Slotfase',wrong:['Warming-up → Kennismaking → Kern → Slotfase → Cooldown','Kern → Warming-up → Cooldown → Slotfase → Kennismaking','Kennismaking → Kern → Warming-up → Slotfase → Cooldown'],exp:'Volgorde: kennismakingsfase → warming-up → kern → cooldown (CV/stretches) → slotfase.'},
+    {q:'Wat betekent MDH in het lesvoorbereidingsformulier?',a:'Methodisch Didactisch Handelen',wrong:['Meet, Doen, Herstellen','Model, Demo, Herhaling','Motorisch, Docent, Hulp'],exp:'MDH: hoe je instructie geeft, EREN-systeem toepast, werkvormen kiest en differentieert (progressie/regressie).'},
+  ]
 }
 ];
 
@@ -809,8 +1059,23 @@ const chapters = [
 // ============================================================
 let currentChapterId = null;
 let currentMode = 'begrippen';
+let currentLevel = 1;
 let quizState = { queue:[], idx:0, correct:0, wrong:0, answered:false };
 let globalStats = { total:0, correct:0 };
+
+const LEVEL_META = {
+  1: { title:'Fitness Instructeur', hasProefexamen:true },
+  2: { title:'Small Group Trainer', hasProefexamen:false },
+};
+
+function chaptersInLevel(level){
+  return chapters.filter(c => (c.level || 1) === level);
+}
+function chapterDisplayNum(ch){
+  const list = chaptersInLevel(ch.level || 1);
+  const idx = list.findIndex(c => c.id === ch.id);
+  return idx >= 0 ? idx + 1 : ch.id;
+}
 
 // tag colors
 const tagColors = {
@@ -840,6 +1105,14 @@ const tagColors = {
   stretch:'background:#dcfce7;color:#15803d',
   los:'background:#ffedd5;color:#c2410c',
   definitie:'background:#dbeafe;color:#1d4ed8',
+  exam:'background:#e0f2fe;color:#0369a1',
+  mover:'background:#ccfbf1;color:#0f766e',
+  doel:'background:#e0e7ff;color:#4338ca',
+  smart:'background:#ede9fe;color:#6d28d9',
+  mentaal:'background:#fae8ff;color:#a21caf',
+  stress:'background:#fce7f3;color:#be185d',
+  anatomie:'background:#fef3c7;color:#b45309',
+  oefening:'background:#fee2e2;color:#b91c1c',
 };
 
 function tagStyle(tag){
@@ -978,12 +1251,33 @@ const proefexamenVragen = [
 
 function buildSidebar(){
   const list = document.getElementById('chapter-list');
-  list.innerHTML = chapters.map(ch => `
+  list.innerHTML = chaptersInLevel(currentLevel).map((ch, i) => {
+    const num = i + 1;
+    return `
     <button class="ch-btn" onclick="selectChapter(${ch.id})" id="ch-btn-${ch.id}">
-      <span class="ch-num" style="background:${ch.id===currentChapterId?ch.color+'33':'var(--border)'};color:${ch.id===currentChapterId?ch.color:'var(--muted)'}">${ch.id}</span>
-      <span class="ch-label">H${ch.id}: ${ch.title}</span>
+      <span class="ch-num" style="background:${ch.id===currentChapterId?ch.color+'33':'var(--border)'};color:${ch.id===currentChapterId?ch.color:'var(--muted)'}">${num}</span>
+      <span class="ch-label">H${num}: ${ch.title}</span>
     </button>
-  `).join('');
+  `;
+  }).join('');
+  // Sidebar title + proefexamen visibility
+  const meta = LEVEL_META[currentLevel];
+  document.getElementById('sidebar-title').textContent = meta.title;
+  const proefWrap = document.getElementById('proef-wrap');
+  if(proefWrap) proefWrap.style.display = meta.hasProefexamen ? 'block' : 'none';
+  document.getElementById('lvl-btn-1').classList.toggle('active', currentLevel===1);
+  document.getElementById('lvl-btn-2').classList.toggle('active', currentLevel===2);
+}
+
+function setLevel(level){
+  if(currentLevel === level) return;
+  currentLevel = level;
+  currentChapterId = null;
+  document.getElementById('chapter-title').textContent = 'Kies een hoofdstuk';
+  document.getElementById('chapter-subtitle').textContent = '—';
+  document.getElementById('mode-tabs').style.display = 'none';
+  document.getElementById('main-content').innerHTML = '<p style="color:var(--muted);font-size:15px;margin-top:48px;text-align:center;">← Kies een hoofdstuk uit het menu</p>';
+  buildSidebar();
 }
 
 function selectChapter(id){
@@ -993,7 +1287,7 @@ function selectChapter(id){
   const btn = document.getElementById('ch-btn-'+id);
   if(btn) btn.classList.add('active');
   const ch = chapters.find(c=>c.id===id);
-  document.getElementById('chapter-title').textContent = `H${ch.id}: ${ch.title}`;
+  document.getElementById('chapter-title').textContent = `H${chapterDisplayNum(ch)}: ${ch.title}`;
   document.getElementById('chapter-subtitle').textContent = ch.subtitle;
   // Show mode tabs
   document.getElementById('mode-tabs').style.display = 'flex';
@@ -1194,7 +1488,7 @@ function renderQuestion(){
         <div class="result-card">
           <div class="result-emoji">${emoji}</div>
           <div class="result-pct">${pct}%</div>
-          <div class="result-sub">${quizState.correct} van ${quizState.queue.length} vragen correct — H${ch.id}: ${ch.title}</div>
+          <div class="result-sub">${quizState.correct} van ${quizState.queue.length} vragen correct — H${chapterDisplayNum(ch)}: ${ch.title}</div>
           <button class="restart-btn" onclick="renderQuiz()">Opnieuw proberen</button>
         </div>
       </div>`;

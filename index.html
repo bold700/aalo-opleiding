@@ -274,9 +274,15 @@ body {
   </div>
   <div class="chapter-list" id="chapter-list"></div>
   <div id="proef-wrap" style="padding:8px;">
-    <button class="ch-btn" id="ch-btn-proef" onclick="selectProefexamen()" style="background:linear-gradient(135deg,rgba(255,200,50,0.15),rgba(255,77,109,0.1));border:1px solid rgba(255,200,50,0.4);color:#ffc832;margin-top:4px;">
-      <span class="ch-num" style="background:rgba(255,200,50,0.2);color:#ffc832;">🎓</span>
-      <span class="ch-label" style="color:#ffc832;font-weight:700;">Proefexamen AALO</span>
+    <button class="ch-btn" id="ch-btn-proef" onclick="selectProefexamen()" style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #d69916;color:#78350f;margin-top:4px;">
+      <span class="ch-num" style="background:#d69916;color:#fff;">🎓</span>
+      <span class="ch-label" style="color:#78350f;font-weight:700;">Proefexamen AALO</span>
+    </button>
+  </div>
+  <div id="gedeeld-wrap" style="padding:0 8px 8px 8px;">
+    <button class="ch-btn" id="ch-btn-gedeeld" onclick="selectGedeeldeExamen()" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:1px solid #15803d;color:#14532d;">
+      <span class="ch-num" style="background:#15803d;color:#fff;">🤝</span>
+      <span class="ch-label" style="color:#14532d;font-weight:700;">Gedeelde Examenvragen</span>
     </button>
   </div>
   <div class="sidebar-footer">
@@ -1299,11 +1305,30 @@ function selectChapter(id){
 
 function selectProefexamen(){
   currentChapterId = null;
+  currentExamSource = proefexamenVragen;
+  currentExamLabel = 'Proefexamen';
+  currentExamIcon = '🎓';
+  currentExamSubtitle = 'Echte oefenvragen uit het AALO proefexamen';
   document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('ch-btn-proef').classList.add('active');
   document.getElementById('chapter-title').textContent = '🎓 Proefexamen AALO';
-  document.getElementById('chapter-subtitle').textContent = 'Echte oefenvragen uit het AALO proefexamen';
+  document.getElementById('chapter-subtitle').textContent = currentExamSubtitle;
   // Hide mode tabs - proefexamen has its own layout
+  document.getElementById('mode-tabs').style.display = 'none';
+  renderProefexamen();
+  buildSidebar();
+}
+
+function selectGedeeldeExamen(){
+  currentChapterId = null;
+  currentExamSource = gedeeldeExamenvragen;
+  currentExamLabel = 'Gedeelde Examenvragen';
+  currentExamIcon = '🤝';
+  currentExamSubtitle = 'Door studenten gedeelde vragen — kunnen exact terugkomen op het examen';
+  document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ch-btn-gedeeld').classList.add('active');
+  document.getElementById('chapter-title').textContent = '🤝 Gedeelde Examenvragen';
+  document.getElementById('chapter-subtitle').textContent = currentExamSubtitle;
   document.getElementById('mode-tabs').style.display = 'none';
   renderProefexamen();
   buildSidebar();
@@ -1323,12 +1348,48 @@ function renderCurrentMode(){
 }
 
 // ============================================================
+// GEDEELDE EXAMENVRAGEN — uit afbeeldingen verzameld door studenten (28-04-2026)
+// Kunnen exacte vragen zijn die op het echte examen terugkomen.
+// ============================================================
+const gedeeldeExamenvragen = [
+  {q:'Osteologie: Noem een voorbeeld van een beenweefselverbinding.',a:'Verbinding tussen de bekkenbeenderen',wrong:['Schedelnaden tussen de fontanellen','Verbindingen tussen ossa costae en os sternum'],exp:'Beenweefselverbinding (synostose) = verbinding van bot-met-bot, zoals de symphysis pubica tussen de bekkenbeenderen. Schedelnaden = bindweefsel; ossa costae↔sternum = kraakbeen.'},
+  {q:'Osteologie: Noem een voorbeeld van een bindweefselverbinding.',a:'Schedelnaden tussen de fontanellen',wrong:['Verbinding tussen de bekkenbeenderen','Verbindingen tussen ossa costae en os sternum'],exp:'Bindweefselverbinding (syndesmose) = verbinding via bindweefsel, zoals de schedelnaden bij de fontanellen. Bekken = beenweefsel; ribben↔sternum = kraakbeen.'},
+  {q:'Stofwisseling: Wat doen enzymen?',a:'Enzymen helpen een chemische reactie in stofwisseling sneller te laten verlopen zonder dat ze zelf onderdeel zijn.',wrong:['Enzymen helpen bij zuurstof opname.','Beide antwoorden zijn juist'],exp:'Enzymen zijn katalysatoren: ze versnellen reacties zonder zelf op te raken of onderdeel van het eindproduct te worden.'},
+  {q:'Fysiologie: Waaruit bestaat een ATP-molecuul?',a:'Een adenosine met daaraan gekoppeld drie fosfaatgroepen.',wrong:['Een zuurstof molecuul met daaraan gekoppeld drie fosfaatgroepen.','Een melkzuur molecuul met daaraan gekoppeld drie fosfaatgroepen.'],exp:'ATP = Adenosine Tri Phosphaat = 1 adenosine + 3 fosfaatgroepen. Energie komt vrij bij afsplitsen van een fosfaatgroep (ATP → ADP + P).'},
+  {q:'Fysiologie: Waar staat de afkorting ATP voor?',a:'Adenosine Tri Phosphaat',wrong:['Aerobe Tri Phosphaat','Adenosine Teaphine Phosphaat'],exp:'ATP = Adenosine Tri Phosphaat. De universele energiedrager in elke cel.'},
+  {q:'Skeletleer: Uit welke botten bestaat een schoudergordel?',a:'Os scapula en os clavicula',wrong:['Os scapula en os humerus','Os scapula en os femur'],exp:'Schoudergordel = schouderblad (scapula) + sleutelbeen (clavicula). De humerus is de bovenarm; de femur is het dijbeen.'},
+  {q:'Spierindeling: Noem een voorbeeld van een platte spier.',a:'M. rectus abdominus',wrong:['M. brachialis','M. deltoideus'],exp:'Platte spier = brede dunne spier. M. rectus abdominus (rechte buikspier) is plat. M. brachialis = spoelvormig; m. deltoideus = veervormig.'},
+  {q:'Spierindeling: Noem een voorbeeld van een 1-koppige spier.',a:'M. brachialis',wrong:['M. deltoideus','M. rectus abdominus'],exp:'Eenkoppige spier = één oorsprong, één aanhechting. M. brachialis loopt van humerus naar ulna. Biceps = 2-koppig, triceps = 3-koppig.'},
+  {q:'Soorten gewrichten: Noem een voorbeeld van een eivormig gewricht.',a:'Pols',wrong:['Schouder','Elleboog'],exp:'Eivormig (ellipsoïd) gewricht = polsgewricht (radius ↔ handwortelbeentjes). Schouder = kogelgewricht; elleboog = scharnier.'},
+  {q:'Wat is een kenmerk van iemand die kinesthetisch is ingesteld?',a:'Richt zich op gevoel, heeft meestal meer tijd nodig voor hij reactie geeft.',wrong:['Denkt in beelden, ziet plaatjes voor zich.','Richt zich op geluiden en woorden. Het is vooral de toon die de muziek maakt.'],exp:'Kinesthetisch = leren via voelen/doen. Visueel = denkt in beelden. Auditief = richt zich op geluid en toon.'},
+  {q:'Een AALO Fitness Instructeur is M.O.R.E. Waar staat de M voor?',a:'Marketing: Jij bent de perfecte persoon om te vertellen over een actie in het fitnesscentrum.',wrong:['Meerwaarde: Als trainer voed je de klant op. Dit doe je op verschillende vlakken.','Meegaand: Als trainer is het belangrijk dat je contact maakt met de klant.'],exp:'M.O.R.E. = Marketing, Opvoeden, Relatie, Expert. De M staat voor Marketing — als FI verkoop je acties van het centrum mee.'},
+  {q:'Op welke aandachtspunten wijs je de klant bij de crosstrainer?',a:'Zak iets door de knieën en hou je wervelkolom recht.',wrong:['Ga naast het apparaat staan, aan de kant waar het voetpedaal het hoogst is.','Het apparaat heeft een stopknop. Druk daarop om de beweging tot je tot stilstand te krijgen.'],exp:'Houding op crosstrainer: lichte kniebuiging, rechte wervelkolom. Op-/afstappen doe je aan de lage pedaal-kant; stoppen door beweging af te remmen, niet abrupt via stopknop.'},
+  {q:'Wat is van belang in de opwaartse fase van een traditional deadlift?',a:'Lift de barbell van de grond af door je knieën en heupen te strekken.',wrong:['Hou de wervelkolom in een rechte stand terwijl je de heupen strekt naar de startpositie.','Stap onder de stang door en positioneer je voeten parallel aan elkaar.'],exp:'Traditional deadlift = knieën én heupen strekken samen vanaf de grond. Stiffed legged = alleen heupen strekken (knieën nagenoeg gestrekt).'},
+  {q:'Wat is van belang in de opwaartse fase van een stiffed legged deadlift?',a:'Hou de wervelkolom in een rechte stand terwijl je de heupen strekt naar de startpositie.',wrong:['Lift de barbell van de grond af door je knieën en heupen te strekken.','Stap onder de stang door en positioneer je voeten parallel aan elkaar.'],exp:'Stiffed legged deadlift = knieën nagenoeg gestrekt, heupextensie met rechte wervelkolom. Het knie-/heupstrekken samen hoort bij de traditional deadlift.'},
+  {q:'Diabetes: Wat is diabetes?',a:'Diabetes is een ziekte waarbij het lichaam het bloedsuikergehalte niet meer in evenwicht kan houden.',wrong:['Diabetes is een ziekte waarbij het lichaam het bloeddruk niet meer in evenwicht kan houden.','Diabetes is een ziekte waarbij het lichaam het vetpercentage niet meer in evenwicht kan houden.'],exp:'Diabetes mellitus = stoornis in de bloedsuikerregulatie (insuline). Niet bloeddruk (= hypertensie), niet vetpercentage.'},
+  {q:'Loopband: De loopcyclus onderscheiden we in een aantal fasen. Namelijk…',a:'Zweeffase, steunfase en zwaaifase.',wrong:['Zweeffase, steunfase en kickfase.','Zweeffase, steunfase en heffase.'],exp:'Loopcyclus = zweeffase (beide voeten los van de grond) + steunfase (voet op grond) + zwaaifase (been zwaait naar voren).'},
+  {q:'Voor welke spier is deze stretch (knielend, voet gestrekt onder de bil)?',a:'M. tibialis anterior',wrong:['M. soleus','M. gastrocnemius'],exp:'Knielen met de voet in plantairflexie strekt de m. tibialis anterior (voorzijde scheenbeen). Soleus en gastrocnemius zitten aan de achterzijde en worden juist gestretcht door dorsaalflexie.'},
+  {q:'Biomechanica: Wat is normaalkracht?',a:'Normaalkracht zorgt ervoor dat we op de aardkorst aanwezig blijven ondanks het feit dat de aarde ons naar haar centrum trekt.',wrong:['Normaalkracht is de eigenschap van een spier om weerstand te bieden aan in- en uitwendige krachten door middel van haar contractiele vermogen (= het vermogen om zich samen te trekken).','De normaalkracht is een aantrekkende kracht die twee massa\'s op elkaar uitoefenen.'],exp:'Normaalkracht = de tegendrukkracht van een ondergrond. Spiercontractie ≠ normaalkracht; aantrekking tussen massa\'s = zwaartekracht/gravitatie.'},
+  {q:'Om een goede doelstelling te formuleren moet deze SMART zijn. Wanneer is iets "specifiek"?',a:'Een concrete en ondubbelzinnige omschrijving van de activiteit.',wrong:['De meetbaarheid maakt het geheel overzichtelijk en kan er voor zorgen dat het geheel overzichtelijk is.','Een duidelijk draagvlak. Zonder draagvlak kun je wel iets doen, maar dan beklijft het niet.'],exp:'SMART: S = Specifiek (concrete, ondubbelzinnige omschrijving). M = Meetbaar; A = Acceptabel/draagvlak. Verwar deze niet.'},
+  {q:'Binnen de opleiding tot AALO Small Group Trainer richten we ons op de volgende cognitieve beginsituaties die van belang zijn in de praktijk:',a:'Kennis van voeding',wrong:['Sociale vaardigheden','Sportachtergrond'],exp:'Cognitieve beginsituatie = wat de klant al wéét. Kennis van voeding hoort daarbij. Sociale vaardigheden = sociaal-affectief; sportachtergrond = psychomotorisch.'},
+  {q:'Binnen de opleiding tot AALO Small Group Trainer richten we ons op de volgende sociaal-affectieve doelstellingen die van belang zijn voor het werkzaam zijn in de praktijk:',a:'Beide antwoorden zijn juist',wrong:['De klant dient zich te kunnen uiten buiten de training.','De klant dient zich te kunnen uiten tijdens het trainen in het fitnesssegment.'],exp:'Beide stellingen kloppen: de klant moet zich zowel buiten als tijdens de training kunnen uiten — sociaal-affectieve doelstellingen omvatten beide situaties.'},
+  {q:'Trainingsonderdelen: Welke neuromusculaire trainingsmethode wordt hier beschreven: "Toename van myofibrillen (contractiele eiwitten) in combinatie met verbeterde aansturing: meer spiervezels trekken gelijktijdig samen en worden frequenter geprikkeld."',a:'Spierkracht',wrong:['Spierkrachtuithoudingsvermogen','Hypertrofie'],exp:'Spierkrachttraining = neurale aansturing + toename contractiele eiwitten. Hypertrofie = volume-toename (sarcoplasmatisch). SKU = lange weerstand volhouden.'},
+  {q:'Trainingsonderdelen: Welke neuromusculaire trainingsmethode wordt hier beschreven: "De spieren worden getraind om een bepaalde weerstand langer vol te kunnen houden. Er vindt een betere samenwerking plaats tussen de verschillende spiervezels."',a:'Spierkrachtuithoudingsvermogen',wrong:['Spierkracht','Hypertrofie'],exp:'SKU = langere weerstand volhouden via betere samenwerking spiervezels. Spierkracht = max kracht. Hypertrofie = spiervezelvolume vergroten.'},
+  {q:'Trainingsonderdelen: Welke neuromusculaire trainingsmethode wordt hier beschreven: "Het vergroten van het spiervezelvolume door vergroting van de hoeveelheid myofibrillen (contractiele eiwitten) of vergroten van het sarcoplasmatisch volume."',a:'Hypertrofie',wrong:['Spierkrachtuithoudingsvermogen','Spierkracht'],exp:'Hypertrofie = spiervezelvolume groter maken (myofibrillair óf sarcoplasmatisch). Spierkracht = neuraal + myofibrillen; SKU = uithouding.'},
+  {q:'Small group training: Bij het maken van een circuittraining gebruikt de trainer bouwstenen. Wat is juist m.b.t. bouwsteen 4 "oefenvormen"?',a:'De trainer kiest maximaal 12 onderdelen waarin alle grote spiergroepen minimaal een keer aan bod komen.',wrong:['De trainer kiest maximaal 12 onderdelen waarin slechts 1 spiergroep aan bod komt.','Beide antwoorden zijn mogelijk'],exp:'Bouwsteen 4 (oefenvormen): max 12 onderdelen, elke grote spiergroep minimaal één keer — anders ontstaat onbalans en onvolledige training.'},
+];
+
+// ============================================================
 // PROEFEXAMEN RENDER
 // ============================================================
+let currentExamSource = null;     // verwijst naar proefexamenVragen of gedeeldeExamenvragen
+let currentExamLabel = 'Proefexamen';
+let currentExamIcon = '🎓';
+let currentExamSubtitle = 'Echte oefenvragen uit het AALO proefexamen';
 let proefState = { queue:[], idx:0, correct:0, wrong:0, answered:false };
 
 function renderProefexamen(){
-  proefState.queue = [...proefexamenVragen].sort(()=>Math.random()-0.5);
+  proefState.queue = [...currentExamSource].sort(()=>Math.random()-0.5);
   proefState.idx = 0;
   proefState.correct = 0;
   proefState.wrong = 0;
@@ -1346,7 +1407,7 @@ function renderProefVraag(){
     container.innerHTML = `
       <div class="quiz-wrap">
         <div class="result-card" style="border-color:rgba(255,200,50,0.3);">
-          <div style="font-size:13px;font-family:'Space Mono',monospace;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">🎓 Proefexamen Resultaat</div>
+          <div style="font-size:13px;font-family:'Space Mono',monospace;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">${currentExamIcon} ${currentExamLabel} Resultaat</div>
           <div class="result-emoji">${emoji}</div>
           <div class="result-pct" style="color:var(--gold);">${pct}%</div>
           <div class="result-sub">${proefState.correct} van ${proefState.queue.length} vragen correct<br><span style="color:var(--gold)">${msg}</span></div>
@@ -1371,7 +1432,7 @@ function renderProefVraag(){
   container.innerHTML = `
     <div class="quiz-wrap">
       <div class="quiz-meta">
-        <div class="quiz-score" style="color:var(--gold);font-weight:700;">🎓 Proefexamen &nbsp;✅ <span class="good">${proefState.correct}</span> &nbsp;❌ <span class="bad">${proefState.wrong}</span></div>
+        <div class="quiz-score" style="color:var(--gold);font-weight:700;">${currentExamIcon} ${currentExamLabel} &nbsp;✅ <span class="good">${proefState.correct}</span> &nbsp;❌ <span class="bad">${proefState.wrong}</span></div>
         <div class="quiz-score" style="color:var(--muted);">Vraag ${proefState.idx+1}/${proefState.queue.length}</div>
       </div>
       <div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--gold),#ff9f4d);"></div></div>

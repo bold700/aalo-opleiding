@@ -1070,8 +1070,8 @@ let quizState = { queue:[], idx:0, correct:0, wrong:0, answered:false };
 let globalStats = { total:0, correct:0 };
 
 const LEVEL_META = {
-  1: { title:'Fitness Instructeur', hasProefexamen:true },
-  2: { title:'Small Group Trainer', hasProefexamen:false },
+  1: { title:'Fitness Instructeur', hasProefexamen:true, hasGedeelde:false },
+  2: { title:'Small Group Trainer', hasProefexamen:true, hasGedeelde:true },
 };
 
 function chaptersInLevel(level){
@@ -1271,6 +1271,8 @@ function buildSidebar(){
   document.getElementById('sidebar-title').textContent = meta.title;
   const proefWrap = document.getElementById('proef-wrap');
   if(proefWrap) proefWrap.style.display = meta.hasProefexamen ? 'block' : 'none';
+  const gedeeldWrap = document.getElementById('gedeeld-wrap');
+  if(gedeeldWrap) gedeeldWrap.style.display = meta.hasGedeelde ? 'block' : 'none';
   document.getElementById('lvl-btn-1').classList.toggle('active', currentLevel===1);
   document.getElementById('lvl-btn-2').classList.toggle('active', currentLevel===2);
 }
@@ -1305,13 +1307,19 @@ function selectChapter(id){
 
 function selectProefexamen(){
   currentChapterId = null;
-  currentExamSource = proefexamenVragen;
-  currentExamLabel = 'Proefexamen';
+  if(currentLevel === 2){
+    currentExamSource = proefexamenVragenLevel2;
+    currentExamLabel = 'Proefexamen SGT';
+    currentExamSubtitle = 'Oefenvragen op basis van de Level 2 / SGT stof';
+  } else {
+    currentExamSource = proefexamenVragen;
+    currentExamLabel = 'Proefexamen';
+    currentExamSubtitle = 'Echte oefenvragen uit het AALO proefexamen';
+  }
   currentExamIcon = '🎓';
-  currentExamSubtitle = 'Echte oefenvragen uit het AALO proefexamen';
   document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('ch-btn-proef').classList.add('active');
-  document.getElementById('chapter-title').textContent = '🎓 Proefexamen AALO';
+  document.getElementById('chapter-title').textContent = `🎓 ${currentExamLabel}`;
   document.getElementById('chapter-subtitle').textContent = currentExamSubtitle;
   // Hide mode tabs - proefexamen has its own layout
   document.getElementById('mode-tabs').style.display = 'none';
@@ -1377,6 +1385,98 @@ const gedeeldeExamenvragen = [
   {q:'Trainingsonderdelen: Welke neuromusculaire trainingsmethode wordt hier beschreven: "De spieren worden getraind om een bepaalde weerstand langer vol te kunnen houden. Er vindt een betere samenwerking plaats tussen de verschillende spiervezels."',a:'Spierkrachtuithoudingsvermogen',wrong:['Spierkracht','Hypertrofie'],exp:'SKU = langere weerstand volhouden via betere samenwerking spiervezels. Spierkracht = max kracht. Hypertrofie = spiervezelvolume vergroten.'},
   {q:'Trainingsonderdelen: Welke neuromusculaire trainingsmethode wordt hier beschreven: "Het vergroten van het spiervezelvolume door vergroting van de hoeveelheid myofibrillen (contractiele eiwitten) of vergroten van het sarcoplasmatisch volume."',a:'Hypertrofie',wrong:['Spierkrachtuithoudingsvermogen','Spierkracht'],exp:'Hypertrofie = spiervezelvolume groter maken (myofibrillair óf sarcoplasmatisch). Spierkracht = neuraal + myofibrillen; SKU = uithouding.'},
   {q:'Small group training: Bij het maken van een circuittraining gebruikt de trainer bouwstenen. Wat is juist m.b.t. bouwsteen 4 "oefenvormen"?',a:'De trainer kiest maximaal 12 onderdelen waarin alle grote spiergroepen minimaal een keer aan bod komen.',wrong:['De trainer kiest maximaal 12 onderdelen waarin slechts 1 spiergroep aan bod komt.','Beide antwoorden zijn mogelijk'],exp:'Bouwsteen 4 (oefenvormen): max 12 onderdelen, elke grote spiergroep minimaal één keer — anders ontstaat onbalans en onvolledige training.'},
+];
+
+// ============================================================
+// PROEFEXAMEN LEVEL 2 — Small Group Trainer (zelf samengesteld op basis van SGT-stof)
+// 30 vragen verdeeld over Hoofdstukken 10-15 (Beroep, Intake, SMART, Stress, Anatomie, Lesvoorbereiding)
+// ============================================================
+const proefexamenVragenLevel2 = [
+  // Hoofdstuk 10 — SGT Beroep & Examens
+  {q:'SGT Beroep: Uit hoeveel principes bestaat de gedragscode van de Small Group Trainer?',a:'4 principes',wrong:['3 principes','5 principes','7 principes'],exp:'De gedragscode SGT kent 4 principes: respect, professionele relaties, gezonde levensstijl en hoogste niveau van professionaliteit.'},
+  {q:'SGT Examens: Welk onderdeel van het lesvoorbereidingsformulier heeft de hoogste weegfactor in het referentiekader?',a:'SMART-doelstelling (6×)',wrong:['Beginsituatie (3×)','Methodisch Didactisch Handelen (3×)','Algemene factoren (3×)'],exp:'In de beoordelingsmatrix weegt de SMART-doelstelling 6×. Beginsituatie, algemene factoren, lesonderdeel en MDH wegen elk 3×.'},
+  {q:'SGT Examens: Op welke opleidingsdag wordt het theorie-examen afgenomen?',a:'Op dag 5',wrong:['Op dag 1','Op dag 6/7','Op dag 3'],exp:'Het theorie-examen (50 meerkeuzevragen, 40 min) vindt plaats op dag 5. Het praktijkexamen is op dag 6 of 7.'},
+  {q:'SGT Examens: Wat is de juiste totale tijdsverdeling van het praktijkexamen?',a:'Kennismaking 2 + WU 6 + Kern 18 + CD 3 + Slot 2 = 30 min',wrong:['Kennismaking 5 + WU 5 + Kern 15 + CD 3 + Slot 2 = 30 min','Kennismaking 2 + WU 8 + Kern 15 + CD 3 + Slot 2 = 30 min','Kennismaking 3 + WU 5 + Kern 17 + CD 3 + Slot 2 = 30 min'],exp:'Verdeling 30 min: kennismakingsfase 2 min + warming-up 6 min + SGT-kern 18 min + CD stretches 3 min + slotfase 2 min.'},
+  {q:'SGT Beroep: Wat is GEEN functie van de DLO?',a:'Het automatisch corrigeren van je portfolio',wrong:['Opleidingsmateriaal downloaden','(Proef)theorie-examen afnemen','Portfolio indienen'],exp:'De DLO (Digitale Leer Omgeving) wordt gebruikt voor materiaal, examens, casus, portfolio-inlevering en contact — niet voor automatische correctie.'},
+
+  // Hoofdstuk 11 — Intake, Meten & Weten
+  {q:'Intake SGT: Wat is de juiste volgorde van de kennismakingsroute bij de SGT-intake?',a:'Temperatuur aannemen → ontdooien → op temperatuur brengen → bevriezen',wrong:['Ontdooien → temperatuur aannemen → bevriezen → opwarmen','Bevriezen → ontdooien → op temperatuur brengen → afsluiten','Opwarmen → ontdooien → temperatuur aannemen → bevriezen'],exp:'1. Temperatuur aannemen (gastvrije ontvangst) → 2. Ontdooien (kopje koffie/thee) → 3. Op temperatuur brengen (uitleg verwachtingen) → 4. Bevriezen (aan de slag).'},
+  {q:'Mover-types: Welke intensiteit is passend voor een LOW-mover tijdens cardiovasculaire training?',a:'60-70%',wrong:['50%','70%','80-90%'],exp:'Non-mover = 60%. Low-mover = 60-70%. High-mover = 70%. Boven 80% past niet bij een low-mover.'},
+  {q:'Beginsituaties: Bij welke beginsituatie kijk je naar leeftijd, geslacht, mover-type en CLUKS-aanleg?',a:'Psychomotorische beginsituatie',wrong:['Sociaal-affectieve beginsituatie','Cognitieve beginsituatie','Mentale beginsituatie'],exp:'Psychomotorisch = lichamelijke aanleg: leeftijd, geslacht, mover-type, CLUKS, werk/houding. Sociaal-affectief = werk en levenswijze; cognitief = kennis; mentaal = doorzettingsvermogen.'},
+  {q:'Tests SGT: Welke test is een MAXIMAALtest die in 12 minuten een zo groot mogelijke afstand laat afleggen?',a:'De Coopertest',wrong:['De Åstrand-test','De Shuttle Run-test','De 10 RM-test'],exp:'Coopertest = max afstand in 12 min (cardiovasculair, max). Åstrand = submaximaal op de fiets; Shuttle Run = oplopend tempo; 10 RM = neuromusculair.'},
+  {q:'CLUKS-differentiatie: Wat betekent het concreet voor je trainingsaanpak?',a:'Per CLUKS-factor kan een klant een ander mover-type zijn — pas de belasting daarop aan',wrong:['Train alle CLUKS-factoren tegelijk op dezelfde intensiteit','CLUKS-factoren wissel je per les af','Verdeel CLUKS over verschillende groepsleden'],exp:'CLUKS-differentiatie = iemand kan high-mover zijn op Uithoudingsvermogen, maar non-mover op Kracht. Stem belastbaarheid per factor af.'},
+
+  // Hoofdstuk 12 — Doelstellingen, SMART & FITT
+  {q:'SMART: Welke SMART-letter zegt iets over of het doel haalbaar is binnen het tijdsbestek?',a:'Realistisch (R)',wrong:['Acceptabel (A)','Tijdgebonden (T)','Specifiek (S)'],exp:'Realistisch = het doel moet haalbaar zijn in het beschikbare tijdsbestek (bv. 5% vetverlies in 3 maanden). Acceptabel = haalbaar voor de klant zelf, op basis van FITT.'},
+  {q:'FITT: Wat staat de TWEEDE T in FITT voor?',a:'Tijdsduur (sets, reps, rust, duur)',wrong:['Techniek','Tempo','Trainingsleer'],exp:'FITT = Frequentie, Intensiteit, Type, Tijdsduur. De tweede T = Tijdsduur (sets, herhalingen, rust en totale lengte).'},
+  {q:'Doelstellingstypen SGT: Een doel "klanten leren bewust om te gaan met voeding en houding" valt onder welk type?',a:'Cognitieve doelstelling',wrong:['Psychomotorische doelstelling','Sociaal-affectieve doelstelling','Mentale doelstelling'],exp:'Cognitief = bewustwording op 4 thema\'s: voedingspatroon, lichaamshouding, hoeveelheid/kwaliteit beweging en lichamelijke/mentale gezondheid.'},
+  {q:'NMT-intensiteit: Bij welke trainingsmethode hoort 60-70% van 1 RM met 12-20 herhalingen?',a:'Spierkrachtuithoudingsvermogen (SKU)',wrong:['Maximale spierkracht','Hypertrofie','Explosieve kracht'],exp:'60-70% van 1 RM met 12-20 reps = SKU. Hypertrofie ligt typisch hoger (70-85%); maximale spierkracht 85%+, lage reps.'},
+  {q:'Doelstellingstermijnen: Wat is het verschil tussen een meso- en een micro-doelstelling?',a:'Meso = weken/maanden, micro = doelstelling voor één specifieke les',wrong:['Meso = één les, micro = meerdere weken','Meso = groep, micro = individu','Meso = makkelijk, micro = moeilijk'],exp:'Meso-doel = middellange termijn (weken-maanden). Micro-doel = concreet doel voor één lesvoorbereiding.'},
+
+  // Hoofdstuk 13 — Mentale Gezondheid & Stress
+  {q:'Mentale gezondheid: Welke 3 mentale effecten heeft regelmatige lichaamsbeweging volgens AALO SGT?',a:'Stemmingsverhogend, antidepressief en stressbeschermend effect',wrong:['Spierversterkend, conditieverhogend, gewichtsverlagend','Sociaal, cognitief, motorisch','Activerend, kalmerend, oppeppend'],exp:'Beweging heeft 3 mentale effecten: het verhoogt de stemming, werkt antidepressief en beschermt tegen stress.'},
+  {q:'Stress: Welke hormonen vormen samen de KORTE termijn-stressrespons?',a:'Adrenaline en noradrenaline',wrong:['Cortisol en insuline','Adrenaline en cortisol','Serotonine en dopamine'],exp:'Korte termijn (fight-or-flight) = adrenaline + noradrenaline. Cortisol hoort bij de LANGE termijn-stressrespons.'},
+  {q:'Stress: Waar worden volgens de SGT-leerstof zowel de korte als de lange termijn stresshormonen aangemaakt?',a:'In de nieren',wrong:['In de lever','In de hypofyse','In de schildklier'],exp:'In de SGT-handout staat dat adrenaline, noradrenaline én cortisol door de nieren worden gevormd.'},
+  {q:'Chronische stress: Welke klacht hoort bij de LICHAMELIJKE gevolgen van chronische stress?',a:'Pijnlijke spieren, hoofdpijn en hoge bloeddruk',wrong:['Concentratiestoornissen en piekeren','Verbeterde coördinatie','Gewichtstoename door spiergroei'],exp:'Lichamelijk: pijnlijke spieren, vermoeidheid, slapeloosheid, hoofdpijn, nek-/schouderpijn, hartkloppingen, hoge bloeddruk. Concentratie en piekeren zijn mentale gevolgen.'},
+  {q:'Relaxatie: Welke relaxatietechniek combineert houding, ademhaling EN aandacht/meditatie?',a:'Yoga',wrong:['Een ademhalingsoefening alleen','Visualisatie','Meditatie alleen'],exp:'Yoga combineert alle drie de elementen. Ademhalingsoefening, visualisatie en meditatie zijn elk 1-dimensionaal.'},
+
+  // Hoofdstuk 14 — Anatomie SGT
+  {q:'Anatomie: Welke discipline bestudeert de spieren?',a:'Myologie',wrong:['Osteologie','Artrologie','Neurologie'],exp:'Myologie = spierleer. Osteologie = skeletleer. Artrologie = gewrichtsleer. Neurologie = zenuwstelsel.'},
+  {q:'Skelet: Welke 4 botvormen worden onderscheiden?',a:'Pijpbeenderen, platte beenderen, onregelmatige beenderen, sesamoidbeenderen',wrong:['Lange, korte, ronde, platte beenderen','Axiale, appendiculaire, vaste en losse beenderen','Harde, zachte, hybride en spongieuze beenderen'],exp:'4 botvormen: pijpbeen (femur, humerus, tibia), plat (cranium, scapula, coxae), onregelmatig (wervels, voetwortel) en sesamoid (patella).'},
+  {q:'Skelet: Bij welk deel hoort de wervelkolom?',a:'Het axiale skelet',wrong:['Het appendiculaire skelet','De schoudergordel','De bekkengordel'],exp:'Axiaal skelet = schedel + wervelkolom + borstkas (centrum). Appendiculair = ledematen + gordels.'},
+  {q:'Botcellen: Wat is het verschil tussen osteoblasten en osteoclasten?',a:'Osteoblasten bouwen bot op (onder periost), osteoclasten breken bot af (in endost)',wrong:['Osteoblasten breken bot af, osteoclasten bouwen op','Beide bouwen bot op','Beide breken bot af'],exp:'Osteoblasten = botbouwers, actief onder het periost (breedtegroei). Osteoclasten = botslopers, actief in het endost.'},
+  {q:'Beenverbindingen: Wat zijn diatrosen?',a:'Beweeglijke beenverbindingen — de echte gewrichten',wrong:['Onbeweeglijke beenverbindingen','Spier-pees verbindingen','Verbindingen tussen wervels'],exp:'Diatrosen = beweeglijk = gewrichten. Synartrosen = onbeweeglijk (bindweefsel-, kraakbeen- of beenweefselverbinding).'},
+
+  // Hoofdstuk 15 — Trainingsonderdelen & Lesvoorbereiding
+  {q:'SGT-les: Hoe lang duurt de warming-up in een Small Group Training, ongeacht het mover-type?',a:'8-10 minuten',wrong:['3-5 minuten','15-20 minuten','25-30 minuten'],exp:'WU = 8-10 min voor alle mover-types. Wat verschilt is de intensiteit (60% non, 60-70% low, 70% high).'},
+  {q:'Circuittraining: Wat is de tijdsregel van blok B3 in de SGT-circuittraining?',a:'45 sec werk / 15 sec wissel (tempo 1010)',wrong:['30 sec werk / 30 sec rust (tempo 2020)','60 sec werk / 10 sec wissel (tempo 0101)','15 sec werk / 45 sec rust (tempo 3030)'],exp:'B3: 45 sec werk / 15 sec wissel. Tempo 1010 = 1 sec concentrisch / 0 sec pauze / 1 sec excentrisch / 0 sec pauze.'},
+  {q:'Warming-up: Welke 3 loopvormen worden gebruikt als alternatief voor cardio-apparatuur?',a:'Voorwaarts, achterwaarts, zijwaarts',wrong:['Joggen, sprinten, huppelen','Voorwaarts, kruispas, hinkelen','Joggen, intervallen, sprongen'],exp:'3 loopvormen: voorwaarts, achterwaarts en zijwaarts — 3-5 rondjes per loopvorm.'},
+  {q:'Squat-progressie: Welke squat-variant is bedoeld voor absolute beginners die nog steun nodig hebben?',a:'Safe Squat',wrong:['Air Squat','Back Squat','Front Squat'],exp:'Safe Squat = geleide variant met steun (Hoofdstuk 8). Daarna: air squat (eigen gewicht), front/back squat met barbell, lunge.'},
+  {q:'Lesvoorbereidingsformulier: Wat betekent de afkorting MDH?',a:'Methodisch Didactisch Handelen',wrong:['Meet, Doen, Herstellen','Model, Demo, Herhaling','Mentaal, Doelstelling, Hartslag'],exp:'MDH = Methodisch Didactisch Handelen: hoe je instructie geeft, EREN-systeem toepast, werkvormen kiest en differentieert (progressie/regressie).'},
+
+  // === Set 2 — extra Level 2 vragen ===
+
+  // Hoofdstuk 10 — SGT Beroep & Examens
+  {q:'Portfolio: Welke 4 opdrachten dien je in via de DLO?',a:'Fitness-gerelateerde test, mesoplanning, bewegingsanalyse, evaluatie',wrong:['Intake, training, evaluatie, casus','SMART, FITT, CLUKS, PEP','Anatomie, fysiologie, voeding, coaching'],exp:'Portfolio-opdrachten: 1) fitness-test uitvoeren, 2) mesoplanning, 3) bewegingsanalyse, 4) evaluatie.'},
+  {q:'Praktijkexamen SGT: Hoe lang duurt de slotfase?',a:'2 minuten',wrong:['3 minuten','5 minuten','6 minuten'],exp:'Slotfase = 2 min (afsluiting). 6 min = warming-up. 3 min = CD stretches.'},
+  {q:'Praktijkexamen SGT: Welke fase duurt 6 minuten?',a:'De warming-up',wrong:['De kennismakingsfase','De CD-stretches','De slotfase'],exp:'Warming-up = 6 min. Kennismaking en slotfase = 2 min. CD-stretches = 3 min.'},
+  {q:'SGT-kern (examen): Hoeveel oefenvormen MOET je minimaal aanbieden?',a:'4 oefenvormen, in 2 ronden',wrong:['2 oefenvormen, in 1 ronde','6 oefenvormen, in 1 ronde','8 oefenvormen, in 3 ronden'],exp:'SGT-kern = 18 min, minimaal 4 oefenvormen verdeeld over 2 ronden.'},
+  {q:'Zelfreflectiegesprek: Wat bespreek je in dit gesprek na het praktijkexamen?',a:'Conclusies uit evaluatie, verbeterpunten en terugkoppeling op SMART-doel en lesactiviteiten',wrong:['Het cijfer dat je krijgt','Een nieuw trainingsschema','Alleen de SMART-doelstelling'],exp:'Het zelfreflectiegesprek volgt direct op het praktijkexamen. Bespreek: evaluatie, verbeterpunten, terugkoppeling SMART en lesactiviteiten.'},
+
+  // Hoofdstuk 11 — Intake, Meten & Weten SGT
+  {q:'Intake-route: Bij welke stap bied je de klant een kopje koffie of thee aan?',a:'Stap 2: ontdooien',wrong:['Stap 1: temperatuur aannemen','Stap 3: op temperatuur brengen','Stap 4: bevriezen'],exp:'1. Temperatuur aannemen (gastvrij ontvangen) → 2. Ontdooien (koffie/thee) → 3. Op temperatuur brengen (uitleg) → 4. Bevriezen (aan de slag).'},
+  {q:'Beginsituatie: Welk type kijkt naar werk, levenswijze, motivatie en sociale vaardigheden?',a:'Sociaal-affectieve beginsituatie',wrong:['Psychomotorische beginsituatie','Cognitieve beginsituatie','Mentale beginsituatie'],exp:'Sociaal-affectief = werk/gezin/levenswijze, intrinsiek vs extrinsiek gemotiveerd, individueel of in groep, sport als uitlaatklep?'},
+  {q:'Mover-types: Wat maakt iemand een NON-mover?',a:'Geen sportverleden of langer dan 1 jaar niet gesport',wrong:['1× per week sport, fitness-gerelateerd','Niet-fitness sportverleden (bv voetbal)','2× of vaker per week sport'],exp:'Non-mover = geen sportverleden of >1 jaar inactief. Low-mover = 1×/week of niet-fitness. High-mover = 2× of meer per week.'},
+  {q:'Tests SGT: Wat is het doel van een NULMETING?',a:'De beginsituatie bepalen vóór aanvang van het trainingsprogramma',wrong:['De progressie monitoren tijdens het programma','Het einddoel evalueren na afloop','De klant motiveren'],exp:'Nulmeting = meting op tijdstip 0 (start). Tussentijdse test = monitor onderweg. Eindtest = evaluatie na afloop.'},
+  {q:'Tests SGT: Wat voor test is de Åstrand-test?',a:'Een submaximale fietstest die indirect de VO2max bepaalt',wrong:['Een maximale looptest op een atletiekbaan','Een neuromusculaire krachttest','Een lenigheidstest'],exp:'Åstrand = submaximale fietstest, bekend uit Level 1. Indirect VO2max via hartslag bij vastgesteld vermogen.'},
+
+  // Hoofdstuk 12 — Doelstellingen, SMART & FITT
+  {q:'SMART: Welke letter eist een concrete, ondubbelzinnige omschrijving (zelfstandig naamwoord + werkwoord)?',a:'Specifiek (S)',wrong:['Meetbaar (M)','Acceptabel (A)','Realistisch (R)'],exp:'Specifiek = bv "Kees wil zijn vetpercentage verlagen" — zelfstandig naamwoord + werkwoord, geen vage termen.'},
+  {q:'FITT: Welke factor beschrijft "hoe vaak per week" een klant traint?',a:'Frequentie (F)',wrong:['Intensiteit (I)','Type (T)','Tijdsduur (T)'],exp:'F = Frequentie (hoe vaak), I = Intensiteit (hoe zwaar), T = Type (welke training), T = Tijdsduur (sets/reps/duur).'},
+  {q:'Doelstellingstypen: Welk type hoort bij "de klant veilig laten voelen tijdens en buiten de training"?',a:'Sociaal-affectief',wrong:['Psychomotorisch','Cognitief','Mentaal'],exp:'Sociaal-affectief = veilig voelen, kunnen uiten en meedoen aan groepsactiviteiten — binnen én buiten de training.'},
+  {q:'CVT-zones: Op welke intensiteit hoort extensieve duurtraining (aerobe zone 2)?',a:'60-70% van de maximale hartfrequentie',wrong:['50-60% van de maximale hartfrequentie','70-80% van de maximale hartfrequentie','80-90% van de maximale hartfrequentie'],exp:'CVT 60-70% HFmax = extensieve duurtraining (aeroob zone 2). 70-80% = intensieve duurtraining (zone 3).'},
+  {q:'SMART: Waar hangt het criterium "Acceptabel" volgens de SGT-leerstof van af?',a:'Van de FITT-factoren',wrong:['Van de CLUKS-factoren','Van de mover-types','Van de SMART-deadline'],exp:'Acceptabel = past het programma bij de klant? Dat hangt af van de FITT-factoren (Frequentie, Intensiteit, Type, Tijdsduur).'},
+
+  // Hoofdstuk 13 — Mentale Gezondheid & Stress
+  {q:'Stress: Wat is de SGT-definitie van stress?',a:'Een vorm van spanning of druk in het lichaam als reactie op externe prikkels',wrong:['Een gebrek aan motivatie','Een teken van fysieke zwakte','Een hormonale stoornis'],exp:'Stress = fysiologische reactie van het lichaam op externe prikkels (spanning/druk). Niet per se negatief in zichzelf.'},
+  {q:'Stresshormoon: Welk hormoon hoort bij de LANGE termijn-stressrespons?',a:'Cortisol',wrong:['Adrenaline','Noradrenaline','Insuline'],exp:'Cortisol = lange termijn (houdt het lichaam in verhoogde alertheid). Adrenaline en noradrenaline = korte termijn (fight-or-flight).'},
+  {q:'Relaxatie: Welke 4 relaxatietechnieken noemt de SGT-leerstof?',a:'Ademhalingsoefeningen, visualisatie, yoga en meditatie',wrong:['Yoga, stretchen, lopen, fietsen','Muziek, massage, slapen, ademen','Ademen, lachen, lopen, mediteren'],exp:'4 relaxatietechnieken: ademhalingsoefeningen, visualisatie, yoga en meditatie.'},
+  {q:'Chronische stress: Welke MENTALE klacht is een gevolg?',a:'Concentratiestoornissen, piekeren en geheugenverlies',wrong:['Verbeterde focus en creativiteit','Spiergroei en spierversterking','Verbeterde slaapkwaliteit'],exp:'Mentaal: concentratieproblemen, angst, piekeren, geheugenverlies, opgejaagd gevoel, prikkelgevoeligheid, neiging tot verslaving.'},
+  {q:'Korte termijn-respons: Wat is de functie ervan?',a:'Het lichaam fysiologisch voorbereiden op directe actie (fight-or-flight)',wrong:['Langdurige alertheid behouden','Slaap en herstel bevorderen','Spiergroei stimuleren'],exp:'Korte termijn = adrenaline + noradrenaline → hartslag, bloeddruk en ademhaling omhoog → klaar voor actie.'},
+
+  // Hoofdstuk 14 — Anatomie SGT
+  {q:'Skelet: Wat is de anatomische naam voor het bekken?',a:'Pelvis',wrong:['Sacrum','Coccyx','Os femur'],exp:'Pelvis = bekken (ossa coxae + sacrum). Sacrum = heiligbeen (1 onderdeel). Coccyx = staartbeen. Os femur = dijbeen.'},
+  {q:'Ossificatie: Wat betekent deze term?',a:'Het proces van beenvorming — dynamisch gedurende het hele leven',wrong:['Het afbreken van bot','Het rekken van een spier','De vorming van gewrichten'],exp:'Ossificatie = beenvorming. Bot wordt levenslang opgebouwd (osteoblasten) én afgebroken (osteoclasten).'},
+  {q:'Beenverbindingen: Wat zijn synartrosen?',a:'Onbeweeglijke beenverbindingen (bindweefsel-, kraakbeen- of beenweefselverbinding)',wrong:['Beweeglijke gewrichten','Spier-pees-verbindingen','Verbindingen tussen zenuwen'],exp:'Synartrosen = onbeweeglijk. 3 soorten: bindweefsel (schedelnaden), kraakbeen (ribben↔sternum), beenweefsel (symphysis pubica). Tegenhanger: diatrosen (beweeglijk).'},
+  {q:'Anatomische houding: Hoe staat een persoon in deze referentiehouding?',a:'Rechtopstaand, kijkt voor zich uit, handpalmen naar voren, voeten parallel',wrong:['Liggend op de buik, hoofd opzij','Rechtopstaand, handpalmen naar binnen, armen gekruist','Zittend, knieën 90 graden gebogen'],exp:'Anatomische houding: rechtop, blik vooruit, armen langs lichaam met handpalmen naar voren, voeten parallel naar beneden afhangend.'},
+  {q:'Beenmerg: Wat is de functie van het RODE beenmerg?',a:'Productie van bloedcellen',wrong:['Opslag van vetcellen','Opslag van mineralen','Bescherming van het hart'],exp:'Rood beenmerg = bloedcelproductie (erytropoëse). Geel beenmerg = vetopslag. 2 van de 7 functies van het skelet.'},
+
+  // Hoofdstuk 15 — Trainingsonderdelen & Lesvoorbereiding
+  {q:'SGT-les: Uit welke 3 hoofdonderdelen bestaat een Small Group Training?',a:'Warming-up, kern (NMT + CVT) en cooling-down',wrong:['Intake, training en evaluatie','Kennismaking, kern en afsluiting','Kracht, cardio en stretch'],exp:'3-delige opbouw: WU → kern (neuromusculaire én cardiovasculaire prikkel) → CD.'},
+  {q:'Circuittraining: Welk blok is gebaseerd op PUSH-PULL?',a:'B2',wrong:['B1','B3','B4'],exp:'B1 = neuromusculair op lichaamsgewicht. B2 = push-pull (duwen/trekken afwisselen). B3 = 45/15 sec, tempo 1010.'},
+  {q:'Squat: Bij welke variant rust de barbell VÓÓR op de schouders, met rechte romp?',a:'Front Squat',wrong:['Back Squat','Air Squat','Safe Squat'],exp:'Front squat = barbell vóór op schouders, quadriceps-dominant. Back squat = barbell op rug. Air squat = zonder gewicht. Safe squat = geleide variant met steun.'},
+  {q:'Warming-up: Aan welk SUBJECTIEF gevoel moet de WU voldoen voor élke mover?',a:'Een gesprek moet nog te voeren zijn',wrong:['Je moet flink buiten adem zijn','Spierpijn is normaal','Hartslag van 90% HFmax'],exp:'Subjectief gevoel: kunnen praten — geldt voor non-, low- en high-movers. Verschil zit in objectieve intensiteit (60-70%).'},
+  {q:'Cooling-down: Op welke spieren focus je de stretches in de CD van het praktijkexamen?',a:'De agonisten van de gekozen oefenvormen',wrong:['Alleen de benen','Alle grote spieren van het lichaam','Alleen de antagonisten'],exp:'CD-stretches = 3 min, gericht op de agonisten van de oefenvormen die je hebt gedaan in de SGT-kern.'},
 ];
 
 // ============================================================

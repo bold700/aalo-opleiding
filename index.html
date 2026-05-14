@@ -163,7 +163,7 @@ body {
 .flip-hint { font-size: 11px; color: var(--muted); text-align:right; margin-top: 10px; }
 
 /* ===== QUIZ ===== */
-.quiz-wrap { max-width: 600px; }
+.quiz-wrap { max-width: 640px; margin: 0 auto; }
 .quiz-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
 .quiz-score { font-size: 13px; font-weight: 600; color: var(--muted); }
 .quiz-score .good { color: var(--correct); }
@@ -173,20 +173,20 @@ body {
 
 .q-card {
   background: white; border: 1px solid var(--border);
-  border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+  border-radius: 10px; padding: 20px 24px; margin-bottom: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 .q-label { display:none; }
-.q-text { font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--text); }
+.q-text { font-size: 17px; font-weight: 700; line-height: 1.4; color: var(--text); text-align:center; }
 
-.answers { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
-@media(max-width:500px){ .answers { grid-template-columns:1fr; } }
+.answers { display:flex; flex-direction:column; gap:10px; margin-bottom:10px; }
 .ans-btn {
   background: white; border: 2px solid var(--border); border-radius: 8px;
-  padding: 10px 12px; color: var(--text);
-  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
-  cursor:pointer; transition: all 0.15s; text-align:left; line-height: 1.35;
+  padding: 14px 16px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;
+  cursor:pointer; transition: all 0.15s; text-align:left; line-height: 1.45;
   box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  min-height: 48px;
 }
 .ans-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
 .ans-btn.correct { border-color: var(--correct); background: var(--accent2-light); color: var(--correct); font-weight: 700; }
@@ -246,16 +246,116 @@ body {
 .empty-msg { color: var(--muted); font-size: 14px; padding: 20px 0; }
 
 /* Mobile */
+/* Mobile overview grid — hidden on desktop */
+.mobile-overview { display:none; }
+.mobile-back-btn { display:none; }
+
 @media(max-width:700px){
-  .sidebar { width:100%; height:auto; position:relative; overflow-y:visible; }
-  .sidebar .chapter-list { display:flex; flex-wrap:wrap; padding:6px; gap:3px; }
-  .sidebar .ch-btn { width:auto; flex:0 0 auto; padding:6px 8px; margin:0; }
-  .sidebar .ch-btn .ch-label { display:none; }
   .app { flex-direction:column; }
-  .main-header { padding:10px 12px 8px; }
-  .main-content { padding:10px 12px 24px; }
+  .sidebar { display:none; }
+  .main { display:none; }
+
+  body.mobile-detail .main { display:flex; }
+  body.mobile-detail .mobile-overview { display:none; }
+
+  .mobile-overview {
+    display:block; padding: 18px 16px 32px;
+    background: var(--bg); min-height: 100vh;
+  }
+  .mobile-overview-header {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom: 14px;
+  }
+  .mobile-overview-logo {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--muted);
+  }
+  .overview-level-select {
+    appearance:none; -webkit-appearance:none;
+    background: white;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M3 4.5l3 3 3-3' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat; background-position: right 10px center; background-size: 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 30px 8px 12px; color: var(--text);
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+    outline:none; cursor:pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .overview-level-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(29,78,216,0.15); }
+  .overview-level-title {
+    font-size: 18px; font-weight: 800; line-height: 1.2;
+    color: var(--text); margin-bottom: 16px;
+  }
+  .overview-exams {
+    display:grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .overview-tile {
+    padding: 18px 12px; border-radius: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    align-items: flex-start; text-align: left;
+    border: 1px solid; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: transform 0.1s ease, box-shadow 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .overview-tile:active { transform: scale(0.98); }
+  .overview-tile-icon { font-size: 22px; line-height: 1; }
+  .overview-tile-label { font-size: 13px; font-weight: 700; line-height: 1.25; }
+  .overview-tile-proef { background: linear-gradient(135deg,#fef3c7,#fde68a); border-color: #d69916; color: #78350f; }
+  .overview-tile-gedeeld { background: linear-gradient(135deg,#dcfce7,#bbf7d0); border-color: #15803d; color: #14532d; }
+
+  .overview-divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 22px 0 12px;
+  }
+  .overview-divider::before, .overview-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .overview-divider-label {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--muted);
+  }
+
+  .overview-chapters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .overview-chapter-tile {
+    padding: 14px 12px; border-radius: 12px;
+    border: 1px solid var(--border); background: white;
+    display: flex; flex-direction: column; gap: 8px;
+    cursor: pointer; text-align: left;
+    font-family: 'Inter', sans-serif;
+    transition: transform 0.1s ease, border-color 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    min-height: 84px;
+  }
+  .overview-chapter-tile:active { transform: scale(0.98); }
+  .overview-chapter-num {
+    width: 26px; height: 26px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 12px;
+    background: var(--border); color: var(--muted);
+  }
+  .overview-chapter-title {
+    font-size: 12px; font-weight: 700; line-height: 1.3;
+    color: var(--text);
+  }
+
+  .mobile-back-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: none; border: none; color: var(--accent);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; padding: 0 0 6px;
+  }
+  .mobile-back-btn::before { content: '←'; font-size: 16px; }
+
+  .main-header { padding:10px 12px 6px; }
+  .main-content { padding:8px 12px 24px; }
+  .q-card { padding: 14px 16px; margin-bottom: 8px; }
   .q-text { font-size: 14px; }
-  .ans-btn { font-size: 13px; padding: 10px 10px; }
+  .ans-btn { font-size: 13px; padding: 12px 12px; min-height: 44px; }
 }
 </style>
 </head>
@@ -291,10 +391,26 @@ body {
   </div>
 </nav>
 
+<!-- MOBILE OVERVIEW -->
+<section class="mobile-overview" id="mobile-overview">
+  <div class="mobile-overview-header">
+    <div class="mobile-overview-logo">AALO Opleidingen</div>
+    <select class="overview-level-select" id="overview-level-select" onchange="setLevel(parseInt(this.value,10))">
+      <option value="1">Level 1</option>
+      <option value="2">Level 2</option>
+    </select>
+  </div>
+  <div class="overview-level-title" id="overview-level-title">Fitness Instructeur</div>
+  <div class="overview-exams" id="overview-exams"></div>
+  <div class="overview-divider"><span class="overview-divider-label">Hoofdstukken</span></div>
+  <div class="overview-chapters" id="overview-chapters"></div>
+</section>
+
 <!-- MAIN -->
 <main class="main">
   <div class="main-header">
     <div>
+      <button class="mobile-back-btn" onclick="goToOverview()">Terug</button>
       <div class="chapter-title" id="chapter-title">Kies een hoofdstuk</div>
       <div class="chapter-subtitle" id="chapter-subtitle">—</div>
     </div>
@@ -1257,7 +1373,8 @@ const proefexamenVragen = [
 
 function buildSidebar(){
   const list = document.getElementById('chapter-list');
-  list.innerHTML = chaptersInLevel(currentLevel).map((ch, i) => {
+  const chs = chaptersInLevel(currentLevel);
+  list.innerHTML = chs.map((ch, i) => {
     const num = i + 1;
     return `
     <button class="ch-btn" onclick="selectChapter(${ch.id})" id="ch-btn-${ch.id}">
@@ -1275,6 +1392,51 @@ function buildSidebar(){
   if(gedeeldWrap) gedeeldWrap.style.display = meta.hasGedeelde ? 'block' : 'none';
   document.getElementById('lvl-btn-1').classList.toggle('active', currentLevel===1);
   document.getElementById('lvl-btn-2').classList.toggle('active', currentLevel===2);
+  buildMobileOverview();
+}
+
+function buildMobileOverview(){
+  const meta = LEVEL_META[currentLevel];
+  const chs = chaptersInLevel(currentLevel);
+  const lvlSel = document.getElementById('overview-level-select');
+  if(lvlSel) lvlSel.value = String(currentLevel);
+  const title = document.getElementById('overview-level-title');
+  if(title) title.textContent = meta.title;
+  const exams = document.getElementById('overview-exams');
+  if(exams){
+    let html = '';
+    if(meta.hasProefexamen){
+      html += `<button class="overview-tile overview-tile-proef" onclick="selectProefexamen()">
+        <span class="overview-tile-icon">🎓</span>
+        <span class="overview-tile-label">Proefexamen<br>AALO</span>
+      </button>`;
+    }
+    if(meta.hasGedeelde){
+      html += `<button class="overview-tile overview-tile-gedeeld" onclick="selectGedeeldeExamen()">
+        <span class="overview-tile-icon">🤝</span>
+        <span class="overview-tile-label">Gedeelde<br>Examenvragen</span>
+      </button>`;
+    }
+    exams.innerHTML = html;
+    exams.style.display = html ? 'grid' : 'none';
+  }
+  const chapters = document.getElementById('overview-chapters');
+  if(chapters){
+    chapters.innerHTML = chs.map((ch,i)=>{
+      const num = i+1;
+      return `<button class="overview-chapter-tile" onclick="selectChapter(${ch.id})">
+        <span class="overview-chapter-num" style="background:${ch.color}22;color:${ch.color}">${num}</span>
+        <span class="overview-chapter-title">${ch.title}</span>
+      </button>`;
+    }).join('');
+  }
+}
+
+function enterDetail(){ document.body.classList.add('mobile-detail'); }
+function goToOverview(){
+  document.body.classList.remove('mobile-detail');
+  buildMobileOverview();
+  window.scrollTo({top:0,behavior:'instant'});
 }
 
 function setLevel(level){
@@ -1291,6 +1453,7 @@ function setLevel(level){
 function selectChapter(id){
   currentChapterId = id;
   currentMode = 'begrippen';
+  enterDetail();
   document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
   const btn = document.getElementById('ch-btn-'+id);
   if(btn) btn.classList.add('active');
@@ -1307,6 +1470,7 @@ function selectChapter(id){
 
 function selectProefexamen(){
   currentChapterId = null;
+  enterDetail();
   if(currentLevel === 2){
     currentExamSource = proefexamenVragenLevel2;
     currentExamLabel = 'Proefexamen SGT';
@@ -1329,6 +1493,7 @@ function selectProefexamen(){
 
 function selectGedeeldeExamen(){
   currentChapterId = null;
+  enterDetail();
   currentExamSource = gedeeldeExamenvragen;
   currentExamLabel = 'Gedeelde Examenvragen';
   currentExamIcon = '🤝';

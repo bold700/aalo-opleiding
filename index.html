@@ -245,6 +245,143 @@ body {
 }
 .empty-msg { color: var(--muted); font-size: 14px; padding: 20px 0; }
 
+/* ===== SAMENVATTING LEVEL 2 ===== */
+.sv-wrap { padding: 8px 24px 96px; max-width:880px; margin:0 auto; position: relative; }
+
+/* Floating Action Button — altijd zichtbaar, opent bottom-sheet */
+.sv-fab {
+  position: fixed; bottom: 24px; right: 24px; z-index: 200;
+  display:inline-flex; align-items:center; gap:8px;
+  padding: 12px 18px; border-radius: 9999px;
+  background:#1d4ed8; color:#fff; border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(29,78,216,0.35), 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.15s, box-shadow 0.2s, background 0.15s;
+}
+.sv-fab:hover { background:#1e40af; transform: translateY(-1px); box-shadow: 0 10px 28px rgba(29,78,216,0.45), 0 4px 10px rgba(0,0,0,0.12); }
+.sv-fab:active { transform: translateY(0); }
+.sv-fab .sv-fab-ico { font-size: 16px; line-height:1; }
+.sv-fab .sv-fab-count {
+  background: rgba(255,255,255,0.22); padding: 2px 8px; border-radius: 9999px;
+  font-size: 11px; font-weight:700; letter-spacing:0.3px;
+}
+
+/* Backdrop + bottom sheet */
+.sv-sheet-backdrop {
+  display:none; position: fixed; inset: 0; z-index: 199;
+  background: rgba(15,23,42,0.4);
+  backdrop-filter: blur(2px);
+  animation: svFadeIn 0.18s ease;
+}
+.sv-sheet-backdrop.open { display:block; }
+@keyframes svFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes svSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.sv-sheet {
+  display:none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 201;
+  background: var(--surface); border-radius: 18px 18px 0 0;
+  padding: 8px 12px 20px;
+  max-height: 80vh; overflow-y: auto;
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.18);
+  animation: svSlideUp 0.22s ease;
+}
+.sv-sheet.open { display:block; }
+.sv-sheet-handle {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: var(--border);
+  margin: 6px auto 12px;
+}
+.sv-sheet-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 0 8px 10px;
+  border-bottom: 1px solid var(--border); margin-bottom: 8px;
+}
+.sv-sheet-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.sv-sheet-close {
+  background:none; border:none; cursor:pointer;
+  font-size: 22px; line-height: 1; color: var(--muted);
+  padding: 4px 8px; border-radius: 6px;
+}
+.sv-sheet-close:hover { background: var(--bg); color: var(--text); }
+
+.sv-toc-grid {
+  display:grid; grid-template-columns: repeat(2, 1fr); gap: 2px;
+}
+.sv-toc-item {
+  display:flex; align-items:flex-start; gap:8px;
+  padding: 10px 10px; border-radius:7px;
+  font-size: 13.5px; color: var(--text2);
+  text-decoration:none; transition: background 0.15s, color 0.15s;
+}
+.sv-toc-item:hover, .sv-toc-item:focus { background: #eff6ff; color: #1d4ed8; outline: none; }
+.sv-toc-num {
+  width: 24px; height: 24px; border-radius:6px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background: var(--border); color: var(--muted);
+  font-size: 11px; font-weight:700;
+}
+.sv-toc-item:hover .sv-toc-num, .sv-toc-item:focus .sv-toc-num { background: #1d4ed8; color: white; }
+.sv-toc-title { line-height: 1.3; padding-top:3px; }
+
+.sv-content { min-width:0; }
+.sv-hero {
+  background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+  border: 1px solid var(--border); border-radius:16px;
+  padding: 32px 32px 28px; margin-bottom:28px;
+}
+.sv-eyebrow {
+  font-size: 11px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px;
+  color: #1d4ed8; margin-bottom:10px;
+}
+.sv-title {
+  font-size: 28px; font-weight:800; line-height:1.15; letter-spacing:-0.5px;
+  color: var(--text); margin-bottom:10px;
+}
+.sv-lead { font-size: 15px; color: var(--text2); line-height:1.55; max-width:680px; }
+
+.sv-chapter {
+  background: var(--surface); border:1px solid var(--border); border-radius:14px;
+  padding: 24px 28px; margin-bottom:18px;
+  scroll-margin-top: 12px;
+}
+.sv-chapter-title {
+  font-size: 20px; font-weight:800; letter-spacing:-0.25px;
+  color: var(--text); margin-bottom: 10px;
+}
+.sv-intro {
+  font-size: 14px; color: var(--muted); line-height:1.55;
+  margin-bottom: 18px; max-width:680px;
+}
+.sv-section { margin-bottom: 16px; }
+.sv-section:last-child { margin-bottom: 0; }
+.sv-section-h {
+  font-size: 12px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+  color: #1d4ed8; margin-bottom: 8px;
+}
+.sv-list { list-style:none; padding-left:0; }
+.sv-list li {
+  position: relative; padding: 5px 0 5px 22px;
+  font-size: 14.5px; line-height:1.5; color: var(--text2);
+  border-bottom: 1px solid #f3f4f6;
+}
+.sv-list li:last-child { border-bottom: none; }
+.sv-list li::before {
+  content: ''; position: absolute; left: 6px; top: 12px;
+  width: 5px; height: 5px; border-radius:50%;
+  background: #1d4ed8;
+}
+
+@media(max-width:900px){
+  .sv-wrap { padding: 8px 12px 96px; }
+  .sv-hero { padding: 22px 20px; }
+  .sv-title { font-size: 22px; }
+  .sv-chapter { padding: 18px 18px; }
+  .sv-toc-grid { grid-template-columns: 1fr; }
+  .sv-fab { bottom: 16px; right: 16px; padding: 11px 16px; font-size: 13px; }
+}
+
 /* Mobile */
 /* Mobile overview grid — hidden on desktop */
 .mobile-overview { display:none; }
@@ -305,6 +442,7 @@ body {
   .overview-tile-label { font-size: 13px; font-weight: 700; line-height: 1.25; }
   .overview-tile-proef { background: linear-gradient(135deg,#fef3c7,#fde68a); border-color: #d69916; color: #78350f; }
   .overview-tile-gedeeld { background: linear-gradient(135deg,#dcfce7,#bbf7d0); border-color: #15803d; color: #14532d; }
+  .overview-tile-samenvatting { background: linear-gradient(135deg,#dbeafe,#bfdbfe); border-color: #1d4ed8; color: #1e3a8a; }
 
   .overview-divider {
     display: flex; align-items: center; gap: 10px;
@@ -383,6 +521,10 @@ body {
     <button class="ch-btn" id="ch-btn-gedeeld" onclick="selectGedeeldeExamen()" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:1px solid #15803d;color:#14532d;">
       <span class="ch-num" style="background:#15803d;color:#fff;">🤝</span>
       <span class="ch-label" style="color:#14532d;font-weight:700;">Gedeelde Examenvragen</span>
+    </button>
+    <button class="ch-btn" id="ch-btn-samenvatting" onclick="selectSamenvatting()" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);border:1px solid #1d4ed8;color:#1e3a8a;margin-top:4px;">
+      <span class="ch-num" style="background:#1d4ed8;color:#fff;">📖</span>
+      <span class="ch-label" style="color:#1e3a8a;font-weight:700;">Samenvatting Level 2</span>
     </button>
   </div>
   <div class="sidebar-footer">
@@ -1186,8 +1328,8 @@ let quizState = { queue:[], idx:0, correct:0, wrong:0, answered:false };
 let globalStats = { total:0, correct:0 };
 
 const LEVEL_META = {
-  1: { title:'Fitness Instructeur', hasProefexamen:true, hasGedeelde:false },
-  2: { title:'Small Group Trainer', hasProefexamen:true, hasGedeelde:true },
+  1: { title:'Fitness Instructeur', hasProefexamen:true, hasGedeelde:false, hasSamenvatting:false },
+  2: { title:'Small Group Trainer', hasProefexamen:true, hasGedeelde:true, hasSamenvatting:true },
 };
 
 function chaptersInLevel(level){
@@ -1417,6 +1559,12 @@ function buildMobileOverview(){
         <span class="overview-tile-label">Gedeelde<br>Examenvragen</span>
       </button>`;
     }
+    if(meta.hasSamenvatting){
+      html += `<button class="overview-tile overview-tile-samenvatting" onclick="selectSamenvatting()">
+        <span class="overview-tile-icon">📖</span>
+        <span class="overview-tile-label">Samenvatting<br>Level 2</span>
+      </button>`;
+    }
     exams.innerHTML = html;
     exams.style.display = html ? 'grid' : 'none';
   }
@@ -1505,6 +1653,86 @@ function selectGedeeldeExamen(){
   document.getElementById('mode-tabs').style.display = 'none';
   renderProefexamen();
   buildSidebar();
+}
+
+function selectSamenvatting(){
+  currentChapterId = null;
+  enterDetail();
+  document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ch-btn-samenvatting').classList.add('active');
+  document.getElementById('chapter-title').textContent = '📖 Samenvatting Level 2';
+  document.getElementById('chapter-subtitle').textContent = 'Theorie Small Group Trainer — 28 hoofdstukken';
+  document.getElementById('mode-tabs').style.display = 'none';
+  renderSamenvatting();
+  buildSidebar();
+}
+
+function renderSamenvatting(){
+  const container = document.getElementById('main-content');
+  const toc = samenvattingLevel2.map((ch,i)=>`
+    <a href="#sv-${i}" class="sv-toc-item" onclick="closeSvToc()">
+      <span class="sv-toc-num">${i+1}</span>
+      <span class="sv-toc-title">${ch.title.replace(/^\d+\.\s*/,'')}</span>
+    </a>`).join('');
+  const body = samenvattingLevel2.map((ch,i)=>`
+    <article id="sv-${i}" class="sv-chapter">
+      <h2 class="sv-chapter-title">${ch.title}</h2>
+      ${ch.intro?`<p class="sv-intro">${ch.intro}</p>`:''}
+      ${ch.sections.map(sec=>`
+        <div class="sv-section">
+          <h3 class="sv-section-h">${sec.h}</h3>
+          <ul class="sv-list">
+            ${sec.items.map(it=>`<li>${it}</li>`).join('')}
+          </ul>
+        </div>`).join('')}
+    </article>`).join('');
+  container.innerHTML = `
+    <div class="sv-wrap">
+      <div class="sv-content">
+        <div class="sv-hero">
+          <div class="sv-eyebrow">AALO Small Group Trainer · Level 2</div>
+          <h1 class="sv-title">Uitgebreide Samenvatting Theorie Toets</h1>
+          <p class="sv-lead">Deze samenvatting bevat de belangrijkste theorie uit het AALO Small Group Trainer boek en is uitgewerkt als voorbereiding op de theorietoets. ${samenvattingLevel2.length} hoofdstukken.</p>
+        </div>
+        ${body}
+      </div>
+    </div>
+    <div class="sv-sheet-backdrop" id="sv-sheet-backdrop" onclick="closeSvToc()"></div>
+    <aside class="sv-sheet" id="sv-sheet" role="dialog" aria-modal="true" aria-label="Inhoudsopgave">
+      <div class="sv-sheet-handle"></div>
+      <div class="sv-sheet-header">
+        <span class="sv-sheet-title">📋 Inhoudsopgave · ${samenvattingLevel2.length} hoofdstukken</span>
+        <button class="sv-sheet-close" onclick="closeSvToc()" aria-label="Sluiten">✕</button>
+      </div>
+      <div class="sv-toc-grid">${toc}</div>
+    </aside>
+    <button class="sv-fab" id="sv-fab" onclick="toggleSvToc()" aria-controls="sv-sheet" aria-expanded="false">
+      <span class="sv-fab-ico">📋</span>
+      <span>Inhoudsopgave</span>
+      <span class="sv-fab-count">${samenvattingLevel2.length}</span>
+    </button>`;
+}
+
+function toggleSvToc(){
+  const sheet = document.getElementById('sv-sheet');
+  const backdrop = document.getElementById('sv-sheet-backdrop');
+  const fab = document.getElementById('sv-fab');
+  if(!sheet || !backdrop) return;
+  const isOpen = sheet.classList.toggle('open');
+  backdrop.classList.toggle('open', isOpen);
+  if(fab) fab.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+
+function closeSvToc(){
+  const sheet = document.getElementById('sv-sheet');
+  const backdrop = document.getElementById('sv-sheet-backdrop');
+  const fab = document.getElementById('sv-fab');
+  if(!sheet || !backdrop) return;
+  sheet.classList.remove('open');
+  backdrop.classList.remove('open');
+  if(fab) fab.setAttribute('aria-expanded','false');
+  document.body.style.overflow = '';
 }
 
 function setMode(mode, btn){
@@ -1666,6 +1894,23 @@ const gedeeldeExamenvragen = [
   {q:'Osteologie: Welk van de onderstaande botten is een sesamoidbeen?',a:'Os patella',wrong:['Os cranium','Beide antwoorden zijn juist'],exp:'Sesamoidbeen = bot ingebed in een pees, vergroot de hefboomwerking. De os patella (knieschijf) is het bekendste sesamoidbeen. Os cranium = schedel (geen sesamoid).'},
   {q:'Wat is de belangrijkste reden dat leden weglopen uit een fitnesscentrum?',a:'De klant ervaart een onverschillige houding van de aanbieder',wrong:['De klant is ontevreden over het product of de dienst','Het is te duur'],exp:'Het gevoel dat er niemand naar je omkijkt is veruit de belangrijkste reden waarom leden opzeggen. Daarom is klantgerichtheid (10 sec-, 1 min- en 5 min-gesprekjes) zo belangrijk voor binding.'},
   {q:'Wat is van belang bij de opwaartse beweging van de Bent over reverse fly?',a:'Breng de armen naar buiten met een lichte buiging in de ellebogen.',wrong:['Trek de stang in een verticale lijn in de richting van de wervelkolom.','Trek de dumbells in de richting van de wervelkolom.'],exp:'Bent over reverse fly opwaarts: armen zijwaarts naar buiten brengen met licht gebogen ellebogen, om de achterste deltavezels en het bovenste deel van de rug te belasten. Dumbells dicht bij de romp trekken = bent over row.'},
+  // Set extra — WhatsApp screenshots mei 2026 (gedeeld door medestudent)
+  {q:'Systemen: Voor hoe lang kan "CP" energie leveren?', a:'10-15 seconden.', wrong:['Tot 4 seconden.','10-120 seconden.'], exp:'Het fosfaatsysteem (CP/creatinefosfaat) levert energie voor ongeveer 10-15 seconden bij maximale inspanning. Tot 4 sec = ATP zelf. 10-120 sec = melkzuursysteem.'},
+  {q:'Als trainer pas je jouw stijl aan op het competentieniveau van je klant. Wat is een voorbeeld van de stijl "begeleiden"?', a:'Je bespreekt met je klant hoe een oefening beter kan of je stelt een alternatieve oefening voor. Samen bepaal je wat de klant gaat doen en op welke manier.', wrong:['Je bepaalt samen wat en hoe je klant gaat trainen. Je overlegt dus met je klant, samen maak je een nieuw schema.','Je zegt welke oefening op welke manier gedaan moet worden. Je corrigeert door aan te geven hoe het wel moet. Je controleert hoe je klant de oefening uitvoert.'], exp:'Begeleiden (stijl 2): samen met de klant bespreken hoe een oefening beter kan of een alternatief voorstellen. Stijl 3 (steunen) = samen schema maken. Stijl 1 (leiden) = volledig sturen en controleren.'},
+  {q:'Mentaal aspect: Welke invloed heeft het mentale aspect op het behalen van de doelstelling?', a:'Het speelt een belangrijke rol in de motivatie of het al dan niet behalen van de doelstellingen van de klant.', wrong:['De omgeving bepaald het mentale aspect van de sport.','Het speelt GEEN belangrijke rol in de motivatie of het al dan niet behalen van de doelstellingen van de klant.'], exp:'Mentaal aspect = essentieel voor motivatie en doorzetting. Zonder mentale vastberadenheid wordt het einddoel zelden behaald, ongeacht het fysieke vermogen.'},
+  {q:'Een doelstelling moet SMART geformuleerd worden. Wat wordt bedoeld met SMART?', a:'Specifiek, meetbaar, acceptabel, realistisch, tijdsgebonden.', wrong:['Specifiek, mogelijk, acceptabel, realistisch, tijdsgebonden.','Specifiek, meetbaar, acceptabel, rustig, tijdsgebonden.'], exp:'SMART = Specifiek, Meetbaar, Acceptabel, Realistisch, Tijdsgebonden. Een doel moet aan al deze criteria voldoen om bruikbaar te zijn voor de klant.'},
+  {q:'Welke spier wordt gestretched? (foto: persoon staand, handen achter rug ineengevouwen, borst open)', a:'M. pectoralis major.', wrong:['Beide antwoorden zijn juist.','M. deltoideus pars spinalis.'], exp:'Handen achter de rug ineenvouwen en borst openen stretchet m. pectoralis major (grote borstspier). M. deltoideus pars spinalis stretch je juist door arm horizontaal voor de borst te trekken.'},
+  {q:'Psychomotorische aspecten: Welke onderstaande stelling is juist?', a:'De maximale kracht die een spier kan produceren, wordt uitgedrukt door 1 RM.', wrong:['De maximale kracht die een spier kan produceren, wordt uitgedrukt door HF.','De maximale kracht die een spier kan produceren, wordt uitgedrukt door ROM.'], exp:'1 RM (Repetition Maximum) = maximaal gewicht dat 1x correct getild kan worden = maat voor maximale spierkracht. HF = hartfrequentie. ROM = Range of Motion (bewegingsuitslag).'},
+  {q:'Diabetes: Diabetes type 1 patiënten zijn...', a:'Insulineafhankelijk.', wrong:['Niet-insulineafhankelijk.','Beide antwoorden zijn mogelijk.'], exp:'Type 1 diabetes = altijd insulineafhankelijk (alvleesklier produceert geen insuline meer). Type 2 = vaak nog wel eigen insulineproductie, maar verminderd. Type 1 vereist altijd insuline-injecties.'},
+  {q:'Plannen en periodiseren: Wat is een mesocyclus?', a:'Een periodisering voor sport die loopt over een aantal weken of maanden.', wrong:['Een periodisering voor sport die loopt over een half jaar of een jaar.','Een periodisering voor sport die loopt over een training.'], exp:'Mesocyclus = trainingsblok van enkele weken tot maanden. Macrocyclus = half jaar tot jaar. Microcyclus = enkele dagen tot één training.'},
+  {q:'Trainingsonderdelen: Welke neuromusculaire trainingsmethode word hier beschreven: "Hierbij moet worden gedacht aan explosiviteit (onder belasting), maar voor een korte duur; denk aan een kogelstoter of speerwerper."', a:'Snelkracht.', wrong:['Snelkrachtuithoudingsvermogen.','Maximaalkracht.'], exp:'Snelkracht = explosieve kracht voor korte duur (kogelstoot, speerwerpen, sprint). Snelkrachtuithoudingsvermogen = explosiviteit volhouden. Maximaalkracht = absolute kracht zonder snelheidscomponent.'},
+  {q:'Welke spier wordt gestretched? (foto: arm horizontaal voor de borst geklemd met andere arm)', a:'M. deltoideus pars spinalis.', wrong:['M. deltoideus pars clavicularis.','M. deltoideus pars acrominalis.'], exp:'Arm horizontaal voor borst trekken = horizontale adductie = stretch m. deltoideus pars spinalis (achterste schouderdeel). Clavicularis = voorste. Acrominalis = middelste.'},
+  {q:'Spieren: Wat is de insertie van m. tibialis anterior?', a:'Os metatarsalis (middenvoetsbeentje) van de grote teen.', wrong:['Verdeeld in 1 pees naar de grote teen.','Verdeeld in 4 pezen naar de 2de tot 5e teen.'], exp:'M. tibialis anterior: origo op os tibia, insertie op os metatarsalis (middenvoetsbeentje) van de grote teen. Functie: dorsaalflexie en inversie van de voet.'},
+  {q:'Wat is een kenmerk van iemand die visueel is ingesteld?', a:'Denkt in beelden, ziet plaatjes voor zich.', wrong:['Richt zich op gevoel, heeft meestal meer tijd nodig voor hij reactie geeft.','Richt zich op geluiden en woorden. Het is vooral de toon die de muziek maakt.'], exp:'Visueel type = denkt in beelden en plaatjes. Kinesthetisch type = richt zich op gevoel. Auditief type = richt zich op geluiden en woorden.'},
+  {q:'Wie van deze klanten is een high mover?', a:'Ismael doet 2x per week aan handbal en doet 2x per week een fitnesstraining.', wrong:['Gio is een voetballer. Hij voetbalt 2x per week maar heeft nog nooit aan fitness gedaan.','Susanne heeft in het verleden altijd veel aan fitness gedaan maar is sinds 2 jaar gestopt.'], exp:'High mover = minimaal 2x per week actief fitness-sportverleden. Ismael: 2x handbal + 2x fitness = high mover. Gio: nog nooit fitness gedaan. Susanne: 2 jaar gestopt.'},
+  {q:'Artrologie: Waar word synoviaal vocht aangemaakt?', a:'Synoviaal membraam.', wrong:['Hylanien kraakbeen.','Gewrichtskapsel.'], exp:'Synoviaal vocht (gewrichtssmeer) wordt geproduceerd door het synoviaal membraan (binnenste laag van het gewrichtskapsel). Het kraakbeen heeft geen bloedvaten en produceert geen vocht.'},
+  {q:'Artrologie: Wat is een bursa?', a:'Slijmbeurs.', wrong:['Kraakbeen.','Gewrichtskapsel.'], exp:'Bursa (synovialis) = slijmbeurs: een met vocht gevuld zakje dat wrijving vermindert tussen bot, pees of huid. Bij ontsteking = bursitis (bijv. slijmbeursontsteking schouder).'},
+  {q:'Welke spier wordt gestretched? (foto: staand, hak naar bil getrokken) — specifieke kop van de quadriceps?', a:'M. quadriceps: vastus.', wrong:['M. quadriceps: erector spinea.','M. quadriceps: rectus femoris.'], exp:'Bij een staande quadricepsstretch (hak naar bil) worden vooral de vastus-koppen gestretched. Rectus femoris stretch je extra met heup in extensie. "Erector spinea" bestaat niet als quadricepskop (erector spinae is een rugspier).'},
 ];
 
 // ============================================================
@@ -1785,6 +2030,143 @@ const proefexamenVragenLevel2 = [
   {q:'Wat is van belang in de OPWAARTSE fase van een STIFFED LEGGED deadlift?',a:'Hou de wervelkolom in een rechte stand terwijl je de heupen strekt naar de startpositie.',wrong:['Lift de barbell van de grond af door je knieën en heupen te strekken.','Stap onder de stang door en positioneer je voeten parallel aan elkaar.'],exp:'Stiffed legged = knieën blijven (bijna) gestrekt; de heupen doen het werk → rechte rug + pure heupextensie. Traditional gebruikt knieën én heupen samen.'},
   {q:'Loopband: De loopcyclus onderscheiden we in een aantal fasen. Namelijk…',a:'Zweeffase, steunfase en zwaaifase.',wrong:['Zweeffase, steunfase en kickfase.','Zweeffase, steunfase en heffase.'],exp:'Loopcyclus = zweeffase (geen voet aan de grond) + steunfase (voet contact) + zwaaifase (been zwaait door).'},
   {q:'Voor welke spier is de stretch op het plaatje? (knielen op de wreef, tenen gestrekt)',a:'M. tibialis anterior',wrong:['M. soleus','M. gastrocnemius'],exp:'Knielen met gestrekte tenen rekt de m. tibialis anterior (voorzijde scheenbeen). Kuitspieren (gastrocnemius, soleus) rek je juist met dorsiflexie van de voet.'},
+];
+
+// ============================================================
+// SAMENVATTING LEVEL 2 — Small Group Trainer theorie
+// 28 hoofdstukken, bron: docx samenvatting mei 2026
+// ============================================================
+const samenvattingLevel2 = [
+  {title:'1. Anatomische houding', intro:'Uitgangspunt om bewegingen van het lichaam te beschrijven.', sections:[
+    {h:'Kenmerken', items:['Rechtop staan','Armen langs het lichaam','Handpalmen naar voren','Benen recht','Voeten naar voren','Kijken recht vooruit']},
+    {h:'Belang', items:['Alle bewegingen worden vanuit deze houding beschreven, geanalyseerd en gecorrigeerd.']},
+  ]},
+  {title:'2. Assen en vlakken', intro:'Het lichaam beweegt in drie vlakken rondom drie assen.', sections:[
+    {h:'Sagittale vlak', items:['Beweging van voor naar achter','Flexie en extensie','Voorbeelden: squat, biceps curl, deadlift']},
+    {h:'Frontale vlak', items:['Beweging van links naar rechts','Abductie en adductie','Voorbeelden: side raise, jumping jack']},
+    {h:'Transversale vlak', items:['Draaiende bewegingen','Rotaties','Voorbeelden: romprotatie, schouderrotatie']},
+    {h:'Onthouden', items:['Flexie = sagittaal vlak','Abductie = frontaal vlak','Rotatie = transversaal vlak']},
+  ]},
+  {title:'3. Skeletleer', intro:'Het skelet bestaat uit ongeveer 206 botten.', sections:[
+    {h:'7 functies van het skelet', items:['Bescherming van organen','Ondersteuning van het lichaam','Mogelijk maken van beweging','Opslag van mineralen','Opslag van vet in geel beenmerg','Productie van bloedcellen in rood beenmerg','Bewaken van de zuurgraad']},
+    {h:'Axiale skelet', items:['Schedel','Wervelkolom','Ribben','Borstbeen']},
+    {h:'Appendiculaire skelet', items:['Armen','Benen','Schoudergordel','Heupgordel']},
+  ]},
+  {title:'4. Belangrijke botten', intro:'Latijnse namen ↔ Nederlandse vertaling.', sections:[
+    {h:'Bovenlichaam', items:['Cranium = schedel','Clavicula = sleutelbeen','Scapula = schouderblad','Sternum = borstbeen','Humerus = opperarmbeen','Radius = spaakbeen','Ulna = ellepijp','Vertebrae = wervelkolom']},
+    {h:'Onderlichaam', items:['Pelvis = bekken','Femur = dijbeen','Patella = knieschijf','Tibia = scheenbeen','Fibula = kuitbeen','Calcaneus = hielbeen']},
+  ]},
+  {title:'5. Botindeling', intro:'Vier typen botten op basis van vorm.', sections:[
+    {h:'Pijpbeenderen', items:['Langwerpig, groeien vooral in lengte','Voorbeelden: femur, tibia, humerus']},
+    {h:'Platte beenderen', items:['Plat van vorm','Voorbeelden: scapula, cranium']},
+    {h:'Onregelmatige beenderen', items:['Verschillende vormen','Voorbeelden: wervels, hielbeen']},
+    {h:'Sesamoidbeenderen', items:['Kleine botjes in een pees','Voorbeeld: patella (knieschijf)']},
+  ]},
+  {title:'6. Botopbouw', intro:'Anatomie van een bot.', sections:[
+    {h:'Onderdelen', items:['Epifyse — uiteinde van het bot','Diafyse — middengedeelte van het bot','Metafyse — overgang epifyse/diafyse','Periost — buitenste beenvlies, zorgt voor breedtegroei','Epifysaire schijf — groeischijf, verantwoordelijk voor lengtegroei']},
+    {h:'Beenweefsel', items:['Compact beenweefsel — sterk en stevig','Spongieus beenweefsel — licht botweefsel met beenmerg']},
+  ]},
+  {title:'7. Beenverbindingen', intro:'Vier soorten verbindingen tussen botten.', sections:[
+    {h:'Bindweefselverbinding', items:['Nauwelijks beweeglijk','Voorbeeld: schedelnaden']},
+    {h:'Kraakbeenverbinding', items:['Beperkt beweeglijk','Voorbeeld: ribben met borstbeen']},
+    {h:'Beenverbinding', items:['Volledig vergroeid','Voorbeeld: os sacrum']},
+    {h:'Gewrichten', items:['Beweeglijke verbindingen tussen botten']},
+  ]},
+  {title:'8. Gewrichten', intro:'Typen gewrichten en bewegingsrichtingen.', sections:[
+    {h:'Vorm', items:['Scharniergewricht — knie, elleboog','Kogelgewricht — schouder, heup','Rolgewricht — radio-ulnair gewricht','Zadelgewricht — duim']},
+    {h:'Aantal assen', items:['1-assig — beweging in één richting','2-assig — twee bewegingsrichtingen','3-assig — beweging in meerdere richtingen']},
+  ]},
+  {title:'9. Gewrichtsopbouw', intro:'Een gewricht zorgt voor stabiliteit, schokdemping en soepele beweging.', sections:[
+    {h:'Onderdelen', items:['Gewrichtskapsel','Gewrichtskraakbeen','Synoviaal vocht','Ligamenten','Pezen','Spieren']},
+    {h:'Passieve stabiliteit', items:['Ligamenten','Gewrichtskapsel']},
+    {h:'Actieve stabiliteit', items:['Spieren','Coördinatie']},
+  ]},
+  {title:'10. Anatomische bewegingen', intro:'Bewegingstermen die je als trainer moet kennen.', sections:[
+    {h:'Algemeen', items:['Flexie = buigen','Extensie = strekken','Abductie = van het lichaam af','Adductie = naar het lichaam toe']},
+    {h:'Schouder', items:['Anteflexie = arm voorwaarts','Retroflexie = arm achterwaarts','Endorotatie = naar binnen draaien','Exorotatie = naar buiten draaien']},
+    {h:'Onderarm & voet', items:['Pronatie = handpalm omlaag','Supinatie = handpalm omhoog','Plantairflexie = voet naar beneden','Dorsaalflexie = voet omhoog']},
+    {h:'Romp', items:['Lateroflexie = zijwaarts buigen']},
+  ]},
+  {title:'11. Spierleer', intro:'Basisbegrippen over spieren en contractie.', sections:[
+    {h:'Anatomie spier', items:['Origo — oorsprong, meestal dichter bij de romp','Insertie — aanhechting, beweegt meestal tijdens contractie','Spierbuik — middengedeelte van de spier']},
+    {h:'Contractietypen', items:['Concentrisch = spier verkort','Excentrisch = spier verlengt','Isometrisch = spierlengte blijft gelijk']},
+  ]},
+  {title:'12. Belangrijke spieren en functies', intro:'De spieren waarvan je de functie moet kennen.', sections:[
+    {h:'Onderlichaam', items:['Quadriceps — knie extensie','Hamstrings — knie flexie & heup extensie','Gluteus maximus — heup extensie']},
+    {h:'Bovenlichaam', items:['Deltoideus — schouder abductie','Pectoralis major — horizontale adductie','Latissimus dorsi — schouder extensie en adductie','Biceps brachii — elleboog flexie & supinatie','Triceps brachii — elleboog extensie']},
+    {h:'Romp', items:['Rectus abdominis — romp flexie']},
+  ]},
+  {title:'13. Spiervezels', intro:'Twee hoofdtypen spiervezels.', sections:[
+    {h:'Slow twitch (type I)', items:['Duurvermogen','Langzame contractie','Minder snel vermoeid']},
+    {h:'Fast twitch (type II)', items:['Explosieve kracht','Snelle contractie','Sneller vermoeid']},
+  ]},
+  {title:'14. Beschermingsmechanismen', intro:'Reflexen die spieren en pezen beschermen.', sections:[
+    {h:'Spierspoeltjes', items:['Reageren op snelle rek','Veroorzaken de stretchreflex']},
+    {h:'Golgi-peesorganen', items:['Reageren op hoge spanning','Beschermen spieren en pezen tegen scheuren']},
+  ]},
+  {title:'15. Hart en bloedsomloop', intro:'Hart pompt het bloed rond via twee circulaties.', sections:[
+    {h:'Bloedsomloop', items:['Kleine bloedsomloop: hart → longen → hart','Grote bloedsomloop: hart → lichaam → hart']},
+    {h:'Bloedvaten', items:['Slagaders — vervoeren bloed van het hart weg','Aders — vervoeren bloed terug naar het hart','Haarvaten — uitwisseling van zuurstof en voedingsstoffen']},
+  ]},
+  {title:'16. Ademhalingssysteem', intro:'Opnemen van zuurstof, afgeven van koolstofdioxide.', sections:[
+    {h:'Typen ademhaling', items:['Buikademhaling — middenrif actief','Borstademhaling — meer beweging borstkas']},
+    {h:'Gaswisseling', items:['Vindt plaats in de longblaasjes (alveoli)']},
+  ]},
+  {title:'17. Voeding', intro:'Brandstoffen en bouwstoffen voor het lichaam.', sections:[
+    {h:'Macronutriënten', items:['Koolhydraten','Eiwitten','Vetten']},
+    {h:'Micronutriënten', items:['Vitamines','Mineralen']},
+    {h:'Vocht', items:['Belangrijk voor prestaties','Regelt lichaamstemperatuur']},
+    {h:'Energiebalans', items:['Positief = aankomen','Negatief = afvallen']},
+  ]},
+  {title:'18. Energiesystemen', intro:'Drie energiesystemen op basis van duur en intensiteit.', sections:[
+    {h:'ATP-CP systeem', items:['0–10 seconden','Explosieve inspanning']},
+    {h:'Anaerobe glycolyse', items:['10 seconden – 2 minuten','Hoge intensiteit']},
+    {h:'Aerobe systeem', items:['Langer dan 2 minuten','Gebruikt zuurstof']},
+    {h:'Vetzuren', items:['Vooral bij langdurige inspanning met lage tot matige intensiteit']},
+  ]},
+  {title:'19. Trainingsleer', intro:'Doelen en aspecten van training.', sections:[
+    {h:'Doelen van training', items:['Kracht','Conditie','Stabiliteit','Mobiliteit']},
+    {h:'Trainingsaspecten', items:['Technisch','Mentaal','Tactisch','Psychomotorisch']},
+  ]},
+  {title:'20. Trainingsprincipes', intro:'Vijf wetten van effectieve training.', sections:[
+    {h:'Principes', items:['Overload — zwaardere trainingsprikkel nodig','Supercompensatie — na herstel sterker terugkomen','Reversibiliteit — stoppen = resultaatverlies','Specificiteit — lichaam past zich aan de training aan','Wet van verminderde meeropbrengst — gevorderden boeken minder snel vooruitgang']},
+  ]},
+  {title:'21. FITT-factoren', intro:'Vier variabelen om training te programmeren.', sections:[
+    {h:'FITT', items:['F = Frequentie','I = Intensiteit','T = Tijd','T = Type']},
+    {h:'Voorbeeld', items:['3x per week, 60 minuten krachttraining']},
+  ]},
+  {title:'22. Periodiseren', intro:'Training plannen op drie niveaus.', sections:[
+    {h:'Cycli', items:['Macrocyclus — lange periode, bijv. jaarplanning','Mesocyclus — weken of maanden','Microcyclus — één trainingsweek']},
+  ]},
+  {title:'23. Small Group Training', intro:'Trainen met meerdere klanten tegelijk.', sections:[
+    {h:'Vormen', items:['Circuittraining — verschillende stations, doorwisselen','Stationstraining — groepjes per onderdeel']},
+    {h:'Voordelen', items:['Motiverend','Sociaal','Efficiënt']},
+    {h:'Nadelen', items:['Minder individuele aandacht']},
+  ]},
+  {title:'24. Warming-up en cooling-down', intro:'Begin en einde van elke training.', sections:[
+    {h:'Warming-up', items:['Verhoogt lichaamstemperatuur','Bereidt spieren voor']},
+    {h:'Cooling-down', items:['Rustig afbouwen','Herstel bevorderen']},
+    {h:'Stretchen', items:['Verbetert mobiliteit']},
+  ]},
+  {title:'25. Intake en testen', intro:'Beginsituatie bepalen en doelen opstellen.', sections:[
+    {h:'Doel intake', items:['Beginsituatie bepalen','Doelen opstellen']},
+    {h:'SMART-doelen', items:['Specifiek','Meetbaar','Acceptabel','Realistisch','Tijdsgebonden']},
+    {h:'Testen', items:['Shuttle run-test','Coopertest','Åstrand-test','10RM-test']},
+  ]},
+  {title:'26. Coaching en klantbegeleiding', intro:'De rol van de trainer in het klantcontact.', sections:[
+    {h:'Belangrijk als trainer', items:['Duidelijke uitleg geven','Motiveren','Veiligheid bewaken','Positieve feedback geven']},
+    {h:'Waarom klanten stoppen', items:['Belangrijkste reden: onverschillige houding van de trainer']},
+  ]},
+  {title:'27. Spotten', intro:'Veilig helpen bij zware oefeningen.', sections:[
+    {h:'Belangrijk bij spotten', items:['Veiligheid','Goede communicatie','Correcte houding','Alleen helpen wanneer nodig']},
+  ]},
+  {title:'28. Oefentechniek', intro:'Aandachtspunten van de basisoefeningen.', sections:[
+    {h:'Squat', items:['Knieën volgen de tenen','Rechte rug','Gewicht verdeeld over de voet']},
+    {h:'Deadlift', items:['Rechte rug','Heup extensie','Stang dicht langs het lichaam']},
+    {h:'Bench press', items:['Schouderbladen stabiel']},
+    {h:'Bent-over row', items:['Rug neutraal','Ellebogen langs het lichaam']},
+    {h:'Reverse fly', items:['Armen naar buiten','Controle houden']},
+  ]},
 ];
 
 // ============================================================
